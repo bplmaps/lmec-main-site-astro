@@ -1,0 +1,18 @@
+@import "variables";
+@import "mixins";
+
+// Import all of Bootstrap"s CSS
+@import "bootstrap/scss/bootstrap";
+
+$fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts/";
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/solid";
+@import "@fortawesome/fontawesome-free/scss/brands";
+
+@import "typography";
+@import "buttons";
+@import "common";
+@import "templates/navigation";
+@import "templates/slider";
+@import "templates/homepage";
+@import "templates/otherspage";

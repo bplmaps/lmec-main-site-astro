@@ -1,12 +1,13 @@
 ---
 import { SEO } from "astro-seo";
-import "../../public/styles.scss";
+import Header from "../components/Layout/Header.astro";
+import "../styles/styles.scss";
 
 interface Props {
-  title: string;
-  description: string;
-  image: string;
-  noindex: boolean;
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
 const { title, description, image, noindex } = Astro.props;
@@ -16,18 +17,17 @@ const siteImage =
 	"https://fedora.digitalcommonwealth.org/fedora/objects/commonwealth:3f463530h/datastreams/thumbnail300/content";
 
 const metaTitle = title ? `${title} - ${siteTitle}` : `${siteTitle}`;
-const metaDescription = description ? description : null;
+const metaDescription = description ? description : "";
 const metaImage = image ? image : siteImage;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="generator" content={Astro.generator} />
+		<meta name="facebook-domain-verification" content="6q0qb8ylcx1vtfy18bpgaplv3mcwlp" />
 		<SEO
 			title={metaTitle}
 			description={metaDescription}
@@ -39,9 +39,19 @@ const metaImage = image ? image : siteImage;
 				image: `${metaImage}`,
 				},
 			}}
+			extend={{
+				link: [
+					{ rel: "shortcut icon", href: "/favicon.png", type: "image/x-icon" },
+					{ rel: "icon", href: "/favicon.png", type: "image/x-icon" },
+				],
+				meta: [
+					{ name: "facebook-domain-verification", content: "6q0qb8ylcx1vtfy18bpgaplv3mcwlp" },
+				],
+			}}
 		/>
 	</head>
 	<body>
+		<Header />
 		<slot />
 	</body>
 </html>
