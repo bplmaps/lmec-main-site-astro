@@ -1,6 +1,7 @@
 ---
 import { SEO } from "astro-seo";
 import Header from "../components/Layout/Header.astro";
+import Footer from "../components/Layout/Footer.astro";
 import "../styles/styles.scss";
 
 interface Props {
@@ -19,6 +20,99 @@ const siteImage =
 const metaTitle = title ? `${title} - ${siteTitle}` : `${siteTitle}`;
 const metaDescription = description ? description : "";
 const metaImage = image ? image : siteImage;
+
+const socialLinks = [
+	{
+		href: 'https://facebook.com/bplmaps',
+		icon: 'fab fa-facebook',
+	},
+	{
+		href: 'https://twitter.com/bplmaps',
+		icon: 'fab fa-twitter',
+	},
+	{
+		href: 'https://instagram.com/bplmaps',
+		icon: 'fab fa-instagram',
+	},
+	{
+		href: 'https://www.youtube.com/c/LeventhalMapEducationCenter',
+		icon: 'fab fa-youtube',
+	},
+	{
+		href: 'https://secure.flickr.com/photos/normanbleventhalmapcenter/',
+		icon: 'fab fa-flickr',
+	},
+	{
+		href: 'https://github.com/bplmaps',
+		icon: 'fab fa-github',
+	},
+];
+
+const menuLinks = [
+	{
+		text: 'Exhibitions',
+		href: '/exhibitions',
+	},
+	{
+		text: 'Collections',
+		href: '/collections',
+	},
+	{
+		text: 'Education',
+		href: '/education',
+	},
+	{
+		text: 'Research',
+		href: '/research',
+	},
+	{
+		text: 'Projects',
+		href: '/projects',
+	},
+	{
+		text: 'About',
+		href: '/about',
+	},
+];
+
+const secondaryMenuLinks = [
+	{
+		text: 'Events',
+		href: '/event',
+	},
+	{
+		text: 'Articles',
+		href: '/articles',
+	},
+	{
+		text: 'Contact Us',
+		href: '/contact-connect',
+	},
+	{
+		text: 'Donate Now',
+		href: '/donate',
+	},
+	{
+		text: 'Hours & Directions',
+		href: '/about/hours-directions',
+	},
+	{
+		text: 'Land Acknowledgement',
+		href: '/about/mission-history',
+	},
+	{
+		text: 'Accessibility',
+		href: '/accessibility',
+	},
+	{
+		text: 'Privacy Policy',
+		href: '/privacy',
+	},
+	{
+		text: 'BPL.org',
+		href: 'https://bpl.org/',
+	},
+];
 ---
 
 <!doctype html>
@@ -51,7 +145,10 @@ const metaImage = image ? image : siteImage;
 		/>
 	</head>
 	<body>
-		<Header />
-		<slot />
+		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
+		<div class="container">
+			<slot />
+		</div>
+		<Footer socialLinks={socialLinks} leftMenuLinks={menuLinks} rightMenuLinks={secondaryMenuLinks} />
 	</body>
 </html>

@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import Brand from "../../assets/brand.png";
 
+const { socialLinks, menuLinks } = Astro.props;
+
 interface SocialLink {
   href: string;
   icon: string;
@@ -9,118 +11,51 @@ interface SocialLink {
 
 interface MenuLink {
   href: string;
-  target: string;
   text: string;
-}
-
-interface SpecialButton {
-  href: string;
-  target: string;
-  icon: string;
-  text: string;
+  target?: string;
 }
 
 interface Props {
-  topHeader?: boolean;
   socialLinks?: SocialLink[];
-  specialButton?: SpecialButton;
   menuLinks?: MenuLink[];
 }
-
-const topHeader = true;
-
-const socialLinks = [
-	{
-		href: 'https://facebook.com/bplmaps',
-		icon: 'fab fa-facebook',
-	},
-	{
-		href: 'https://twitter.com/bplmaps',
-		icon: 'fab fa-twitter',
-	},
-	{
-		href: 'https://instagram.com/bplmaps',
-		icon: 'fab fa-instagram',
-	},
-	{
-		href: 'https://www.youtube.com/c/LeventhalMapEducationCenter',
-		icon: 'fab fa-youtube',
-	},
-	{
-		href: 'https://secure.flickr.com/photos/normanbleventhalmapcenter/',
-		icon: 'fab fa-flickr',
-	},
-	{
-		href: 'https://github.com/bplmaps',
-		icon: 'fab fa-github',
-	},
-];
-
-const menuLinks = [
-	{
-		text: 'Exhibitions',
-		href: '/exhibitions',
-	},
-	{
-		text: 'Collections',
-		href: '/collections',
-	},
-	{
-		text: 'Education',
-		href: '/education',
-	},
-	{
-		text: 'Research',
-		href: '/research',
-	},
-	{
-		text: 'Projects',
-		href: '/projects',
-	},
-	{
-		text: 'About',
-		href: '/about',
-	},
-];
 ---
 
-<header class="fixed-top header">
-  {topHeader &&
-    <div class="top-header py-2 bg-white">
-      <div class="container">
-        <div class="row g-0 align-items-center">
-          <div class="col-lg-4 text-center text-lg-start">
-            <ul class="list-inline">
-              {socialLinks && socialLinks.map((link) => (
-                <li class="list-inline-item mx-0">
-                  <a class="d-inline-block p-2 text-color" href={link.href} target="_blank">
-                    <i class={link.icon}></i>
-                  </a>
-                </li>
-              ))}
+<header class="sticky-top header bg-secondary">
+  <div class="top-header py-2 bg-white">
+    <div class="container">
+      <div class="row g-0 align-items-center">
+        <div class="col-lg-4 text-center text-lg-start">
+          <ul class="list-inline">
+            {socialLinks && socialLinks.map((link) => (
               <li class="list-inline-item mx-0">
-                <a rel="me" href="https://mapstodon.space/@bplmaps" class="d-inline-block p-2 text-color" target="_blank">
-                  <i class="fab fa-mastodon"></i>
+                <a class="d-inline-block p-2 text-color" href={link.href} target="_blank">
+                  <i class={link.icon}></i>
                 </a>
               </li>
-            </ul>
-          </div>
-          <div class="col-lg-8 text-center text-lg-end">
-            <a href="/store" class="btn btn-primary btn-xs mb-1">
-              <i class="fas fa-gift"></i> Gift Store
-            </a>
-            <a href="/subscribe" class="btn btn-primary btn-xs mb-1">
-              <i class="fas fa-envelope-square"></i> Subscribe
-            </a>
-            <a href="/donate" class="btn btn-primary btn-xs mb-1 btn-primary-gradient">
-              <i class="fas fa-hand-holding-heart"></i> Donate Now
-            </a> 
-          </div>
+            ))}
+            <li class="list-inline-item mx-0">
+              <a rel="me" href="https://mapstodon.space/@bplmaps" class="d-inline-block p-2 text-color" target="_blank">
+                <i class="fab fa-mastodon"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-8 text-center text-lg-end">
+          <a href="/store" class="btn btn-primary btn-xs mb-1">
+            <i class="fas fa-gift"></i> Gift Store
+          </a>
+          <a href="/subscribe" class="btn btn-primary btn-xs mb-1">
+            <i class="fas fa-envelope-square"></i> Subscribe
+          </a>
+          <a href="/donate" class="btn btn-primary btn-xs mb-1 btn-primary-gradient">
+            <i class="fas fa-hand-holding-heart"></i> Donate Now
+          </a> 
         </div>
       </div>
     </div>
-  }
-  <div class="navigation w-100 { topHeader ? 'top-hider' : '' }">
+  </div>
+  <div class="navigation w-100 top-hider">
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-dark p-0">
         <a class="navbar-brand" href="/">
