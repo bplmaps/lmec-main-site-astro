@@ -1,6 +1,7 @@
 ---
 import { SEO } from "astro-seo";
 import Header from "../components/Layout/Header.astro";
+import PageHeader from "../components/Layout/PageHeader.astro";
 import Footer from "../components/Layout/Footer.astro";
 import "../styles/styles.scss";
 
@@ -122,6 +123,20 @@ const secondaryMenuLinks = [
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="generator" content={Astro.generator} />
 		<meta name="facebook-domain-verification" content="6q0qb8ylcx1vtfy18bpgaplv3mcwlp" />
+		<!-- Fundraise Up: world-class checkout experience for serious online fundraising -->
+		<script is:inline>(function (w, d, s, n, a) {
+		if (!w[n]) {
+			var l = 'call,catch,on,once,set,then,track'
+			.split(','), i, o = function (n) {
+				return 'function' == typeof n ? o.l.push([arguments]) && o
+				: function () { return o.l.push([n, arguments]) && o }
+			}, t = d.getElementsByTagName(s)[0],
+			j = d.createElement(s); j.async = !0; j.src = 'https://cdn.fundraiseup.com/widget/' + a;
+			t.parentNode.insertBefore(j, t); o.s = Date.now(); o.v = 4; o.h = w.location.href; o.l = [];
+			for (i = 0; i < 7; i++)o[l[i]] = o(l[i]); w[n] = o
+		}
+		})(window, document, 'script', 'FundraiseUp', 'AGBYXHFF');</script>
+		<!-- End Fundraise Up -->
 		<SEO
 			title={metaTitle}
 			description={metaDescription}
@@ -146,6 +161,7 @@ const secondaryMenuLinks = [
 	</head>
 	<body>
 		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
+		<PageHeader heading={title} />
 		<div class="container">
 			<slot />
 		</div>
