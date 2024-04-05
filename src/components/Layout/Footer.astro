@@ -1,0 +1,171 @@
+---
+const { hoursNote, socialLinks, leftMenuLinks, rightMenuLinks } = Astro.props;
+
+interface WeekDayHours {
+  name: string;
+  special: string;
+  open: string;
+  close: string;
+}
+
+interface SocialLink {
+  href: string;
+  icon: string;
+}
+
+interface MenuLink {
+  href: string;
+  text: string;
+  target?: string;
+}
+
+interface Props {
+  hoursNote?: string,
+  hours?: WeekDayHours[];
+  socialLinks?: SocialLink[];
+  leftMenuLinks?: MenuLink[];
+  rightMenuLinks?: MenuLink[];
+}
+
+const hours = [
+  {
+    name: 'Monday',
+    special: 'Closed',
+  },
+  {
+    name: 'Tuesday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    name: 'Wednesday',
+    open: '1 pm',
+    close: '7 pm',
+  },
+  {
+    name: 'Thursday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    name: 'Friday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    name: 'Saturday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    name: 'Sunday',
+    open: '1 pm',
+    close: '5 pm',
+  },
+];
+
+const address = "Central Library in Copley Square<br>700 Boylston Street<br>Boston, MA 02116 USA";
+const email = "<a href=\"mailto:info@leventhalmap.org\">info@leventhalmap.org</a>";
+const mobile = "+1 617.859.2387";
+
+const copyright = "All material on this website is licensed under a <a href=\"https://creativecommons.org/licenses/by-nd/4.0/\">Creative Commons BY-ND 4.0</a> license unless specified otherwise.";
+---
+
+<footer>
+  <div class="donation-footer-buttons py-3">
+    <div class="container">
+      <div class="row">
+        <a href="#XGXFKKEY" style="display: none"></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer bg-footer section border-bottom text-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 mb-5">
+          <a class="sitename-footer" href="/">Leventhal Map &amp; Education Center at the Boston Public Library</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+          <ul class="list-unstyled">
+            <li class="mb-4" set:html={address} />
+            <li class="mb-4" set:html={email} />
+            <li class="mb-4" set:html={mobile} />
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 mb-5">
+          <div class="mb-3">
+            Gallery Hours
+            {hoursNote &&
+              <i>{hoursNote}</i>
+            }
+          </div>
+          <ul class="list-unstyled">
+            {hours && hours.map((day) => (
+              <li class="mb-1">
+                {day.name}
+                {day.special}
+                {!day.special &&
+                  <span>
+                    {day.open} – {day.close}
+                  </span>
+                }
+              </li>
+            ))}
+            <li class="my-2">
+              <a href="/about/hours-directions">
+                All hours
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-sm-6 mb-5 mb-md-0">
+          <ul class="list-unstyled">
+            {leftMenuLinks && leftMenuLinks.map((link) => (
+              <li class="mb-3">
+                <a href={link.href}>
+                  {link.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-6 mb-5 mb-md-0">
+          <ul class="list-unstyled text-light">
+            {rightMenuLinks && rightMenuLinks.map((link) => (
+              <li class="mb-3">
+                <a href={link.href}>
+                  {link.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright py-4 bg-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-7 text-sm-left text-center">
+          <p class="mb-0 text-light" set:html={copyright} />
+        </div>
+        <div class="col-sm-5 text-sm-right text-center text-white">
+          <ul class="list-inline">
+            {socialLinks && socialLinks.map((link) => (
+              <li class="list-inline-item">
+                <a class="d-inline-block p-2" href={link.href} target="_blank">
+                  <i class={link.icon}></i>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

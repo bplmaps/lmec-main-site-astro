@@ -1,0 +1,63 @@
+---
+const { paneltruckLayout, heading, subheading, pill, image } = Astro.props;
+
+interface Props {
+  paneltruckLayout?: boolean;
+  heading?: string;
+  subheading?: string;
+  pill?: string;
+  image?: string;
+}
+---
+
+{paneltruckLayout && 
+  <section class="page-title-section overlay" style={`background-image: url(${image ? image : 'https://iiif.digitalcommonwealth.org/iiif/2/commonwealth:x633fc377/678,2866,8033,2018/1200,/0/default.jpg'});`}>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {heading &&
+            <h1 class="text-white animate__animated animate__fadeInDown">
+              {heading}
+            </h1>
+          }
+          {(subheading || pill) &&
+            <p class="text-lighten animate__animated animate__fadeIn page-subheader">
+              {pill &&
+                <span class="badge badge-light font-secondary me-3">
+                  {pill}
+                </span>
+              }
+              {subheading}
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+{!paneltruckLayout && 
+  <section class="page-title-section overlay page-title-section-tight">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {heading &&
+            <h1 class="text-white animate__animated animate__fadeInDown">
+              {heading}
+            </h1>
+          }
+          {(subheading || pill) &&
+            <p class="text-lighten animate__animated animate__fadeIn page-subheader">
+              {pill &&
+                <span class="badge badge-light font-secondary me-3">
+                  {pill}
+                </span>
+              }
+              {subheading}
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}

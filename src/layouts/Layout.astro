@@ -1,12 +1,15 @@
 ---
 import { SEO } from "astro-seo";
-import "../../public/styles.scss";
+import Header from "../components/Layout/Header.astro";
+import PageHeader from "../components/Layout/PageHeader.astro";
+import Footer from "../components/Layout/Footer.astro";
+import "../styles/styles.scss";
 
 interface Props {
-  title: string;
-  description: string;
-  image: string;
-  noindex: boolean;
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
 const { title, description, image, noindex } = Astro.props;
@@ -16,18 +19,124 @@ const siteImage =
 	"https://fedora.digitalcommonwealth.org/fedora/objects/commonwealth:3f463530h/datastreams/thumbnail300/content";
 
 const metaTitle = title ? `${title} - ${siteTitle}` : `${siteTitle}`;
-const metaDescription = description ? description : null;
+const metaDescription = description ? description : "";
 const metaImage = image ? image : siteImage;
+
+const socialLinks = [
+	{
+		href: 'https://facebook.com/bplmaps',
+		icon: 'fab fa-facebook',
+	},
+	{
+		href: 'https://twitter.com/bplmaps',
+		icon: 'fab fa-twitter',
+	},
+	{
+		href: 'https://instagram.com/bplmaps',
+		icon: 'fab fa-instagram',
+	},
+	{
+		href: 'https://www.youtube.com/c/LeventhalMapEducationCenter',
+		icon: 'fab fa-youtube',
+	},
+	{
+		href: 'https://secure.flickr.com/photos/normanbleventhalmapcenter/',
+		icon: 'fab fa-flickr',
+	},
+	{
+		href: 'https://github.com/bplmaps',
+		icon: 'fab fa-github',
+	},
+];
+
+const menuLinks = [
+	{
+		text: 'Exhibitions',
+		href: '/exhibitions',
+	},
+	{
+		text: 'Collections',
+		href: '/collections',
+	},
+	{
+		text: 'Education',
+		href: '/education',
+	},
+	{
+		text: 'Research',
+		href: '/research',
+	},
+	{
+		text: 'Projects',
+		href: '/projects',
+	},
+	{
+		text: 'About',
+		href: '/about',
+	},
+];
+
+const secondaryMenuLinks = [
+	{
+		text: 'Events',
+		href: '/event',
+	},
+	{
+		text: 'Articles',
+		href: '/articles',
+	},
+	{
+		text: 'Contact Us',
+		href: '/contact-connect',
+	},
+	{
+		text: 'Donate Now',
+		href: '/donate',
+	},
+	{
+		text: 'Hours & Directions',
+		href: '/about/hours-directions',
+	},
+	{
+		text: 'Land Acknowledgement',
+		href: '/about/mission-history',
+	},
+	{
+		text: 'Accessibility',
+		href: '/accessibility',
+	},
+	{
+		text: 'Privacy Policy',
+		href: '/privacy',
+	},
+	{
+		text: 'BPL.org',
+		href: 'https://bpl.org/',
+	},
+];
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="generator" content={Astro.generator} />
+		<meta name="facebook-domain-verification" content="6q0qb8ylcx1vtfy18bpgaplv3mcwlp" />
+		<!-- Fundraise Up: world-class checkout experience for serious online fundraising -->
+		<script is:inline>(function (w, d, s, n, a) {
+		if (!w[n]) {
+			var l = 'call,catch,on,once,set,then,track'
+			.split(','), i, o = function (n) {
+				return 'function' == typeof n ? o.l.push([arguments]) && o
+				: function () { return o.l.push([n, arguments]) && o }
+			}, t = d.getElementsByTagName(s)[0],
+			j = d.createElement(s); j.async = !0; j.src = 'https://cdn.fundraiseup.com/widget/' + a;
+			t.parentNode.insertBefore(j, t); o.s = Date.now(); o.v = 4; o.h = w.location.href; o.l = [];
+			for (i = 0; i < 7; i++)o[l[i]] = o(l[i]); w[n] = o
+		}
+		})(window, document, 'script', 'FundraiseUp', 'AGBYXHFF');</script>
+		<!-- End Fundraise Up -->
 		<SEO
 			title={metaTitle}
 			description={metaDescription}
@@ -39,9 +148,23 @@ const metaImage = image ? image : siteImage;
 				image: `${metaImage}`,
 				},
 			}}
+			extend={{
+				link: [
+					{ rel: "shortcut icon", href: "/favicon.png", type: "image/x-icon" },
+					{ rel: "icon", href: "/favicon.png", type: "image/x-icon" },
+				],
+				meta: [
+					{ name: "facebook-domain-verification", content: "6q0qb8ylcx1vtfy18bpgaplv3mcwlp" },
+				],
+			}}
 		/>
 	</head>
 	<body>
-		<slot />
+		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
+		<PageHeader heading={title} />
+		<div class="container">
+			<slot />
+		</div>
+		<Footer socialLinks={socialLinks} leftMenuLinks={menuLinks} rightMenuLinks={secondaryMenuLinks} />
 	</body>
 </html>
