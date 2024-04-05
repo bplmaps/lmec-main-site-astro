@@ -1,14 +1,13 @@
 ---
-const { heading, subheading, pill, image } = Astro.props;
+const { paneltruckLayout, heading, subheading, pill, image } = Astro.props;
 
 interface Props {
+  paneltruckLayout?: boolean;
   heading?: string;
   subheading?: string;
   pill?: string;
   image?: string;
 }
-
-const paneltruckLayout = true;
 ---
 
 {paneltruckLayout && 
