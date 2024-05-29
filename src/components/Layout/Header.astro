@@ -21,7 +21,7 @@ interface Props {
 }
 ---
 
-<header class="fixed-top header bg-secondary">
+<header class="fixed-top header">
   <div class="top-header py-2 bg-white">
     <div class="container">
       <div class="row g-0 align-items-center">
@@ -85,3 +85,24 @@ interface Props {
     </div>
   </div>
 </header>
+
+<script>
+  document.addEventListener('scroll', (e) => {
+    const topHeader = document.querySelector('.top-header');
+    const navigation = document.querySelector('.navigation');
+
+    if (topHeader && navigation) {
+      const height = topHeader.offsetHeight;
+
+      if (window.pageYOffset > 10) {
+        topHeader.classList.add('hide')
+        navigation.classList.add('nav-bg')
+        navigation.style.marginTop = `${0 - height}px`;
+      } else {
+        topHeader.classList.remove('hide')
+        navigation.classList.remove('nav-bg')
+        navigation.style.marginTop = 0;
+      }
+    }
+  });
+</script>
