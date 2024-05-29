@@ -10,11 +10,10 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
-        // Add your components here
+        'event-page': 'storyblok/EventPage',
       },
       apiOptions: {
-        // Choose your Storyblok space region
-        region: 'us', // optional,  or 'eu' (default)
+        region: 'us',
       },
     })
   ],

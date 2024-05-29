@@ -1,0 +1,52 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import Card from '../../components/Event/Card.astro';
+
+export interface Props {
+}
+
+const { } = Astro.props;
+
+const storyblokApi = useStoryblokApi()
+ 
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  content_type: 'event-page',
+  per_page: 3,
+})
+let events = data.stories
+events = Object.values(events)
+events = events.map((event) => {
+  return {
+    params: {
+      name: event.name,
+      slug: event.slug,
+      headerImage: event.content.headerImage,
+      eventDate: event.content.eventDate,
+      tags: event.content.tags,
+    },
+  }
+})
+---
+
+{events &&
+  <section class="section pt-0">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <div class="border-bottom border-primary"></div>
+        </div>
+        <div class="col-12">
+          <h3 class="section-title">More events</h3>
+        </div>
+      </div>
+      <div class="row">
+        {events.map(event => (
+          <div class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+}
