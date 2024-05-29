@@ -1,0 +1,65 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+import Card from '../../components/Event/Card.astro';
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  content_type: 'event-page',
+})
+let events = data.stories
+events = Object.values(events)
+events = events.map((event) => {
+  return {
+    params: {
+      name: event.name,
+      slug: event.slug,
+      headerImage: event.content.headerImage,
+      eventDate: event.content.eventDate,
+      tags: event.content.tags,
+    },
+  }
+})
+
+const upcomingEvents = events.filter((event) => {
+  return new Date(event.params.eventDate) >= new Date()
+})
+
+const pastEvents = events.filter((event) => {
+  return new Date(event.params.eventDate) < new Date()
+})
+---
+
+<Layout title="Upcoming Events" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        {upcomingEvents.map(event => (
+          <div class="col-lg-4 col-sm-6 mb-4">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={['test1', 'test2']} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <section class="section pt-0">
+    <div class="container">
+      <div class="row mb-3">
+        <div class="col-12">
+          <h2>Past Events</h2>
+        </div>
+      </div>
+      <div class="row">
+        {pastEvents.map(event => (
+          <div class="col-lg-3 col-sm-4 mb-2">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={['test1', 'test2']} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

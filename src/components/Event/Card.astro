@@ -1,0 +1,43 @@
+---
+export interface Props {
+	thumbnail: object;
+	name: string;
+	date: string;
+	tags: array;
+	href: string;
+}
+
+const { thumbnail, name, date, tags, href } = Astro.props;
+---
+
+<a
+  class="d-block"
+  href={href}
+>
+  {thumbnail?.filename &&
+    <img
+      class="w-100"
+      src={thumbnail?.filename}
+      alt={thumbnail?.alt}
+    />
+  }
+  {name &&
+    <h3>
+      {name}
+    </h3>
+  }
+  {date &&
+    <p>
+      {date}
+    </p>
+  }
+  {tags &&
+    <ul>
+      {tags.map(tag => (
+        <li>
+          {tag}
+        </li>
+      ))}
+    </ul>
+  }
+</a>
