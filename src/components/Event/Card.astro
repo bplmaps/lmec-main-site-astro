@@ -10,34 +10,40 @@ export interface Props {
 const { thumbnail, name, date, tags, href } = Astro.props;
 ---
 
-<a
-  class="d-block"
-  href={href}
->
-  {thumbnail?.filename &&
-    <img
-      class="w-100"
-      src={thumbnail?.filename}
-      alt={thumbnail?.alt}
-    />
-  }
-  {name &&
-    <h3>
-      {name}
-    </h3>
-  }
-  {date &&
-    <p>
-      {date}
-    </p>
-  }
-  {tags &&
-    <ul>
-      {tags.map(tag => (
-        <li>
-          {tag}
-        </li>
-      ))}
-    </ul>
-  }
-</a>
+<div class="card border-0 rounded-0 hover-shadow">
+  <div class="card-img position-relative">
+    {thumbnail?.filename &&
+      <img
+      class="card-img-top rounded-0"
+        src={thumbnail?.filename}
+        alt={thumbnail?.alt}
+      />
+    }
+    {date &&
+      <div class="card-date">
+        <span>{new Date(date).getDay()}</span><br>
+        {new Date(date).toLocaleString('en-US', { month: 'long' })}
+      </div>
+    }
+  </div>
+  <div class="card-body">
+    {name &&
+      <h3 class="h4 card-title">
+        <a href={href}">
+          {name}
+        </a>
+      </h3>
+    }
+    {tags &&
+      <ul class="d-flex flex-wrap p-0">
+        {tags.map(tag => (
+          <li>
+            <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
+              {tag}
+            </span>
+          </li>
+        ))}
+      </ul>
+    }
+  </div>
+</div>
