@@ -1,9 +1,12 @@
 ---
 export interface Props {
-	thumbnail: object;
+	thumbnail: {
+    filename: string;
+    alt: string;
+  };
 	name: string;
 	date: string;
-	tags: array;
+	tags: string[];
 	href: string;
 }
 
@@ -12,11 +15,11 @@ const { thumbnail, name, date, tags, href } = Astro.props;
 
 <div class="card border-0 rounded-0 hover-shadow">
   <div class="card-img position-relative">
-    {thumbnail?.filename &&
+    {thumbnail.filename &&
       <img
       class="card-img-top rounded-0"
-        src={thumbnail?.filename}
-        alt={thumbnail?.alt}
+        src={thumbnail.filename}
+        alt={thumbnail.alt}
       />
     }
     {date &&
@@ -29,14 +32,14 @@ const { thumbnail, name, date, tags, href } = Astro.props;
   <div class="card-body">
     {name &&
       <h3 class="h4 card-title">
-        <a href={href}">
+        <a href={href}>
           {name}
         </a>
       </h3>
     }
     {tags &&
       <ul class="d-flex flex-wrap p-0">
-        {tags.map(tag => (
+        {tags.map((tag: string) => (
           <li>
             <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
               {tag}

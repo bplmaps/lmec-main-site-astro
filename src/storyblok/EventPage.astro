@@ -1,18 +1,16 @@
 ---
-import { storyblokEditable, renderRichText } from '@storyblok/astro';
+import { storyblokEditable } from '@storyblok/astro';
 import RichTextRenderer from "@storyblok/astro/RichTextRenderer.astro";
 
 export interface Props {
-	name: string;
-	blok: object;
+	blok: {
+    body: any;
+  };
 }
 
-const { name, blok } = Astro.props
-const body = renderRichText(blok.body)
+const { blok } = Astro.props
 ---
 
 <div {...storyblokEditable(blok)}>
-  <div class="prose mt-6">
-    <RichTextRenderer richTextData={blok.body} />
-  </div>
+  <RichTextRenderer richTextData={blok.body} />
 </div>
