@@ -9,10 +9,12 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  subheading?: string;
+  pill?: string;
   noindex?: boolean;
 }
 
-const { title, description, image, noindex } = Astro.props;
+const { title, description, image, subheading, pill, noindex } = Astro.props;
 
 const siteTitle = "Leventhal Map &amp; Education Center at the Boston Public Library";
 const siteImage =
@@ -161,7 +163,7 @@ const secondaryMenuLinks = [
 	</head>
 	<body>
 		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
-		<PageHeader heading={title} paneltruckLayout={true} />
+		<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
 		<div class="container">
 			<slot />
 		</div>
