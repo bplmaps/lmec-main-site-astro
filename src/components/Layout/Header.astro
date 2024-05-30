@@ -87,21 +87,21 @@ interface Props {
 </header>
 
 <script>
-  document.addEventListener('scroll', (e) => {
-    const topHeader = document.querySelector('.top-header');
-    const navigation = document.querySelector('.navigation');
+  document.addEventListener('scroll', () => {
+    const topHeader = document.querySelector<HTMLElement>('.top-header');
+    const navigation = document.querySelector<HTMLElement>('.navigation');
 
     if (topHeader && navigation) {
       const height = topHeader.offsetHeight;
 
-      if (window.pageYOffset > 10) {
+      if (window.scrollY > 10) {
         topHeader.classList.add('hide')
         navigation.classList.add('nav-bg')
         navigation.style.marginTop = `${0 - height}px`;
       } else {
         topHeader.classList.remove('hide')
         navigation.classList.remove('nav-bg')
-        navigation.style.marginTop = 0;
+        navigation.style.marginTop = '0px';
       }
     }
   });

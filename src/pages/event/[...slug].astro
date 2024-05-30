@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
-import Card from '../../components/Event/Card.astro';
 import RelatedEvents from '../../components/Event/Related.astro';
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
  
@@ -15,7 +14,7 @@ export async function getStaticPaths() {
   let events = data.stories
   events = Object.values(events)
 
-  return events.map((event) => {
+  return events.map((event: any) => {
     return {
       params: {
         slug: event.slug,
@@ -126,7 +125,7 @@ const event = data.story
         <div class="col-12 mt-5">
           {event.content.tags &&
             <ul class="d-flex flex-wrap p-0 h4">
-              {event.content.tags.map(tag => (
+              {event.content.tags.map((tag: string) => (
                 <li>
                   <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
                     {tag}
