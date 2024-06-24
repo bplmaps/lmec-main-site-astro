@@ -11,6 +11,7 @@ export default defineConfig({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
         'event-page': 'storyblok/EventPage',
+        'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
       },
       apiOptions: {
         region: 'us',

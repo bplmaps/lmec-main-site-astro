@@ -1,0 +1,66 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import { fade } from "astro:transitions";
+
+export interface Props {
+  path: string;
+}
+
+const { path } = Astro.props
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
+
+const folders = path.split('/');
+
+let folder = folders[0];
+
+if (folders.length > 1) {
+  folder = folders[folders.length - 2];
+}
+
+const storyblokApi = useStoryblokApi()
+
+let { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  content_type: 'standard-lmec-main-page',
+  starts_with: `main-site/${folder}/`,
+})
+let pages = data.stories
+pages = Object.values(pages)
+pages = pages.map((page: any) => {
+  return {
+    params: {
+      name: page.name,
+      path: `/${page.full_slug.replace(/^main-site\//, '').replace(/\/$/, '')}`,
+      hide_from_menu: page.content.hide_from_menu,
+      is_startpage: page.is_startpage,
+    },
+  }
+})
+let startpage = pages.filter((page) => {
+  return page.params.is_startpage;
+})
+startpage = startpage.length > 0 ? startpage[0] : null
+pages = pages.filter((page) => {
+  return !page.params.is_startpage;
+})
+---
+
+{pages &&
+  <div class="bg-white mb-5">
+    {startpage &&
+      <h5 class="mb-3 section-toplevel-link">
+        <a href={startpage.params.path}>{startpage.params.name}</a>
+      </h5>
+    }
+    <ul class="font-secondary text-secondary m-0 p-0">
+      {pages.map((page: page) => (
+        <li class="mb-2">
+          {currentPath == page.params.path &&
+            <i class="fas fa-arrow-right me-1"></i>
+          }
+          <a href={page.params.path}>{page.params.name}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+}

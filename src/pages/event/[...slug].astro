@@ -39,102 +39,100 @@ const event = data.story
 
 <Layout title={`${event.name}`} pill="Event" image={`${event.content.headerImage && event.content.headerImage.filename}`}>
   <section class="section-sm">
-    <div class="container">
-      <div class="row align-items-center mb-5">
-        <div class="col-lg-9 mb-sm-4 mb-lg-0">
-          <div class="row">
-            <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
-              <div class="d-flex align-items-center">
-                <i class="fas fa-map-pin text-muted icon-md me-3"></i>
-                <div class="text-left">
-                  <h3 class="h6 mb-0">
-                    Location
-                  </h3>
-                  <p class="mb-0">
-                    {event.content.location}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
-              <div class="d-flex align-items-center">
-                <i class="fa fa-calendar-alt text-muted icon-md me-3"></i>
-                <div class="text-left">
-                  <h3 class="h6 mb-0">
-                    Date
-                  </h3>
-                  <p class="mb-0">
-                    {new Date(event.content.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
-              <div class="d-flex align-items-center">
-                <i class="fas fa-clock text-muted icon-md me-3"></i>
-                <div class="text-left">
-                  <h3 class="h6 mb-0">
-                    Time
-                  </h3>
-                  <p class="mb-0">
-                    {new Date(event.content.eventDate).toLocaleTimeString('en-US')}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
-              <div class="d-flex align-items-center">
-                <i class="fas fa-wallet text-muted icon-md me-3"></i>
-                <div class="text-left">
-                  <h3 class="h6 mb-0">
-                    Cost
-                  </h3>
-                  <p class="mb-0">
-                    {event.content.fee}
-                  </p>
-                </div>
+    <div class="row align-items-center mb-5">
+      <div class="col-lg-9 mb-sm-4 mb-lg-0">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-map-pin text-muted icon-md me-3"></i>
+              <div class="text-left">
+                <h3 class="h6 mb-0">
+                  Location
+                </h3>
+                <p class="mb-0">
+                  {event.content.location}
+                </p>
               </div>
             </div>
           </div>
-        </div>
-
-        {new Date(event.content.eventDate) >= new Date() && event.content.registrationLink.url &&
-          <div class="col-lg-3 text-lg-right text-left">
-            <a href={event.content.registrationLink.url} class="btn btn-primary">Register</a>
+          <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="d-flex align-items-center">
+              <i class="fa fa-calendar-alt text-muted icon-md me-3"></i>
+              <div class="text-left">
+                <h3 class="h6 mb-0">
+                  Date
+                </h3>
+                <p class="mb-0">
+                  {new Date(event.content.eventDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
+                </p>
+              </div>
+            </div>
           </div>
-        }
-
-        <div class="col-12 mt-4 order-4">
-          <div class="border-bottom border-primary"></div>
+          <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-clock text-muted icon-md me-3"></i>
+              <div class="text-left">
+                <h3 class="h6 mb-0">
+                  Time
+                </h3>
+                <p class="mb-0">
+                  {new Date(event.content.eventDate).toLocaleTimeString('en-US')}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-wallet text-muted icon-md me-3"></i>
+              <div class="text-left">
+                <h3 class="h6 mb-0">
+                  Cost
+                </h3>
+                <p class="mb-0">
+                  {event.content.fee}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-  
-      <div class="row">
-        <div class="col-12 content">
-          {new Date(event.content.eventDate) < new Date() &&
-            <div class="alert alert-warning">
-              <div class="h4 font-secondary">
-                <i class="fas fa-history me-2"></i>Past event
-              </div>
-              This event has already taken place.
+
+      {new Date(event.content.eventDate) >= new Date() && event.content.registrationLink.url &&
+        <div class="col-lg-3 text-lg-right text-left">
+          <a href={event.content.registrationLink.url} class="btn btn-primary">Register</a>
+        </div>
+      }
+
+      <div class="col-12 mt-4 order-4">
+        <div class="border-bottom border-primary"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 content">
+        {new Date(event.content.eventDate) < new Date() &&
+          <div class="alert alert-warning">
+            <div class="h4 font-secondary">
+              <i class="fas fa-history me-2"></i>Past event
             </div>
-          }
-          <StoryblokComponent name={event.name} blok={event.content} />
-        </div>
-  
-        <div class="col-12 mt-5">
-          {event.content.tags &&
-            <ul class="d-flex flex-wrap p-0 h4">
-              {event.content.tags.map((tag: string) => (
-                <li>
-                  <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
-                    {tag}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          }
-        </div>
+            This event has already taken place.
+          </div>
+        }
+        <StoryblokComponent name={event.name} blok={event.content} />
+      </div>
+
+      <div class="col-12 mt-5">
+        {event.content.tags &&
+          <ul class="d-flex flex-wrap p-0 h4">
+            {event.content.tags.map((tag: string) => (
+              <li>
+                <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
+                  {tag}
+                </span>
+              </li>
+            ))}
+          </ul>
+        }
       </div>
     </div>
   </section>

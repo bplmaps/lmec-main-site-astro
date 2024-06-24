@@ -35,33 +35,29 @@ const pastEvents = events.filter((event: any) => {
 <Layout title="Upcoming Events" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
   {upcomingEvents &&
     <section class="section">
-      <div class="container">
-        <div class="row">
-          {upcomingEvents.map((event: any) => (
-            <div class="col-lg-4 col-sm-6 mb-4">
-              <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
-            </div>
-          ))}
-        </div>
+      <div class="row">
+        {upcomingEvents.map((event: any) => (
+          <div class="col-lg-4 col-sm-6 mb-4">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
+          </div>
+        ))}
       </div>
     </section>
   }
   
   {pastEvents &&
     <section class="section pt-0">
-      <div class="container">
-        <div class="row mb-3">
-          <div class="col-12">
-            <h2>Past Events</h2>
+      <div class="row mb-3">
+        <div class="col-12">
+          <h2>Past Events</h2>
+        </div>
+      </div>
+      <div class="row">
+        {pastEvents.map((event: any) => (
+          <div class="col-lg-3 col-sm-4 mb-2">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
           </div>
-        </div>
-        <div class="row">
-          {pastEvents.map((event: any) => (
-            <div class="col-lg-3 col-sm-4 mb-2">
-              <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </section>
   }
