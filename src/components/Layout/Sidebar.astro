@@ -6,6 +6,15 @@ export interface Props {
   path: string;
 }
 
+interface Page {
+  params: {
+    name: string;
+    path: string;
+    hide_from_menu: boolean;
+    is_startpage: boolean;
+  };
+}
+
 const { path } = Astro.props
 const currentPath = Astro.url.pathname.replace(/\/$/, '');
 
@@ -36,11 +45,11 @@ pages = pages.map((page: any) => {
     },
   }
 })
-let startpage = pages.filter((page) => {
+let startpage = pages.filter((page: Page) => {
   return page.params.is_startpage;
 })
 startpage = startpage.length > 0 ? startpage[0] : null
-pages = pages.filter((page) => {
+pages = pages.filter((page: Page) => {
   return !page.params.is_startpage;
 })
 ---
@@ -53,7 +62,7 @@ pages = pages.filter((page) => {
       </h5>
     }
     <ul class="font-secondary text-secondary m-0 p-0">
-      {pages.map((page: page) => (
+      {pages.map((page: Page) => (
         <li class="mb-2">
           {currentPath == page.params.path &&
             <i class="fas fa-arrow-right me-1"></i>
