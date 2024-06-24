@@ -10,6 +10,7 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
+        'alert-box': 'storyblok/AlertBox',
         'event-page': 'storyblok/EventPage',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
       },
