@@ -30,8 +30,8 @@ const storyblokApi = useStoryblokApi()
 
 let { data } = await storyblokApi.get('cdn/stories', {
   version: import.meta.env.DEV ? 'draft' : 'published',
-  content_type: 'standard-lmec-main-page',
   starts_with: `main-site/${folder}/`,
+  content_type: 'standard-lmec-main-page',
 })
 let pages = data.stories
 pages = Object.values(pages)
