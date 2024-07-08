@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+import Sidebar from '../components/Layout/Sidebar.astro';
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+ 
+export async function getStaticPaths() {
+  const storyblokApi = useStoryblokApi()
+ 
+  const { data } = await storyblokApi.get('cdn/stories', {
+    version: import.meta.env.DEV ? 'draft' : 'published',
+    starts_with: 'main-site/',
+    content_type: 'standard-lmec-main-page',
+  })
+  let pages = data.stories
+  pages = Object.values(pages)
+
+  return pages.map((page: any) => {
+    
+    return {
+      params: {
+        path: page.full_slug.replace(/^main-site\//, '').replace(/\/$/, ''),
+      },
+    }
+  })
+}
+
+const { path } = Astro.params
+
+const storyblokApi = useStoryblokApi()
+ 
+const { data } = await storyblokApi.get(
+  `cdn/stories/main-site/${path}`,
+  {
+    version: import.meta.env.DEV ? 'draft' : 'published',
+  }
+)
+ 
+const page = data.story
+---
+
+<Layout title={`${page.name}`} subheading={`${page.content.page_description}`} image={`${page.content.header_img && page.content.header_img.filename}`}>
+  <section class="section-sm">
+    <div class="row">
+      <div class="col-lg-8 order-1 order-lg-1">
+        <div class="row">
+          <div class="col-12 mb-5 content">
+            <StoryblokComponent name={page.name} blok={page.content} />
+          </div>
+        </div>
+      </div>
+      
+      <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
+        <Sidebar path={path} />
+      </aside>
+    </div>
+  </section>
+</Layout>

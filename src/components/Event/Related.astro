@@ -19,6 +19,7 @@ const storyblokApi = useStoryblokApi()
  
 const { data } = await storyblokApi.get('cdn/stories', {
   version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
   content_type: 'event-page',
   per_page: 3,
 })
@@ -39,22 +40,20 @@ events = events.map((event: any) => {
 
 {events &&
   <section class="section pt-0">
-    <div class="container">
-      <div class="row">
-        <div class="col-12 mb-4">
-          <div class="border-bottom border-primary"></div>
-        </div>
-        <div class="col-12">
-          <h3 class="section-title">More events</h3>
-        </div>
+    <div class="row">
+      <div class="col-12 mb-4">
+        <div class="border-bottom border-primary"></div>
       </div>
-      <div class="row">
-        {events.map((event: Event) => (
-          <div class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
-            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
-          </div>
-        ))}
+      <div class="col-12">
+        <h3 class="section-title">More events</h3>
       </div>
+    </div>
+    <div class="row">
+      {events.map((event: Event) => (
+        <div class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
+          <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
+        </div>
+      ))}
     </div>
   </section>
 }
