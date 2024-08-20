@@ -1,0 +1,86 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+
+export interface Props {
+	blok: {
+    Slider: {
+      title: string;
+      content: string;
+      bg_image: object;
+      button_link: object;
+      button_text: string;
+    }[],
+  };
+}
+
+const { blok } = Astro.props
+---
+
+<div {...storyblokEditable(blok)}>
+  {blok.Slider &&
+    <section class="hero-section overlay bg-cover" id="hero-section-frontpage-slider" slot="page-header">
+      <div class="swiper hero-slider">
+        <div class="swiper-wrapper">
+          {blok.Slider.map((slide: any) => (
+            <div class="swiper-slide hero-slider-item overlay bg-cover" style={`background-image:url(${slide.bg_image.filename});`}>
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-8">
+                    {slide.title &&
+                      <h1 class="text-white" data-swiper-parallax-x="100" data-swiper-parallax-duration="300">{slide.title}</h1>
+                    }
+                    {slide.content &&
+                      <p class="text-white" data-swiper-parallax-x="100" data-swiper-parallax-duration="300">{slide.content}</p>
+                    }
+                    {(slide.button_link && slide.button_text) &&
+                      <a href={slide.button_link} class="btn btn-sm btn-secondary hero-button">
+                        {slide.button_text}
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="container">
+          <div class="swiper-pagination"></div>
+
+          <div class="prevArrow" aria-label="Previous Slide">
+            <i class="fas fa-arrow-left"></i>
+          </div>
+          <div class="nextArrow" aria-label="Next Slide">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+</div>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, EffectFade, Parallax } from 'swiper/modules';
+
+  new Swiper('.hero-slider', {
+    modules: [Navigation, Pagination, EffectFade, Parallax],
+    parallax: true,
+    effect: 'fade',
+    fadeEffect: {
+      crossFade: true
+    },
+    loop: true,
+    autoplay: {
+      delay: 7500,
+    },
+    pagination: {
+      clickable: true,
+      el: '.swiper-pagination',
+    },
+    navigation: {
+      nextEl: '.nextArrow',
+      prevEl: '.prevArrow',
+    },
+  });
+</script>

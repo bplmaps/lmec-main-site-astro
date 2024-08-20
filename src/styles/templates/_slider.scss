@@ -1,4 +1,10 @@
 .hero-section {
+  .container {
+    position: relative;
+  }
+}
+
+.hero-slider-item {
   padding: 250px 0 120px;
 }
 
@@ -14,18 +20,26 @@
 }
 
 .hero-slider {
+  --swiper-theme-color: #054571;
+  --swiper-pagination-bullet-inactive-color: #fff;
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+  --swiper-pagination-bullet-size: 10px;
+  --swiper-pagination-bullet-border-radius: 0;
+  --swiper-pagination-bullet-horizontal-gap: 6px;
+  --swiper-pagination-bottom: 24px;
 
   .prevArrow,
   .nextArrow {
     position: absolute;
-    bottom: -123px;
-    z-index: 9;
+    bottom: 0;
+    z-index: 11;
     padding: 15px;
     color: rgba($color: $white, $alpha: .5);
     border: 0;
     font-size: 30px;
     transition: all linear .2s;
     background: transparent;
+    cursor: pointer;
 
     &:focus {
       outline: 0;
@@ -44,32 +58,8 @@
     right: 0;
   }
 
-  .slick-dots {
-    position: absolute;
-    left: 0;
-    bottom: -100px;
-    padding-left: 0;
-
-    li {
-      display: inline-block;
-      margin: 0 6px;
-
-      &.slick-active {
-        button {
-          background: $primary-color;
-        }
-      }
-
-      button {
-        color: transparent;
-        padding: 0;
-        overflow: hidden;
-        height: 10px;
-        width: 10px;
-        background: rgba($color: $white, $alpha: .5);
-        border: 0;
-        outline: 0;
-      }
-    }
+  .swiper-pagination {
+    text-align: left;
+    padding: 0 5px;
   }
 }
