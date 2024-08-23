@@ -1,8 +1,15 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import EventCTA from "../components/Home/EventCTA.astro";
+import ArticleCTA from "../components/Home/ArticleCTA.astro";
 
 export interface Props {
 	blok: {
+    CTA: {
+      link: object;
+      text: string;
+      badge: string;
+    }[],
     Slider: {
       title: string;
       content: string;
@@ -57,6 +64,38 @@ const { blok } = Astro.props
       </div>
     </section>
   }
+
+  <section class="section py-3 cta frontpage-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 cta-popper-outer">
+          <div class="cta-popper">
+            <h2 class="my-3">What’s new?</h2>
+          </div>
+        </div>
+        <div class="col-lg-9 cta-body">
+          <ul>
+            <EventCTA />
+            <ArticleCTA />
+
+            {blok.CTA &&
+              blok.CTA.map((cta: any) => (
+                <li class="mb-3">
+                  <span class="badge badge-secondary bg-light font-secondary whats-new-badge">{cta.badge}</span>
+                  <a href={cta.link.url}>{cta.text}</a>
+                </li>
+              ))
+            }
+
+            {/* TODO: Add hours */}
+            <li class="mb-3">
+              <span class="badge badge-secondary bg-light font-secondary whats-new-badge">Today's hours</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>

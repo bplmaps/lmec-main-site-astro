@@ -1,0 +1,38 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
+  resolve_links: 'url',
+  content_type: 'article-page',
+  sort_by: 'first_published_at:desc',
+  per_page: 1,
+})
+let articles = data.stories
+articles = Object.values(articles)
+console.log(articles);
+articles = articles.map((article: any) => {
+  return {
+    params: {
+      name: article.name,
+      slug: article.slug,
+      published_at: article.published_at,
+    },
+  }
+})
+---
+
+{articles.length > 0 &&
+  <li class="mb-3">
+    <span class="badge bg-light font-secondary whats-new-badge">Latest article</span>
+    {articles.map((article: any) => (
+      <a href={`/article/${article.params.slug}`}>{article.params.name}</a> 
+      <span class="text-secondary">
+        {new Date(article.params.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
+      </span>
+    ))} · <a href="/article/">More articles</a>
+  </li>
+}
