@@ -1,0 +1,56 @@
+---
+export interface Props {
+	thumbnail: {
+    filename: string;
+    alt: string;
+  };
+	title: string;
+  description: string;
+	author: string;
+	date: string;
+	href: string;
+}
+
+const { thumbnail, title, description, author, date, tags, href } = Astro.props;
+---
+
+<article class="card rounded-0 border-bottom border-primary border-top-0 border-left-0 border-right-0 hover-shadow">
+  {thumbnail && thumbnail.filename &&
+    <img
+    class="card-img-top rounded-0"
+      src={thumbnail.filename}
+      alt={thumbnail.alt}
+    />
+  }
+  <div class="card-body">
+    <ul class="list-inline mb-3">
+      {date &&
+        <li class="list-inline-item me-3 ms-0">
+          <i class="ti-calendar"></i>
+          {new Date(date).toLocaleString('en-US', { month: 'long' })}
+        </li>
+      }
+      {author &&
+        <li class="list-inline-item me-3 ms-0">
+          <i class="ti-user"></i>
+          {author}
+        </li>
+      }
+    </ul>
+    {title &&
+      <h4 class="card-title">
+        <a href={href}>
+          {title}
+        </a>
+      </h4>
+    }
+    {description &&
+      <p class="card-text">
+        {description}
+      </p>
+    }
+    <a href={href} class="btn btn-primary btn-sm">
+      Read
+    </a>
+  </div>
+</article>

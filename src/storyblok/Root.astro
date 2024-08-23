@@ -2,8 +2,10 @@
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
-import Audiences from "../components/Home/Audiences.astro";
-import Search from "../components/Home/Search.astro";
+import AudiencesSection from "../components/Home/AudiencesSection.astro";
+import SearchSection from "../components/Home/SearchSection.astro";
+import EventsSection from "../components/Home/EventsSection.astro";
+import ArticlesSection from "../components/Home/ArticlesSection.astro";
 
 export interface Props {
 	blok: {
@@ -99,8 +101,10 @@ const { blok } = Astro.props
     </div>
   </section>
 
-  <Audiences />
-  <Search />
+  <AudiencesSection />
+  <SearchSection />
+  <EventsSection />
+  <ArticlesSection />
 </div>
 
 <script>
