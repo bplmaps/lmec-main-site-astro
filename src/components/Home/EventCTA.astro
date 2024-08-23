@@ -30,7 +30,7 @@ const upcomingEvents = events.filter((event: any) => {
 
 {upcomingEvents.length > 0 &&
   <li class="mb-3">
-    <span class="badge bg-light font-secondary whats-new-badge">Next event</span>
+    <span class="badge bg-light font-secondary whats-new-badge me-1">Next event</span>
     {upcomingEvents.map((event: any) => (
       <a href={`/event/${event.params.slug}`}>{event.params.name}</a>
       <span class="text-secondary">

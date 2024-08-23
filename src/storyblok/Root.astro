@@ -2,6 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
+import Audiences from "../components/Home/Audiences.astro";
 
 export interface Props {
 	blok: {
@@ -96,6 +97,8 @@ const { blok } = Astro.props
       </div>
     </div>
   </section>
+
+  <Audiences />
 </div>
 
 <script>

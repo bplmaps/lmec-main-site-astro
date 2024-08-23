@@ -27,7 +27,7 @@ articles = articles.map((article: any) => {
 
 {articles.length > 0 &&
   <li class="mb-3">
-    <span class="badge bg-light font-secondary whats-new-badge">Latest article</span>
+    <span class="badge bg-light font-secondary whats-new-badge me-1">Latest article</span>
     {articles.map((article: any) => (
       <a href={`/article/${article.params.slug}`}>{article.params.name}</a> 
       <span class="text-secondary">
