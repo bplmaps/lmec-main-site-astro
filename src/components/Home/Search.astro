@@ -1,0 +1,76 @@
+---
+---
+
+<section class="section pt-0 frontpage-searcher">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="frontpage-searcher-callout-outer">
+          <div class="frontapge-searcher-callout-inner">
+            <h2>Search digital collections</h2>
+            <p class="text-white">Make a quick search of our main Digital Collections portal. For more, see <a href="/collections/searching">Searching the Collections</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="input-group input-group-xl">
+          <input type="text" class="form-control" placeholder="Try searching for ..." aria-label="Enter a quick search" aria-describedby="frontpage-searcher-submit" id="frontpage-searcher-input">
+          <button class="btn btn-primary" type="button" id="frontpage-searcher-submit" aria-label="Submit search"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    var phrases = [
+      "Battle of Bunker Hill",
+      "Lowell, Massachusetts",
+      "map monster",
+      "East Boston atlas",
+      "survey chart",
+      "immigration"
+    ];
+
+    const el = document.getElementById("frontpage-searcher-input");
+
+    if (el) {
+      let i = 0;
+      setInterval(() => {
+        el.setAttribute("placeholder", phrases[i]);
+        if (i === phrases.length - 1) {
+          i = 0
+        } else {
+          i++;
+        }
+      }, 3000);
+    }
+  });
+
+
+  const submitFrontpageSearch = () => {
+    const inputEl = document.getElementById('frontpage-searcher-input');
+    if (inputEl) {
+      const s = inputEl.value === '' ? inputEl.getAttribute('placeholder') : inputEl.value;
+      window.open('https://collections.leventhalmap.org/search?utf8=✓&q=+' + encodeURI(s));
+    }
+  }
+
+  const frontpageSubmitBtn = document.getElementById('frontpage-searcher-submit');
+
+  if (frontpageSubmitBtn) {
+    frontpageSubmitBtn.addEventListener('click', submitFrontpageSearch);
+  }
+
+  const frontpageSearchInput = document.getElementById('frontpage-searcher-input');
+
+  if (frontpageSearchInput) {
+    // Bind to enter key
+    frontpageSearchInput.addEventListener('keyup', function(e){ 
+      if(e.keyCode == 13 ){ submitFrontpageSearch(); }
+    });
+  }
+</script>
