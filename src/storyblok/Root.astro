@@ -2,6 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
+import HoursCTA from "../components/Home/HoursCTA.astro";
 import AudiencesSection from "../components/Home/AudiencesSection.astro";
 import SearchSection from "../components/Home/SearchSection.astro";
 import EventsSection from "../components/Home/EventsSection.astro";
@@ -91,10 +92,7 @@ const { blok } = Astro.props
               ))
             }
 
-            {/* TODO: Add hours */}
-            <li class="mb-3">
-              <span class="badge badge-secondary bg-light font-secondary whats-new-badge">Today's hours</span>
-            </li>
+            <HoursCTA />
           </ul>
         </div>
       </div>

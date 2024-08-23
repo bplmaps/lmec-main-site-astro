@@ -1,0 +1,128 @@
+---
+const weekly = [
+  {
+    day: 'Monday',
+    special: 'Closed',
+  },
+  {
+    day: 'Tuesday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    day: 'Wednesday',
+    open: '1 pm',
+    close: '7 pm',
+  },
+  {
+    day: 'Thursday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    day: 'Friday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    day: 'Saturday',
+    open: '11 am',
+    close: '5 pm',
+  },
+  {
+    day: 'Sunday',
+    open: '1 pm',
+    close: '5 pm',
+  },
+];
+
+const exceptions = [
+  {
+    date: 'September 1, 2024',
+    name: 'The day before Labor Day',
+    special: 'Closed',
+  },
+  {
+    date: 'September 2, 2024',
+    name: 'Labor Day',
+    special: 'Closed',
+  },
+  {
+    date: 'October 14, 2024',
+    name: 'Indigenous People’s Day',
+    special: 'Closed',
+  },
+  {
+    date: 'November 11, 2024',
+    name: 'Veteran’s Day',
+    special: 'Closed',
+  },
+  {
+    date: 'November 27, 2024',
+    name: 'The day before Thanksgiving',
+    special: 'Closed',
+  },
+  {
+    date: 'November 28, 2024',
+    name: 'Thanksgiving',
+    special: 'Closed',
+  },
+  {
+    date: 'December 24, 2024',
+    name: 'Christmas Eve',
+    special: 'Closed',
+  },
+  {
+    date: 'December 25, 2024',
+    name: 'Christmas Day',
+    special: 'Closed',
+  },
+];
+
+const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
+const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'});
+
+let showException = false;
+
+let exception = {};
+exceptions.forEach((exc) => {
+  if (exc.date == todayDate) {
+    showException = true;
+    exception = exc;
+  }
+});
+
+let hours = {};
+weekly.forEach((hrs) => {
+  if (hrs.day == today) {
+    hours = hrs;
+  }
+});
+---
+
+<li class="mb-3">
+  <span class="badge badge-secondary bg-light font-secondary whats-new-badge">Today's hours</span>
+
+  {showException &&
+    <span>
+      {todayDate} · <strong>{exception.special}</strong> ({exception.name}) · <a href="/about/hours-directions">More hours</a>
+    </span>
+  }
+  
+  {!showException &&
+    <span>
+      {today}
+      {hours.special &&
+        <span>
+          {special}
+        </span>
+      }
+      {!hours.special &&
+        <span>
+          {hours.open} – {hours.close}
+        </span>
+      }
+       · <a href="./about/hours-directions">More hours</a>
+    </span>
+  }
+</li>

@@ -14,7 +14,6 @@ const { data } = await storyblokApi.get('cdn/stories', {
 })
 let articles = data.stories
 articles = Object.values(articles)
-console.log(articles);
 articles = articles.map((article: any) => {
   return {
     params: {
