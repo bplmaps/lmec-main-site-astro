@@ -54,8 +54,11 @@
   const submitFrontpageSearch = () => {
     const inputEl = document.getElementById('frontpage-searcher-input');
     if (inputEl) {
-      const s = inputEl.value === '' ? inputEl.getAttribute('placeholder') : inputEl.value;
-      window.open('https://collections.leventhalmap.org/search?utf8=✓&q=+' + encodeURI(s));
+      const s = (inputEl as HTMLInputElement).value === '' ? inputEl.getAttribute('placeholder') : (inputEl as HTMLInputElement).value;
+      
+      if (s) {
+        window.open('https://collections.leventhalmap.org/search?utf8=✓&q=+' + encodeURI(s));
+      }
     }
   }
 
@@ -68,9 +71,10 @@
   const frontpageSearchInput = document.getElementById('frontpage-searcher-input');
 
   if (frontpageSearchInput) {
-    // Bind to enter key
     frontpageSearchInput.addEventListener('keyup', function(e){ 
-      if(e.keyCode == 13 ){ submitFrontpageSearch(); }
+      if(e.key === 'Enter') {
+        submitFrontpageSearch();
+      }
     });
   }
 </script>

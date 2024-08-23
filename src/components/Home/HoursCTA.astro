@@ -84,18 +84,9 @@ const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', mont
 
 let showException = false;
 
-let exception = {};
-exceptions.forEach((exc) => {
-  if (exc.date == todayDate) {
+exceptions.forEach((exception) => {
+  if (exception.date == todayDate) {
     showException = true;
-    exception = exc;
-  }
-});
-
-let hours = {};
-weekly.forEach((hrs) => {
-  if (hrs.day == today) {
-    hours = hrs;
   }
 });
 ---
@@ -104,25 +95,43 @@ weekly.forEach((hrs) => {
   <span class="badge badge-secondary bg-light font-secondary whats-new-badge">Today's hours</span>
 
   {showException &&
-    <span>
-      {todayDate} · <strong>{exception.special}</strong> ({exception.name}) · <a href="/about/hours-directions">More hours</a>
-    </span>
+    <>
+      {exceptions.map((exception: any) => (
+        <>
+          {exception.date == todayDate &&
+            <>
+              {todayDate} · <strong>{exception.special}</strong> ({exception.name}) · <a href="/about/hours-directions">More hours</a>
+            </>
+          }
+        </>
+      ))}
+    </>
   }
   
   {!showException &&
-    <span>
-      {today}
-      {hours.special &&
-        <span>
-          {special}
-        </span>
-      }
-      {!hours.special &&
-        <span>
-          {hours.open} – {hours.close}
-        </span>
-      }
-       · <a href="./about/hours-directions">More hours</a>
-    </span>
+    <>
+      {weekly.map((hours: any) => (
+        <>
+          {hours.day == today &&
+            <>
+              <>
+                {today}
+              </>
+              {hours.special &&
+                <>
+                  {hours.special}
+                </>
+              }
+              {!hours.special &&
+                <>
+                  {hours.open} – {hours.close}
+                </>
+              }
+              · <a href="./about/hours-directions">More hours</a>
+            </>
+          }
+        </>
+      ))}
+    </>
   }
 </li>
