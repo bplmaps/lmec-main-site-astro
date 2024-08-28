@@ -1,0 +1,77 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+
+const storyblokApi = useStoryblokApi()
+
+export interface Props {
+	id: string;
+	tags: string[];
+}
+
+const { id, tags } = Astro.props;
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
+  per_page: 4,
+  excluding_ids: id,
+  content_type: 'article-page',
+})
+let articles = data.stories
+articles = Object.values(articles)
+articles = articles.map((article: any) => {
+  return {
+    params: {
+      name: article.name,
+      slug: article.slug,
+      headerImage: article.content.headerImage,
+      publishDate: article.content.publishDate,
+      tags: article.content.tags,
+    },
+  }
+})
+
+---
+
+{tags &&
+  <div class="bg-white mb-5">
+    <h4 class="mb-4">Tags</h4>
+    <p>
+      {tags.map((tag: string) => (
+        <span class="badge rounded-pill bg-light text-secondsry mb-1 tag-list">
+          {tag}
+        </span>
+      ))}
+    </p>
+  </div>
+}
+
+{articles &&
+  <div class="bg-white">
+    <h4 class="mb-4">Other Articles</h4>
+    {articles.map((article: any) => (
+      <div class="d-flex mb-4">
+        {article.params.headerImage && article.params.headerImage.filename &&
+          <div class="flex-shrink-0">
+            <a href={article.params.slug}>
+              <img src={article.params.headerImage.filename} alt={`Thumbnail image for article ${article.params.name}`} class="post-thumb-sm">
+            </a>
+          </div>
+        }
+        <div class="flex-grow-1 ms-3">
+          <a href={article.params.slug}>
+            {article.params.name &&
+              <h5 class="mt-0">
+                {article.params.name}
+              </h5>
+            }
+          </a>
+
+          {article.params.publishDate &&
+            new Date(article.params.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})
+          }
+        </div>
+      </div>
+    ))}
+  </div>
+}

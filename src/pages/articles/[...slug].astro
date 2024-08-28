@@ -1,0 +1,92 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+import { richTextResolver } from '@storyblok/richtext'
+// TODO: Add typescript definitions for countable
+// @ts-ignore
+import Countable from 'countable';
+import Donate from '../../components/Article/Donate.astro';
+import Sidebar from '../../components/Article/Sidebar.astro';
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+ 
+const { render } = richTextResolver()
+
+export async function getStaticPaths() {
+  const storyblokApi = useStoryblokApi()
+ 
+  const { data } = await storyblokApi.get('cdn/stories', {
+    version: import.meta.env.DEV ? 'draft' : 'published',
+    starts_with: 'main-site/',
+    content_type: 'article-page',
+  })
+  let articles = data.stories
+  articles = Object.values(articles)
+
+  return articles.map((article: any) => {
+    return {
+      params: {
+        slug: article.slug,
+      },
+    }
+  })
+}
+
+const { slug } = Astro.params
+
+const storyblokApi = useStoryblokApi()
+ 
+const { data } = await storyblokApi.get(
+  `cdn/stories/main-site/articles/${slug}`,
+  {
+    version: import.meta.env.DEV ? 'draft' : 'published',
+  }
+)
+ 
+const article = data.story
+
+let countWords = 0;
+let readingTime = 0;
+
+Countable.count(render(article.content.body), (counter : any) => {
+  countWords = counter.words
+  readingTime = Math.round(countWords / 238);
+})
+
+---
+
+<Layout title={`${article.name}`} description={`${article.content.description}`} pill="Article" subheading={`${article.content.description}`} image={`${article.content.headerImage && article.content.headerImage.filename}`}>
+  <section class="section-sm">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 order-1 order-lg-1">
+          <div class="row">
+            <div class="col-sm-4 mb-2">
+              <i class="fas fa-feather me-2"></i>
+              {article.content.author}
+            </div>
+            <div class="col-sm-4 mb-2">
+              <i class="fas fa-calendar-day me-2"></i>
+              {new Date(article.content.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
+            </div>
+            <div class="col-sm-4 mb-2">
+              <i class="fas fa-scroll me-2"></i>
+              {countWords} words / {readingTime} minutes
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-12 my-4 content">
+              <StoryblokComponent name={article.name} blok={article.content} />
+            </div>
+          </div>
+          
+          <Donate />
+        </div>
+  
+        <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
+          <Sidebar id={article.id} tags={article.content.tags} />
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
