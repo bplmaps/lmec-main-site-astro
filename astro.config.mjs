@@ -11,7 +11,8 @@ export default defineConfig({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
         'alert-box': 'storyblok/AlertBox',
-        'event-page': 'storyblok/EventPage',
+        'article-page': 'storyblok/RichText',
+        'event-page': 'storyblok/RichText',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
       },
       apiOptions: {
