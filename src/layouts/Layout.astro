@@ -163,7 +163,9 @@ const secondaryMenuLinks = [
 	</head>
 	<body>
 		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
-		<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
+		<slot name="root">
+			<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
+		</slot>
 		<div class="container">
 			<slot />
 		</div>

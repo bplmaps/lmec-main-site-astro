@@ -15,7 +15,7 @@ const { thumbnail, name, date, tags, href } = Astro.props;
 
 <div class="card border-0 rounded-0 hover-shadow">
   <div class="card-img position-relative">
-    {thumbnail.filename &&
+    {thumbnail && thumbnail.filename &&
       <img
       class="card-img-top rounded-0"
         src={thumbnail.filename}
@@ -24,7 +24,7 @@ const { thumbnail, name, date, tags, href } = Astro.props;
     }
     {date &&
       <div class="card-date">
-        <span>{new Date(date).getDay()}</span><br>
+        <span>{new Date(date).getDate()}</span><br>
         {new Date(date).toLocaleString('en-US', { month: 'long' })}
       </div>
     }

@@ -1,0 +1,67 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import Card from "../Event/Card.astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
+  resolve_links: 'url',
+  content_type: 'event-page',
+  sort_by: 'content.eventDate:asc',
+  filter_query: {
+    eventDate: {
+      gt_date: new Date().toISOString().split('T')[0] + '00:00',
+    }
+  },
+  per_page: 3,
+})
+let events = data.stories
+events = Object.values(events)
+events = events.map((event: any) => {
+  return {
+    params: {
+      name: event.name,
+      slug: event.slug,
+      headerImage: event.content.headerImage,
+      eventDate: event.content.eventDate,
+      tags: event.content.tags,
+    },
+  }
+})
+
+const upcomingEvents = events.filter((event: any) => {
+  return new Date(event.params.eventDate) >= new Date()
+})
+---
+
+{upcomingEvents.length > 0 &&
+  <section class="section bg-gray">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex align-items-center section-title justify-content-between">
+            <h2 class="mb-0 text-nowrap me-3">Upcoming Events</h2>
+            <div class="border-top w-100 border-primary d-none d-sm-block"></div>
+            <div>
+              <a href="/event/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><i class="fas fa-calendar-alt me-2"></i> All events</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        {upcomingEvents.map((event: any) => (
+          <div class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
+            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
+          </div>
+        ))}
+      </div>
+      <div class="row">
+        <div class="col-12 text-center">
+          <a href="/event/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><i class="fas fa-calendar-alt me-2"></i> All events</a>
+        </div>
+      </div>
+    </div>
+  </section>
+}

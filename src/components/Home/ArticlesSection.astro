@@ -1,0 +1,60 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import Card from "../Article/Card.astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
+  resolve_links: 'url',
+  content_type: 'article-page',
+  sort_by: 'content.publishDate:desc',
+  per_page: 3,
+})
+let articles = data.stories
+articles = Object.values(articles)
+articles = articles.map((article: any) => {
+  return {
+    params: {
+      title: article.content.title,
+      description: article.content.description,
+      slug: article.slug,
+      headerImage: article.content.headerImage,
+      publishedAt: article.content.publishDate,
+      author: article.content.author,
+    },
+  }
+})
+---
+
+{articles.length > 0 &&
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex align-items-center section-title justify-content-between">
+            <h2 class="mb-0 text-nowrap me-3">Articles</h2>
+            <div class="border-top w-100 border-primary d-none d-sm-block"></div>
+            <div>
+              <a href="/articles/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><i class="far fa-newspaper me-2"></i> All articles</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        {articles.map((article: any) => (
+          <article class="col-lg-4 col-sm-6 mb-5 mb-lg-0">
+            <Card href={`/articles/${article.params.slug}`} thumbnail={article.params.headerImage} title={article.params.title} description={article.params.description} date={article.params.publishedAt} author={article.params.author} />
+          </article>
+        ))}
+      </div>
+
+      <div class="row">
+        <div class="col-12 text-center">
+          <a href="/articles/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><i class="far fa-newspaper me-2"></i> All articles</a>
+        </div>
+      </div>
+    </div>
+  </section>
+}

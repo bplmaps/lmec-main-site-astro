@@ -10,6 +10,7 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
+        'root': 'storyblok/Root',
         'alert-box': 'storyblok/AlertBox',
         'article-page': 'storyblok/RichText',
         'event-page': 'storyblok/RichText',

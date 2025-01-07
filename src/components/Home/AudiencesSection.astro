@@ -1,0 +1,144 @@
+---
+const audiences = [
+  {
+    name: 'For everyone',
+    description: 'We offer a wide spectrum of services and activities for the general public',
+    color: '#d54062',
+    links: [
+      {
+        title: 'Visit our gallery in person',
+        link: 'exhibitions/visit',
+      },
+      {
+        title: 'See our calendar of upcoming events',
+        link: 'event',
+      },
+      {
+        title: 'Browse our digital exhibitions',
+        link: 'exhibitions/digital-exhibitions',
+      },
+      {
+        title: 'Read articles about our work and collections',
+        link: 'articles',
+      },
+      {
+        title: 'Search our digital collections',
+        link: 'collections/digital-collections/',
+      },
+      {
+        title: 'Take a walking tour along the Walk to the Sea',
+        link: 'https://www.walktothesea.org',
+      },
+      {
+        title: 'Support our work with a donation',
+        link: 'donate',
+      },
+    ],
+  },
+  {
+    name: 'For K-12 teachers',
+    description: 'Our educator resources support teachers in fields ranging from geography and social studies to STEM and world history',
+    color: '#799351',
+    links: [
+      {
+        title: 'Book a classroom visit',
+        link: 'education/k12/school-visits',
+      },
+      {
+        title: 'See resources for teaching with maps',
+        link: 'education/k12/teach-it-yourself',
+      },
+      {
+        title: 'Apply for a professional development workshop',
+        link: 'education/k12/professional-development',
+      },
+      {
+        title: 'Show students a digital exhibition',
+        link: 'exhibitions/digital-exhibitions/',
+      },
+    ],
+  },
+  {
+    name: 'For researchers',
+    description: 'Our collections open up countless ways of exploring people and places around the world, and we welcome researchers from all walks of life',
+    color: '#056676',
+    links: [
+      {
+        title: 'Learn more about the collections',
+        link: 'collections',
+      },
+      {
+        title: 'Make a research appointment',
+        link: 'research/appointments',
+      },
+      {
+        title: 'Get help with GIS and data',
+        link: 'research/geospatial',
+      },
+      {
+        title: 'Browse our guides and finding aids',
+        link: 'research/guides',
+      },
+      {
+        title: 'Get permission to reproduce our maps in your work',
+        link: '/collections/permissions/',
+      },
+    ],
+  },
+  {
+    name: 'Digital tools',
+    description: 'Explore our collections and discover the world of historical geography from home',
+    color: '#440047',
+    links: [
+      {
+        title: 'Browse thousands of digitized maps in our Digital Collections',
+        link: 'collections/digital-collections',
+      },
+      {
+        title: 'See all of our digital projects and interactives',
+        link: '/projects/digital-projects/',
+      },
+      {
+        title: 'Explore Boston\'s history with Atlascope',
+        link: 'https://atlascope.org',
+      },
+      {
+        title: 'See digital experiments and remix your own code on Glitch',
+        link: 'https://glitch.com/@bplmaps/',
+      },
+      {
+        title: 'Read guides and tutorials on digital mapping',
+        link: 'https://geoservices.leventhalmap.org/cartinal',
+      },
+    ],
+  },
+]
+---
+{audiences.length > 0 &&
+  <section class="section pt-1 frontpage-content">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2">
+        {audiences.map((audience: any) => (
+          <div class="col mb-1">
+            <div class="card frontpage-audience-card border-0">
+              <div class="card-body">
+                <h2 class="card-title" style={`color: ${audience.color};`}>{ audience.name }</h2>
+                <div class="card-subtitle text-secondary pb-3">{ audience.description }</div>
+                <ul class="p-0">
+                  {audience.links.map((link: any) => (
+                    <li class="mx-0 my-2">
+                      <i class="fas fa-angle-right me-1"></i>
+                      <a href={link.link} class="card-link font-secondary me-4">
+                        {link.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+}
