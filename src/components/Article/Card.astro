@@ -27,7 +27,7 @@ const { thumbnail, title, description, author, date, href } = Astro.props;
       {date &&
         <li class="list-inline-item me-3 ms-0">
           <i class="ti-calendar"></i>
-          {new Date(date).toLocaleString('en-US', { month: 'long' })}
+          {new Date(date).toLocaleString('en-US', { dateStyle: 'long' })}
         </li>
       }
       {author &&

@@ -24,7 +24,7 @@ const { thumbnail, name, date, tags, href } = Astro.props;
     }
     {date &&
       <div class="card-date">
-        <span>{new Date(date).getDay()}</span><br>
+        <span>{new Date(date).getDate()}</span><br>
         {new Date(date).toLocaleString('en-US', { month: 'long' })}
       </div>
     }
