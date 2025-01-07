@@ -9,7 +9,12 @@ const { data } = await storyblokApi.get('cdn/stories', {
   starts_with: 'main-site/',
   resolve_links: 'url',
   content_type: 'event-page',
-  sort_by: 'content.eventDate:desc',
+  sort_by: 'content.eventDate:asc',
+  filter_query: {
+    eventDate: {
+      gt_date: new Date().toISOString().split('T')[0] + '00:00',
+    }
+  },
   per_page: 3,
 })
 let events = data.stories
