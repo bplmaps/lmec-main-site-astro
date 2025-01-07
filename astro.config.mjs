@@ -12,7 +12,8 @@ export default defineConfig({
       components: {
         'root': 'storyblok/Root',
         'alert-box': 'storyblok/AlertBox',
-        'event-page': 'storyblok/EventPage',
+        'article-page': 'storyblok/RichText',
+        'event-page': 'storyblok/RichText',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
       },
       apiOptions: {

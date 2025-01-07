@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/stories', {
+  version: import.meta.env.DEV ? 'draft' : 'published',
+  starts_with: 'main-site/',
+  content_type: 'article-page',
+})
+let articles = data.stories
+articles = Object.values(articles)
+articles = articles.map((article: any) => {
+  return {
+    params: {
+      name: article.name,
+      slug: article.slug,
+      headerImage: article.content.headerImage,
+      publishDate: article.content.publishDate,
+      tags: article.content.tags,
+    },
+  }
+})
+---
+
+<Layout title="Articles" description="Articles and posts that explore and explain our collections and initiatives" subheading="Articles and posts that explore and explain our collections and initiatives" pill="Article">
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 order-2 order-lg-1">
+          <div class="row">
+            <h3>Filter articles by tag</h3>
+            <!-- TODO: Populate list of tags from Storyblok -->
+          </div>
+          <hr>
+          <!-- TODO: Add paginated list of articles -->
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
