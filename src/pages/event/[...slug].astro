@@ -9,13 +9,14 @@ export async function getStaticPaths() {
  
   const { data } = await storyblokApi.get('cdn/stories', {
     version: import.meta.env.DEV ? 'draft' : 'published',
-    starts_with: 'main-site/',
+    starts_with: 'main-site/event',
     content_type: 'event-page',
   })
   let events = data.stories
   events = Object.values(events)
 
   return events.map((event: any) => {
+    console.log(event);
     return {
       params: {
         slug: event.slug,
@@ -35,7 +36,7 @@ const { data } = await storyblokApi.get(
   }
 )
  
-const event = data.story
+const event = (data as any).story
 ---
 
 <Layout title={`${event.name}`} pill="Event" image={`${event.content.headerImage && event.content.headerImage.filename}`}>

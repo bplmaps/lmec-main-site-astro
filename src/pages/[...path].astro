@@ -36,7 +36,7 @@ const { data } = await storyblokApi.get(
   }
 )
  
-const page = data.story
+const page = (data as any).story
 ---
 
 <Layout title={`${page.name}`} subheading={`${page.content.page_description}`} image={`${page.content.header_img && page.content.header_img.filename}`}>

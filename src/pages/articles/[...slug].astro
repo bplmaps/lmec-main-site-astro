@@ -16,7 +16,7 @@ export async function getStaticPaths() {
  
   const { data } = await storyblokApi.get('cdn/stories', {
     version: import.meta.env.DEV ? 'draft' : 'published',
-    starts_with: 'main-site/',
+    starts_with: 'main-site/articles',
     content_type: 'article-page',
   })
   let articles = data.stories
@@ -42,7 +42,7 @@ const { data } = await storyblokApi.get(
   }
 )
  
-const article = data.story
+const article = (data as any).story
 
 let countWords = 0;
 let readingTime = 0;
