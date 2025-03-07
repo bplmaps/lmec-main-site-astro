@@ -8,7 +8,7 @@ export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
  
   const { data } = await storyblokApi.get('cdn/stories', {
-    version: import.meta.env.DEV ? 'draft' : 'published',
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
     starts_with: 'main-site/',
     content_type: 'standard-lmec-main-page',
   })
@@ -25,6 +25,8 @@ export async function getStaticPaths() {
   })
 }
 
+console.log();
+
 const { path } = Astro.params
 
 const storyblokApi = useStoryblokApi()
@@ -32,7 +34,7 @@ const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(
   `cdn/stories/main-site/${path}`,
   {
-    version: import.meta.env.DEV ? 'draft' : 'published',
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   }
 )
  
