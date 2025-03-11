@@ -11,19 +11,19 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.5.10",
+    "@astrojs/check": "^0.9.4",
     "@popperjs/core": "^2.11.8",
-    "@storyblok/astro": "^4.0.4",
-    "@storyblok/richtext": "^2.0.0",
+    "@storyblok/astro": "^6.0.2",
+    "@storyblok/richtext": "^3.0.2",
     "animate.css": "^4.1.1",
-    "astro": "^4.5.10",
-    "astro-seo": "^0.8.3",
+    "astro": "^5.4.2",
+    "astro-seo": "^0.8.4",
     "bootstrap": "^5.3.3",
     "countable": "^3.0.1",
-    "sass": "^1.72.0",
-    "sharp": "^0.33.4",
-    "typescript": "^5.4.3",
-    "vite": "^5.2.6",
-    "swiper": "^11.1.9"
+    "sass": "^1.85.1",
+    "sharp": "^0.33.5",
+    "swiper": "^11.2.5",
+    "typescript": "^5.8.2",
+    "vite": "^5.4.14"
   }
 }

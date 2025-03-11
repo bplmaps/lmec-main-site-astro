@@ -12,7 +12,7 @@ const { data } = await storyblokApi.get(
   }
 )
  
-const page = data.story
+const page = (data as any).story
 ---
 
 <Layout title="Home" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
