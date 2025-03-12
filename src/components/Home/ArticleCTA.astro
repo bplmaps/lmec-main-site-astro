@@ -28,7 +28,7 @@ articles = articles.map((article: any) => {
   <li class="mb-3">
     <span class="badge bg-light font-secondary whats-new-badge me-1">Latest article</span>
     {articles.map((article: any) => (
-      <a href={`/article/${article.params.slug}`}>{article.params.name}</a> 
+      <a href={`/articles/${article.params.slug}`}>{article.params.name}</a> 
       <span class="text-secondary">
         {new Date(article.params.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
       </span>
