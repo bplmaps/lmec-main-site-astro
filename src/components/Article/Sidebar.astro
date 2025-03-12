@@ -11,7 +11,7 @@ export interface Props {
 const { id, tags } = Astro.props;
 
 const { data } = await storyblokApi.get('cdn/stories', {
-  version: import.meta.env.DEV ? 'draft' : 'published',
+  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
   per_page: 4,
   excluding_ids: id,
