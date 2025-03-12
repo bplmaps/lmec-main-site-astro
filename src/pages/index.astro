@@ -8,7 +8,7 @@ const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(
   `cdn/stories/main-site/main-site`,
   {
-    version: import.meta.env.DEV ? 'draft' : 'published',
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   }
 )
  

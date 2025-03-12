@@ -5,7 +5,7 @@ import Card from "../Article/Card.astro";
 const storyblokApi = useStoryblokApi()
 
 const { data } = await storyblokApi.get('cdn/stories', {
-  version: import.meta.env.DEV ? 'draft' : 'published',
+  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
   resolve_links: 'url',
   content_type: 'article-page',

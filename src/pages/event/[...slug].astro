@@ -8,7 +8,7 @@ export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
  
   const { data } = await storyblokApi.get('cdn/stories', {
-    version: import.meta.env.DEV ? 'draft' : 'published',
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
     starts_with: 'main-site/event',
     content_type: 'event-page',
   })
@@ -32,7 +32,7 @@ const storyblokApi = useStoryblokApi()
 const { data } = await storyblokApi.get(
   `cdn/stories/main-site/event/${slug}`,
   {
-    version: import.meta.env.DEV ? 'draft' : 'published',
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   }
 )
  
