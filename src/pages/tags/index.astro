@@ -1,0 +1,37 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import createSlug from '../../lib/createSlug';
+import { useStoryblokApi } from "@storyblok/astro";
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get('cdn/tags', {
+  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+  starts_with: 'main-site/',
+})
+
+const tags = data.tags
+
+const largestFontSize = 1.4;
+const smallestFontSize = 0.7;
+const max = Math.max(...tags.map((tag: any) => tag.taggings_count));
+const min = Math.min(...tags.map((tag: any) => tag.taggings_count));
+
+function tagFontSize(tagCount: number) {
+  const weight = ((Math.log(tagCount) - Math.log(min)) / (Math.log(max) - Math.log(min)));
+  return smallestFontSize + ((largestFontSize - smallestFontSize) * weight);
+}
+---
+
+<Layout title="Tags" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
+  <section class="section">
+    <div class="tagcloud">
+      {tags.map((tag: any) => (
+        <span class="badge rounded-pill bg-light text-secondsry mb-1 tagcloud-item" style={`font-size: ${tagFontSize(tag.taggings_count)}rem;`}>
+          <a href={`/tags/${createSlug(tag.name)}`}>{tag.name}</a>
+          <span class="badge bg-info" >{tag.taggings_count}</span>
+        </span>
+      ))}
+    </div>
+  </section>
+</Layout>
