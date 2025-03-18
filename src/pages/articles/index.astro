@@ -1,41 +1,66 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import createSlug from '../../lib/createSlug';
+import Card from "../../components/Article/Card.astro";
 import { useStoryblokApi } from "@storyblok/astro";
 
 const storyblokApi = useStoryblokApi()
 
 // TODO: Implement pagination here with `page` and `per_page` params 
-const { data } = await storyblokApi.get('cdn/stories', {
+const articlesResponse = await storyblokApi.get('cdn/stories', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
   content_type: 'article-page',
-})
-let articles = data.stories
+});
+let articles = articlesResponse.data.stories
 articles = Object.values(articles)
 articles = articles.map((article: any) => {
   return {
     params: {
-      name: article.name,
+      title: article.content.title,
+      description: article.content.description,
       slug: article.slug,
       headerImage: article.content.headerImage,
-      publishDate: article.content.publishDate,
-      tags: article.content.tags,
+      publishedAt: article.content.publishDate,
+      author: article.content.author,
     },
   }
 })
+
+const tagsResponse = await storyblokApi.get('cdn/tags', {
+  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+  starts_with: 'main-site/',
+})
+let tags = tagsResponse.data.tags
+tags = tags.sort(({taggings_count: a}, {taggings_count: b}) => b - a);
+tags = tags.slice(0, 20);
 ---
 
 <Layout title="Articles" description="Articles and posts that explore and explain our collections and initiatives" subheading="Articles and posts that explore and explain our collections and initiatives" pill="Article">
   <section class="section">
-    <div class="container">
-      <div class="row">
-        <div class="col-12 order-2 order-lg-1">
-          <div class="row">
-            <h3>Filter articles by tag</h3>
-            <!-- TODO: Populate list of tags from Storyblok -->
+    <div class="row">
+      <div class="col-12 order-2 order-lg-1">
+        <div class="row">
+          <h3>Filter articles by tag</h3>
+          <div class="tagcloud">
+            {tags.map((tag: any) => (
+              <span class="badge rounded-pill bg-light text-secondsry mb-1 tagcloud-item">
+                <a href={`/tags/${createSlug(tag.name)}`}>{tag.name}</a>
+                <span class="badge bg-info" >{tag.taggings_count}</span>
+              </span>
+            ))}
           </div>
-          <hr>
-          <!-- TODO: Add paginated list of articles -->
+        </div>
+        <hr>
+        <div class="row">
+          {articles.map((article: any) => (
+            <article class="col-sm-6 mb-5">
+              <Card href={`/articles/${article.params.slug}`} thumbnail={article.params.headerImage} title={article.params.title} description={article.params.description} date={article.params.publishedAt} author={article.params.author} />
+            </article>
+          ))}
+          <div class="col-12 mt-4">
+            <!-- Pagination -->
+          </div>
         </div>
       </div>
     </div>
