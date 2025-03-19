@@ -16,7 +16,7 @@ const articlesResponse = await storyblokApi.get('cdn/stories', {
   starts_with: 'main-site/',
   content_type: 'article-page',
 });
-const totalArticles = Number(articlesResponse.headers['total']);
+const totalArticles = Number(articlesResponse.headers?['total'] : 0);
 const totalPages = Math.ceil(totalArticles / articlesPerPage);
 let articles = articlesResponse.data.stories
 articles = Object.values(articles)
@@ -33,12 +33,18 @@ articles = articles.map((article: any) => {
   }
 })
 
+interface Tag {
+  taggings_count: number;
+}
+
 const tagsResponse = await storyblokApi.get('cdn/tags', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
 })
 let tags = tagsResponse.data.tags
-tags = tags.sort(({taggings_count: a}, {taggings_count: b}) => b - a);
+tags = tags.sort(
+  ({taggings_count: a}: Tag, {taggings_count: b}: Tag) => b - a
+);
 tags = tags.slice(0, 20);
 ---
 

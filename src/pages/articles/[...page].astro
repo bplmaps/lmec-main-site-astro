@@ -4,8 +4,10 @@ import createSlug from '../../lib/createSlug';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
 import { useStoryblokApi } from "@storyblok/astro";
+import type { ISbResult } from '@storyblok/astro';
+import type { GetStaticPathsOptions } from 'astro';
 
-export async function getStaticPaths({ paginate }) {
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const storyblokApi = useStoryblokApi();
 
   let allArticles = [];
@@ -54,27 +56,39 @@ export async function getStaticPaths({ paginate }) {
 const storyblokApi = useStoryblokApi();
 
 const articlesPerPage = 10;
-const articlesResponse = await storyblokApi.get('cdn/stories', {
+const articlesResponse: ISbResult = await storyblokApi.get('cdn/stories', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   per_page: articlesPerPage,
   page: 1,
   starts_with: 'main-site/',
   content_type: 'article-page',
 });
-const totalArticles = Number(articlesResponse.headers['total']);
+const totalArticles = Number(articlesResponse.headers?['total'] : 0);
 const totalPages = Math.ceil(totalArticles / articlesPerPage);
 
+interface PageData {
+  currentPage: number;
+  data: any[];
+}
 
-const { page } = Astro.props;
+const { page }: { page: PageData } = Astro.props;
+
 const currentPage = page.currentPage;
-const articles = page.data
+const articles = page.data;
 
 const tagsResponse = await storyblokApi.get('cdn/tags', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
 })
+
+interface Tag {
+  taggings_count: number;
+}
+
 let tags = tagsResponse.data.tags
-tags = tags.sort(({taggings_count: a}, {taggings_count: b}) => b - a);
+tags = tags.sort(
+  ({taggings_count: a}: Tag, {taggings_count: b}: Tag) => b - a
+);
 tags = tags.slice(0, 20);
 ---
 
