@@ -4,6 +4,7 @@ import createSlug from '../../lib/createSlug';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
 import { useStoryblokApi } from "@storyblok/astro";
+import type { Tag } from '../../lib/types';
 
 const storyblokApi = useStoryblokApi()
 
@@ -16,7 +17,7 @@ const articlesResponse = await storyblokApi.get('cdn/stories', {
   starts_with: 'main-site/',
   content_type: 'article-page',
 });
-const totalArticles = Number(articlesResponse.headers?['total'] : 0);
+const totalArticles = Number(articlesResponse.total);
 const totalPages = Math.ceil(totalArticles / articlesPerPage);
 let articles = articlesResponse.data.stories
 articles = Object.values(articles)
@@ -29,13 +30,10 @@ articles = articles.map((article: any) => {
       headerImage: article.content.headerImage,
       publishedAt: article.content.publishDate,
       author: article.content.author,
+      contentType: article.content.component,
     },
   }
 })
-
-interface Tag {
-  taggings_count: number;
-}
 
 const tagsResponse = await storyblokApi.get('cdn/tags', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',

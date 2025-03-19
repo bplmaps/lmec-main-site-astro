@@ -1,4 +1,4 @@
-export default function (title) {
+export default function (title: string) {
   return (
     title
       // remove leading & trailing whitespace

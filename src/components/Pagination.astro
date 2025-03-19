@@ -16,24 +16,26 @@ if (endPage > totalPages) {
 }
 ---
 
-<ul class="pagination pagination-default" aria-label="Pagination">
-  <li class={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-    <a href={`${urlBase}/`} aria-disabled={currentPage === 1 ? 'true' : 'false'} aria-label="First" class="page-link" role="button" tabindex={currentPage === 1 ? '-1' : ''}><span aria-hidden="true">««</span></a>
-  </li>
-  <li class={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-    <a href={`${urlBase}/${currentPage > 2 ? currentPage - 1 : ''}`} aria-disabled={currentPage === 1 ? 'true' : 'false'} aria-label="Previous" class="page-link" role="button" tabindex={currentPage === 1 ? '-1' : ''}><span aria-hidden="true">«</span></a>
-  </li>
-  {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
-    <li class={`page-item ${currentPage === startPage + i ? 'active' : ''}`}>
-      <a href={`${urlBase}/${startPage + i}`} aria-current="page" aria-label={`Page ${startPage + i}`} class="page-link" role="button">
-        {startPage + i}
-      </a>
+{totalPages > 1 &&
+  <ul class="pagination pagination-default" aria-label="Pagination">
+    <li class={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+      <a href={`${urlBase}/`} aria-disabled={currentPage === 1 ? 'true' : 'false'} aria-label="First" class="page-link" role="button" tabindex={currentPage === 1 ? '-1' : ''}><span aria-hidden="true">««</span></a>
     </li>
-  ))}
-  <li class={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-    <a href={`${urlBase}/${currentPage + 1}`} aria-disabled={currentPage === totalPages ? 'true' : 'false'} aria-label="Next" class="page-link" role="button" tabindex={currentPage === totalPages ? '-1' : ''}><span aria-hidden="true">»</span></a>
-  </li>
-  <li class={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-    <a href={`${urlBase}/${totalPages}`} aria-disabled={currentPage === totalPages ? 'true' : 'false'} aria-label="Last" class="page-link" role="button" tabindex={currentPage === totalPages ? '-1' : ''}><span aria-hidden="true">»»</span></a>
-  </li>
-</ul>
+    <li class={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+      <a href={`${urlBase}/${currentPage > 2 ? currentPage - 1 : ''}`} aria-disabled={currentPage === 1 ? 'true' : 'false'} aria-label="Previous" class="page-link" role="button" tabindex={currentPage === 1 ? '-1' : ''}><span aria-hidden="true">«</span></a>
+    </li>
+    {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+      <li class={`page-item ${currentPage === startPage + i ? 'active' : ''}`}>
+        <a href={`${urlBase}/${startPage + i > 1 ? startPage + i : ''}`} aria-current="page" aria-label={`Page ${startPage + i}`} class="page-link" role="button">
+          {startPage + i}
+        </a>
+      </li>
+    ))}
+    <li class={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+      <a href={`${urlBase}/${currentPage + 1}`} aria-disabled={currentPage === totalPages ? 'true' : 'false'} aria-label="Next" class="page-link" role="button" tabindex={currentPage === totalPages ? '-1' : ''}><span aria-hidden="true">»</span></a>
+    </li>
+    <li class={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+      <a href={`${urlBase}/${totalPages}`} aria-disabled={currentPage === totalPages ? 'true' : 'false'} aria-label="Last" class="page-link" role="button" tabindex={currentPage === totalPages ? '-1' : ''}><span aria-hidden="true">»»</span></a>
+    </li>
+  </ul>
+}

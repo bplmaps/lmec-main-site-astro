@@ -4,6 +4,7 @@ import createSlug from '../../lib/createSlug';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
 import { useStoryblokApi } from "@storyblok/astro";
+import type { Tag, PageData } from '../../lib/types';
 import type { ISbResult } from '@storyblok/astro';
 import type { GetStaticPathsOptions } from 'astro';
 
@@ -44,6 +45,7 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
         headerImage: article.content.headerImage,
         publishedAt: article.content.publishDate,
         author: article.content.author,
+        contentType: article.content.component,
       },
     }
   })
@@ -53,37 +55,28 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   });
 }
 
+const { page }: { page: PageData } = Astro.props;
+
 const storyblokApi = useStoryblokApi();
 
 const articlesPerPage = 10;
 const articlesResponse: ISbResult = await storyblokApi.get('cdn/stories', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   per_page: articlesPerPage,
-  page: 1,
+  page: page.currentPage,
   starts_with: 'main-site/',
   content_type: 'article-page',
 });
-const totalArticles = Number(articlesResponse.headers?['total'] : 0);
+const totalArticles = Number(articlesResponse.total);
 const totalPages = Math.ceil(totalArticles / articlesPerPage);
 
-interface PageData {
-  currentPage: number;
-  data: any[];
-}
-
-const { page }: { page: PageData } = Astro.props;
-
-const currentPage = page.currentPage;
-const articles = page.data;
+const currentPage = page.currentPage ?? 1;
+const articles = page.data ?? [];
 
 const tagsResponse = await storyblokApi.get('cdn/tags', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
 })
-
-interface Tag {
-  taggings_count: number;
-}
 
 let tags = tagsResponse.data.tags
 tags = tags.sort(
