@@ -1,4 +1,4 @@
-export default function (title: string) {
+export function createSlug (title: string) {
   return (
     title
       // remove leading & trailing whitespace
@@ -12,4 +12,8 @@ export default function (title: string) {
       // output lowercase
       .toLowerCase()
   )
+}
+
+export function getPath (fullSlug: string) {
+  return fullSlug.replace(/^main-site\//, '').replace(/\/$/, '');
 }
