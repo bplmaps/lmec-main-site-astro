@@ -500,12 +500,16 @@ textarea.form-control{
       font-size: 17px;
       line-height: 1.55;
 
+      > p {
+        margin-bottom: 0;
+      }
+
       &::before {
         content: "⊛ ";
         font-size: 80%;
-        margin-left: -12px;
-        position: relative;
-        bottom: 2px;
+        margin-left: -1em;
+        position: absolute;
+        top: 0.375em;
       }
 
     }
