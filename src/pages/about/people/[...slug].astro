@@ -55,7 +55,7 @@ const { data } = await storyblokApi.get(
 const staff = (data as any).story
 ---
 
-<Layout title={`${staff.name}`}>
+<Layout title={`${staff.name}`} subheading={`${staff.content.title ? staff.content.title : ''}`}>
   <section class="section-sm">
     <div class="container">
     </div>

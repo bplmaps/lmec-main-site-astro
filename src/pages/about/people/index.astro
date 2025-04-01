@@ -28,7 +28,7 @@ while (true) {
     version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
     starts_with: 'main-site/about/people',
     content_type: 'staff-page',
-    sort_by: 'content.staffName:asc',
+    sort_by: 'name:asc',
     per_page: perPage,
     page: currentPage,
   })
@@ -45,12 +45,10 @@ while (true) {
 
 allPeople = allPeople.map((person: any) => {
   return {
-    params: {
-      slug: person.slug,
-      staffName: person.content.staffName,
-      title: person.content.title,
-      headshot: person.content.headshot,
-    },
+    slug: person.slug,
+    name: person.name,
+    title: person.content.title,
+    headshot: person.content.headshot,
   }
 })
 ---
@@ -66,19 +64,19 @@ allPeople = allPeople.map((person: any) => {
               <div class="row">
                 {allPeople.map((person: any) => (
                   <div class="staff-list-card col-sm-12 col-md-4">
-                    {person.params.headshot &&
-                      <a href={`/about/people/${person.params.slug}`}>
-                        <img src={person.params.headshot.filename} alt={`Headshot of ${person.params.staffName}`} class="card-img-top staff-headshot-circle" />
+                    {person.headshot &&
+                      <a href={`/about/people/${person.slug}`}>
+                        <img src={person.headshot.filename} alt={`Headshot of ${person.name}`} class="card-img-top staff-headshot-circle" />
                       </a>
                     }
-                    {person.params.slug &&
+                    {person.slug &&
                       <h5>
-                        <a href={`/about/people/${person.params.slug}`}>{person.params.staffName}</a>
+                        <a href={`/about/people/${person.slug}`}>{person.name}</a>
                       </h5>
                     }
-                    {person.params.title &&
+                    {person.title &&
                       <p>
-                        <em>{person.params.title}</em>
+                        <em>{person.title}</em>
                       </p>
                     }
                   </div>
