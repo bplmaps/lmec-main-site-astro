@@ -1,14 +1,15 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
-import { richTextResolver } from '@storyblok/richtext'
-import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
- 
+import { storyblokEditable } from '@storyblok/astro';
+import { richTextResolver } from '@storyblok/richtext';
+
+const { blok } = Astro.props
 const { render } = richTextResolver()
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
-  const allStaff = [];
+  const allPeople = [];
 
   let page = 1;
   const perPage = 100;
@@ -21,21 +22,21 @@ export async function getStaticPaths() {
       per_page: perPage,
       page: page,
     })
-    let staff = data.stories
-    staff = Object.values(staff)
+    let person = data.stories
+    person = Object.values(person)
 
-    if (staff.length === 0) {
+    if (person.length === 0) {
       break; // Exit the loop if no stories are returned (i.e., last page)
     }
 
-    allStaff.push(...staff);
+    allPeople.push(...person);
     page++;
   }
 
-  return allStaff.map((staff: any) => {
+  return allPeople.map((person: any) => {
     return {
       params: {
-        slug: staff.slug,
+        slug: person.slug,
       },
     }
   })
@@ -52,12 +53,41 @@ const { data } = await storyblokApi.get(
   }
 )
  
-const staff = (data as any).story
+const person = (data as any).story
 ---
 
-<Layout title={`${staff.name}`} subheading={`${staff.content.title ? staff.content.title : ''}`}>
-  <section class="section-sm">
-    <div class="container">
+<Layout title={`${person.name}`} subheading={`${person.content.title ? person.content.title : ''}`}>
+  <section class="section">
+    <div class="row">
+      <div class="col-md-5 mb-5">
+        {person.content.headshot &&
+          <img src={person.content.headshot.filename} alt={`Headshot of ${person.name}`} class="img-fluid w-100">
+        }
+      </div>
+      <div class="col-md-6 mb-5">
+        <div class="mb-5">
+          <h4 class="mb-4">Contact {person.name}</h4>
+          <ul class="p-0 m-0">
+            {person.content.contact_phone &&
+              <li class="mb-1"><em>Phone:</em> {person.content.contact_phone}</li>
+            }
+            {person.content.contactEmail &&
+              <li class="mb-1"><em>Email:</em>
+                {person.content.contactEmail.linktype === 'email' &&
+                  <a href={`mailto:${person.content.contactEmail.email}`}>{person.content.contactEmail.email}</a>
+                }
+                {person.content.contactEmail.linktype !== 'email' &&
+                  <a href={person.content.contactEmail.url} target="_blank">{person.content.contactEmail.url}</a>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+        <div class="mb-5">
+          <h4 class="mb-4">About {person.name}</h4>
+          <div {...storyblokEditable(blok)} set:html={render(person.content.bio)} />
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
