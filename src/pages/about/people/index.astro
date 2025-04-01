@@ -28,6 +28,7 @@ while (true) {
     version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
     starts_with: 'main-site/about/people',
     content_type: 'staff-page',
+    sort_by: 'content.staffName:asc',
     per_page: perPage,
     page: currentPage,
   })
