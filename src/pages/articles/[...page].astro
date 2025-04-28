@@ -93,7 +93,7 @@ tags = tags.slice(0, 20);
           <h3>Filter articles by tag</h3>
           <div class="tagcloud">
             {tags.map((tag: any) => (
-              <span class="badge rounded-pill bg-light text-secondsry mb-1 tagcloud-item">
+              <span class="badge rounded-pill bg-light text-secondary mb-1 tagcloud-item">
                 <a href={`/tags/${createSlug(tag.name)}`}>{tag.name}</a>
                 <span class="badge bg-info" >{tag.taggings_count}</span>
               </span>
