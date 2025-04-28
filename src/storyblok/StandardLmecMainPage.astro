@@ -10,7 +10,7 @@ export interface Props {
 
 const { blok } = Astro.props
 const { render } = richTextResolver()
-const html = render(blok.content)
+const html = blok.content ? render(blok.content) : ''
 ---
 
 <div {...storyblokEditable(blok)} set:html={html} />

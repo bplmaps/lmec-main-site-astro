@@ -1,4 +1,5 @@
 ---
+import { getPath } from '../lib/utils';
 import Layout from '../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
 import Sidebar from '../components/Layout/Sidebar.astro';
@@ -33,13 +34,11 @@ export async function getStaticPaths() {
   return allPages.map((page: any) => {
     return {
       params: {
-        path: page.full_slug.replace(/^main-site\//, '').replace(/\/$/, ''),
+        path: getPath(page.full_slug),
       },
     }
   })
 }
-
-console.log();
 
 const { path } = Astro.params
 
@@ -55,7 +54,7 @@ const { data } = await storyblokApi.get(
 const page = (data as any).story
 ---
 
-<Layout title={`${page.name}`} subheading={`${page.content.page_description}`} image={`${page.content.header_img && page.content.header_img.filename}`}>
+<Layout title={`${page.name}`} subheading={`${page.content.page_description ? page.content.page_description : ''}`} image={`${page.content.header_img && page.content.header_img.filename}`}>
   <section class="section-sm">
     <div class="row">
       <div class="col-lg-8 order-1 order-lg-1">
