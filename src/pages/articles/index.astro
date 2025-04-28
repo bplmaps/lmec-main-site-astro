@@ -4,6 +4,7 @@ import { useStoryblokApi } from "@storyblok/astro";
 
 const storyblokApi = useStoryblokApi()
 
+// TODO: Implement pagination here with `page` and `per_page` params 
 const { data } = await storyblokApi.get('cdn/stories', {
   version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
   starts_with: 'main-site/',
