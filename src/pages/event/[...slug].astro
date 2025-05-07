@@ -2,8 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
 import RelatedEvents from '../../components/Event/Related.astro';
-import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
- 
+import RichText from '../../storyblok/RichText.astro';
+
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
   const allEvents = [];
@@ -134,7 +134,9 @@ const event = (data as any).story
             This event has already taken place.
           </div>
         }
-        <StoryblokComponent name={event.name} blok={event.content} />
+        {event.content.body && (
+          <RichText blok={{ body: event.content.body }} />
+        )}
       </div>
 
       <div class="col-12 mt-5">

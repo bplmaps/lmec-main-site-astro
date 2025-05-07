@@ -1,11 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
-import { storyblokEditable } from '@storyblok/astro';
-import { richTextResolver } from '@storyblok/richtext';
-
-const { blok } = Astro.props
-const { render } = richTextResolver()
+import RichText from '../../../storyblok/RichText.astro';
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
@@ -85,7 +81,9 @@ const person = (data as any).story
         </div>
         <div class="mb-5">
           <h4 class="mb-4">About {person.name}</h4>
-          <div {...storyblokEditable(blok)} set:html={render(person.content.bio)} />
+          {person.content.bio && (
+            <RichText blok={{ body: person.content.bio }} />
+          )}
         </div>
       </div>
     </div>
