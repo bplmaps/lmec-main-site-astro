@@ -1,14 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
+import { useStoryblokApi, storyblokEditable } from "@storyblok/astro";
 import { richTextResolver } from '@storyblok/richtext'
+import RichText from '../../storyblok/RichText.astro';
 // TODO: Add typescript definitions for countable
 // @ts-ignore
 import Countable from 'countable';
 import Donate from '../../components/Article/Donate.astro';
 import Sidebar from '../../components/Article/Sidebar.astro';
-import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
- 
+
 const { render } = richTextResolver()
 
 export async function getStaticPaths() {
@@ -91,7 +91,11 @@ Countable.count(render(article.content.body), (counter : any) => {
           
           <div class="row">
             <div class="col-12 my-4 content">
-              <StoryblokComponent name={article.name} blok={article.content} />
+              {article.content && (
+                <div {...storyblokEditable(article.content)}>
+                  <RichText blok={{ body: article.content.body }} />
+                </div>
+              )}
             </div>
           </div>
           

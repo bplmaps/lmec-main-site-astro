@@ -1,7 +1,7 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import { RichTextSchema, renderRichText } from '@storyblok/js';
-import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import UnionSearch from '../components/Global/UnionSearch.astro';
 
 export interface Props {
   blok: {
@@ -11,60 +11,65 @@ export interface Props {
 
 const { blok } = Astro.props;
 
-// Initialize a Map to store nestable blocks with unique markers
-const nestableBlocks = new Map();
+const richTextNodes = blok.body?.content || [];
+const textOnlyNodes: any[] = [];
+const storedComponents: { index: number; params: any; }[] = [];
 
-// Render the rich text content with our custom schema
-let renderedContent = '';
-try {
-  renderedContent = renderRichText(blok.body, {
-    schema: RichTextSchema,
-    resolver: (component, blok) => {
-      switch (component) {
-        case "html-block":
-          return `<div class="html-block">${blok.rawHTML}</div>`;
-          break;
-        default:
-          return `Component ${component} not found`;
-      }
-    },
-  }) ?? '';
-} catch (error) {
-  console.error('Error rendering rich text:', error);
-  renderedContent = '<p>Error rendering content</p>';
-}
-
-// Split the rendered content by block markers
-interface ContentPart {
-  type: 'html' | 'blok';
-  content?: string;
-  blok?: any;
-}
-
-const contentParts: ContentPart[] = [];
-const parts = renderedContent.split(/(__BLOCK_[a-zA-Z0-9]+__)/g);
-
-parts.forEach(part => {
-  if (part.startsWith('__BLOCK_') && part.endsWith('__')) {
-    // This is a block marker, get the corresponding block
-    const block = nestableBlocks.get(part);
-    if (block) {
-      contentParts.push({ type: 'blok', blok: block });
-    }
-  } else if (part.trim()) {
-    // This is HTML content (non-empty)
-    contentParts.push({ type: 'html', content: part });
+richTextNodes.forEach((node: { type: string; attrs: { body: any[]; }; }, nodeIndex: any) => {
+  if (node.type === 'blok') {
+    node.attrs.body.forEach((component: any, componentIndex: any) => {
+      const index = parseInt(`${nodeIndex}${componentIndex}`);
+      // adds a placeholder for the component
+      textOnlyNodes.push({
+        ...component,
+        type: 'paragraph',
+        content: [{ type: 'text', text: `[__COMPONENT:__INDEX:${index}]` }]
+      });
+      // stores the component for later replacement
+      storedComponents.push({
+        index,
+        params: component
+      });
+    });
+  } else {
+    textOnlyNodes.push(node);
   }
 });
+
+const textBlok = {
+  ...blok.body,
+  content: textOnlyNodes
+};
+
+const richTextString = renderRichText(textBlok, {
+  schema: RichTextSchema,
+}) ?? '';
+
+const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
 ---
 
 <div {...storyblokEditable(blok)}>
-  {contentParts.map((part, index) => {
-    if (part.type === 'html') {
-      return <div set:html={part.content} class="rich-text-content" />;
-    } else if (part.type === 'blok' && part.blok) {
-      return <StoryblokComponent blok={part.blok} />;
+  {richTextParts.map((part, index) => {
+    if (part.startsWith('__INDEX:')) {
+      const componentIndex = parseInt(part.replace('__INDEX:', ''));
+      const storedComponent = storedComponents.find(comp => comp.index === componentIndex);
+    
+      if (storedComponent) {
+        switch(storedComponent.params.component) {
+          case 'html-block':
+            return <Fragment set:html={storedComponent.params.rawHTML} />;
+          case 'digital-collections-union-search':
+            return (
+              <div {...storyblokEditable(storedComponent.params)}>
+                <UnionSearch blok={storedComponent.params} />
+              </div>
+            );
+          default:
+            return `<!-- Component not found: ${storedComponent.params.component} -->`;
+        }
+      }
     }
-    return null;
+
+    return <Fragment set:html={part} />;
   })}
 </div>
