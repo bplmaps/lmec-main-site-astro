@@ -1,0 +1,42 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import RichText from './RichText.astro';
+const { blok } = Astro.props;
+---
+
+<article {...storyblokEditable(blok)} class="section">
+  <div class="row">
+    <div class="col-md-5 mb-5">
+      {blok.headshot &&
+        <img src={blok.headshot.filename} alt={`Headshot of ${blok.staffName}`} class="img-fluid w-100">
+      }
+    </div>
+    <div class="col-md-6 mb-5">
+      <div class="mb-5">
+        <h4 class="mb-4">Contact {blok.staffName}</h4>
+        <ul class="p-0 m-0">
+          {blok.contact_phone &&
+            <li class="mb-1"><em>Phone:</em> {blok.contact_phone}</li>
+          }
+          {blok.contactEmail &&
+            <li class="mb-1"><em>Email:</em>
+              {blok.contactEmail.linktype === 'email' &&
+                <a href={`mailto:${blok.contactEmail.email}`}>{blok.contactEmail.email}</a>
+              }
+              {blok.contactEmail.linktype !== 'email' &&
+                <a href={blok.contactEmail.url} target="_blank">{blok.contactEmail.url}</a>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+      <div class="mb-5">
+        <h4 class="mb-4">About {blok.staffName}</h4>
+
+        {blok.bio && (
+          <RichText blok={{ body: blok.bio }} />
+        )}
+      </div>
+    </div>
+  </div>
+</article>
