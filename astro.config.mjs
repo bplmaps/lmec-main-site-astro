@@ -15,6 +15,7 @@ export default defineConfig({
         'article-page': 'storyblok/RichText',
         'event-page': 'storyblok/RichText',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
+        'digital-collections-union-search': 'storyblok/DigitalCollectionsUnionSearch',
       },
       apiOptions: {
         region: 'us',

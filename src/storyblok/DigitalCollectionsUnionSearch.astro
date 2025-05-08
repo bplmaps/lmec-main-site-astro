@@ -1,0 +1,10 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import UnionSearch from "../components/Global/UnionSearch.astro";
+
+const { blok } = Astro.props
+
+---
+<div {...storyblokEditable(blok)} />
+    <UnionSearch />
+</div>
