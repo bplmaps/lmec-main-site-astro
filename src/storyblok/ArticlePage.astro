@@ -1,0 +1,57 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import { richTextResolver } from '@storyblok/richtext'
+import Donate from '../components/Article/Donate.astro';
+import Sidebar from '../components/Article/Sidebar.astro';
+import RichText from './RichText.astro';
+// TODO: Add typescript definitions for countable
+// @ts-ignore
+import Countable from 'countable';
+
+const { render } = richTextResolver()
+
+const { blok } = Astro.props;
+
+let countWords = 0;
+let readingTime = 0;
+
+Countable.count(render(blok.body), (counter : any) => {
+  countWords = counter.words
+  readingTime = Math.round(countWords / 238);
+})
+---
+
+<article {...storyblokEditable(blok)} class="section-sm">
+  <div class="row">
+    <div class="col-lg-8 order-1 order-lg-1">
+      <div class="row">
+        <div class="col-sm-4 mb-2">
+          <i class="fas fa-feather me-2"></i>
+          {blok.author}
+        </div>
+        <div class="col-sm-4 mb-2">
+          <i class="fas fa-calendar-day me-2"></i>
+          {new Date(blok.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
+        </div>
+        <div class="col-sm-4 mb-2">
+          <i class="fas fa-scroll me-2"></i>
+          {countWords} words / {readingTime} minutes
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-12 my-4 content">
+          {blok.body && (
+            <RichText blok={{ body: blok.body }} />
+          )}
+        </div>
+      </div>
+      
+      <Donate />
+    </div>
+
+    <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
+      <Sidebar id={blok.id} tags={blok.tags} />
+    </aside>
+  </div>
+</article>

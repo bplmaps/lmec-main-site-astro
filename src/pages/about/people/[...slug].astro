@@ -1,7 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
-import RichText from '../../../storyblok/RichText.astro';
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
@@ -53,39 +53,5 @@ const person = (data as any).story
 ---
 
 <Layout title={`${person.name}`} subheading={`${person.content.title ? person.content.title : ''}`}>
-  <section class="section">
-    <div class="row">
-      <div class="col-md-5 mb-5">
-        {person.content.headshot &&
-          <img src={person.content.headshot.filename} alt={`Headshot of ${person.name}`} class="img-fluid w-100">
-        }
-      </div>
-      <div class="col-md-6 mb-5">
-        <div class="mb-5">
-          <h4 class="mb-4">Contact {person.name}</h4>
-          <ul class="p-0 m-0">
-            {person.content.contact_phone &&
-              <li class="mb-1"><em>Phone:</em> {person.content.contact_phone}</li>
-            }
-            {person.content.contactEmail &&
-              <li class="mb-1"><em>Email:</em>
-                {person.content.contactEmail.linktype === 'email' &&
-                  <a href={`mailto:${person.content.contactEmail.email}`}>{person.content.contactEmail.email}</a>
-                }
-                {person.content.contactEmail.linktype !== 'email' &&
-                  <a href={person.content.contactEmail.url} target="_blank">{person.content.contactEmail.url}</a>
-                }
-              </li>
-            }
-          </ul>
-        </div>
-        <div class="mb-5">
-          <h4 class="mb-4">About {person.name}</h4>
-          {person.content.bio && (
-            <RichText blok={{ body: person.content.bio }} />
-          )}
-        </div>
-      </div>
-    </div>
-  </section>
+  <StoryblokComponent name={person.name} blok={person.content} />
 </Layout>
