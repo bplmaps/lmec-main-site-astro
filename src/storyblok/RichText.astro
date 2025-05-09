@@ -2,6 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro';
 import { RichTextSchema, renderRichText } from '@storyblok/js';
 import UnionSearch from './nestable/UnionSearch.astro';
+import Button from './nestable/Button.astro';
 
 export interface Props {
   blok: {
@@ -62,6 +63,12 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
             return (
               <div {...storyblokEditable(storedComponent.params)}>
                 <UnionSearch blok={storedComponent.params} />
+              </div>
+            );
+          case 'button':
+            return (
+              <div {...storyblokEditable(storedComponent.params)}>
+                <Button blok={storedComponent.params} />
               </div>
             );
           default:
