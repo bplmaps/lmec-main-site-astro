@@ -1,4 +1,5 @@
 ---
+import { getPath } from '../lib/utils';
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
@@ -45,7 +46,7 @@ const { blok } = Astro.props
                       <p class="text-white" data-swiper-parallax-x="100" data-swiper-parallax-duration="300">{slide.content}</p>
                     }
                     {(slide.button_link && slide.button_text) &&
-                      <a href={slide.button_link} class="btn btn-sm btn-secondary hero-button">
+                      <a href={getPath(slide.button_link.cached_url)} class="btn btn-sm btn-secondary hero-button">
                         {slide.button_text}
                       </a>
                     }
