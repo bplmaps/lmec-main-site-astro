@@ -16,6 +16,8 @@ const articlesResponse = await storyblokApi.get('cdn/stories', {
   page: currentPage,
   starts_with: 'main-site/',
   content_type: 'article-page',
+  sort_by: 'sort_by_date:desc',
+
 });
 const totalArticles = Number(articlesResponse.total);
 const totalPages = Math.ceil(totalArticles / articlesPerPage);
