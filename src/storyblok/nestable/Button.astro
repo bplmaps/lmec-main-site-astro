@@ -4,7 +4,7 @@ import { storyblokEditable } from '@storyblok/astro';
 export interface Props {
   blok: {
     buttonLink: {
-      url: string;
+      cached_url: string;
     }
     buttonIcon: string;
     buttonText: string;
@@ -16,9 +16,9 @@ const { blok } = Astro.props
 ---
 
 <div {...storyblokEditable(blok)}>
-  <p class="text-center">
-    <!-- Note that blok.buttonLink.url will only work right now for external URLs in Storyblok, not internal links. 
-    Will need to create an if statement to accomodate internal links -->
-    <a href={blok.buttonLink.url} target="_blank" class={`${blok.buttonType} mb-2`}><i class={blok.buttonIcon}></i>{blok.buttonText}</a>
-  </p>
+  {blok.buttonLink &&
+    <p class="text-center">
+      <a href={blok.buttonLink.cached_url} target="_blank" class={`${blok.buttonType} mb-2`}><i class={blok.buttonIcon}></i>{blok.buttonText}</a>
+    </p>
+  }
 </div>
