@@ -1,8 +1,24 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import { RichTextSchema, renderRichText } from '@storyblok/js';
-import UnionSearch from './nestable/UnionSearch.astro';
+import AlertBox from './nestable/AlertBox.astro';
 import Button from './nestable/Button.astro';
+import Carousel from './nestable/Carousel.astro';
+import CartographyChallenges from './nestable/CartographyChallenges.astro';
+import CourseListing from './nestable/CourseListing.astro';
+import UnionSearch from './nestable/UnionSearch.astro';
+import EducationListing from './nestable/EducationListing.astro';
+import EventTagListing from './nestable/EventTagListing.astro';
+import ExhibitionEvents from './nestable/ExhibitionEvents.astro';
+import Figure from './nestable/Figure.astro';
+import GrantsInAid from './nestable/GrantsInAid.astro';
+import HoursTable from './nestable/HoursTable.astro';
+import HtmlBlock from './nestable/HtmlBlock.astro';
+import MaplibreGlMap from './nestable/MaplibreGlMap.astro';
+import PdListing from './nestable/PdListing.astro';
+import ResourcesList from './nestable/ResourcesList.astro';
+import SmallGrants from './nestable/SmallGrants.astro';
+import StaffList from './nestable/StaffList.astro';
 
 export interface Props {
   blok: {
@@ -57,20 +73,42 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
     
       if (storedComponent) {
         switch(storedComponent.params.component) {
-          case 'html-block':
-            return <Fragment set:html={storedComponent.params.rawHTML} />;
-          case 'digital-collections-union-search':
-            return (
-              <div {...storyblokEditable(storedComponent.params)}>
-                <UnionSearch blok={storedComponent.params} />
-              </div>
-            );
+          case 'alert-box':
+            return <AlertBox blok={storedComponent.params} />;
           case 'button':
-            return (
-              <div {...storyblokEditable(storedComponent.params)}>
-                <Button blok={storedComponent.params} />
-              </div>
-            );
+            return <Button blok={storedComponent.params} />;
+          case 'carousel':
+            return <Carousel blok={storedComponent.params} />;
+          case 'cartography-challenges':
+            return <CartographyChallenges blok={storedComponent.params} />;
+          case 'course-listing':
+            return <CourseListing blok={storedComponent.params} />;
+          case 'digital-collections-union-search':
+            return <UnionSearch blok={storedComponent.params} />;
+          case 'education-listing':
+            return <EducationListing blok={storedComponent.params} />;
+          case 'event-tag-listing':
+            return <EventTagListing blok={storedComponent.params} />;
+          case 'exhibition-events':
+            return <ExhibitionEvents blok={storedComponent.params} />;
+          case 'figure':
+            return <Figure blok={storedComponent.params} />;
+          case 'grants-in-aid':
+            return <GrantsInAid blok={storedComponent.params} />;
+          case 'hours-table':
+            return <HoursTable blok={storedComponent.params} />;
+          case 'html-block':
+            return <HtmlBlock blok={storedComponent.params} />;
+          case 'maplibre-gl-map':
+            return <MaplibreGlMap blok={storedComponent.params} />;
+          case 'pd-listing':
+            return <PdListing blok={storedComponent.params} />;
+          case 'resources-list':
+            return <ResourcesList blok={storedComponent.params} />;
+          case 'small-grants':
+            return <SmallGrants blok={storedComponent.params} />;
+          case 'staff-list':
+            return <StaffList blok={storedComponent.params} />;
           default:
             return `<!-- Component not found: ${storedComponent.params.component} -->`;
         }

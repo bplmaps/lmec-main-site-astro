@@ -1,4 +1,14 @@
-<div class="row px-4">
+---
+import { storyblokEditable } from '@storyblok/astro';
+
+export interface Props {
+  blok: {};
+}
+
+const { blok } = Astro.props
+---
+
+<div {...storyblokEditable(blok)} class="row px-4">
     <h4 class="h3 mb-3">Quick search digital collections</h4>
     <div class="mb-2">
         <a href="/collections/searching" class="btn btn-xs btn-primary-outline ms-3"><i class="fas fa-search-plus me-2"></i> More search options</a>
