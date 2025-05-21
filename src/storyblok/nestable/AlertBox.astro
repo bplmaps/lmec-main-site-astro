@@ -1,11 +1,32 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import RichText from '../../storyblok/RichText.astro';
 
 export interface Props {
-  blok: {};
+  blok: {
+    type: string;
+    title: string;
+    icon: string;
+    body: string;
+  };
 }
 
 const { blok } = Astro.props
 ---
 
-<div {...storyblokEditable(blok)} />
+<div {...storyblokEditable(blok)} class={`alert ${blok.type ? `alert-${blok.type}` : 'alert-primary'}`}>
+  {blok.title && (
+    <div class="not-content h4 font-secondary">
+      {blok.icon && (
+        <i class={`${blok.icon} me-1`}></i>
+      )}
+      {blok.title}
+    </div>
+  )}
+
+  {blok.body && (
+    <div class="alert-body">
+      <RichText blok={{ body: blok.body }} />
+    </div>
+  )}
+</div>

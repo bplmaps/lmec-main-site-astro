@@ -39,7 +39,6 @@ richTextNodes.forEach((node: { type: string; attrs: { body: any[]; }; }, nodeInd
       // adds a placeholder for the component
       textOnlyNodes.push({
         ...component,
-        type: 'paragraph',
         content: [{ type: 'text', text: `[__COMPONENT:__INDEX:${index}]` }]
       });
       // stores the component for later replacement
