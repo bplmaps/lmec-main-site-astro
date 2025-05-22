@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import RichText from '../RichText.astro';
+import RichText from '../../storyblok/RichText.astro';
 
 export interface Props {
   blok: {
@@ -29,6 +29,8 @@ const { blok } = Astro.props
     <div class="pd-text">
       <RichText blok={{ body: blok.description }} />
     </div>
-    {blok.signup_link.url==="" ? <br> : <br><a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><i class="fas fa-user-plus"></i> Sign up here</a> }
+    { blok.signup_link.url && (
+      <br><a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><i class="fas fa-user-plus"></i> Sign up here</a>
+    )}
   </div>
 </div>
