@@ -1,0 +1,13 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+
+export interface Props {
+  blok: {
+    rawHTML: string;
+  };
+}
+
+const { blok } = Astro.props
+---
+
+<Fragment {...storyblokEditable(blok)} set:html={blok.rawHTML} />

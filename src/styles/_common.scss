@@ -445,28 +445,29 @@ textarea.form-control{
     scroll-snap-margin-top: 240px;
   }
 
-  h1, h2{
+  h1, h2 {
+    &:not(.not-content) {
+      position: relative;
 
-    position: relative;
-
-    &::before {
-      content: "➣";
-      position: absolute;
-      left: -35px;
-      top: 5px;
-      font-size: 80%;
+      &::before {
+        content: "➣";
+        position: absolute;
+        left: -35px;
+        top: 5px;
+        font-size: 80%;
+      }
     }
   }
 
   h3, h4 {
+    &:not(.not-content) {
+      position: relative;
 
-    position: relative;
-
-    &::before {
-      content: "‣";
-      position: absolute;
-      left: -25px;
-
+      &::before {
+        content: "‣";
+        position: absolute;
+        left: -25px;
+      }
     }
   }
 
@@ -476,16 +477,22 @@ textarea.form-control{
   h4,
   h5,
   h6 {
-    margin-bottom: 10px;
+    &:not(.not-content) {
+      margin-bottom: 10px;
+    }
   }
 
   h2:not(:first-of-type) {
-    margin-top: 40px;
+    &:not(.not-content) {
+      margin-top: 40px;
+    }
   }
 
   h3, h4 {
-    &:not(:first-of-type) {
-      margin-top: 25px;
+    &:not(.not-content) {
+      &:not(:first-of-type) {
+        margin-top: 25px;
+      }
     }
   }
 
@@ -633,6 +640,14 @@ textarea.form-control{
   .alert {
     a {
       text-decoration: underline;
+    }
+  }
+
+  .alert-body {
+    p {
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
