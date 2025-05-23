@@ -329,6 +329,18 @@ textarea.form-control{
 
 }
 
+.content *:has(> [role="doc-endnote"]) {
+  font-size: 90%;
+  padding-left: 20px;
+}
+
+.content * > [role="doc-endnote"] {
+  position: absolute;
+  width: 1em;
+  text-align: right;
+  margin-left: -18px;
+}
+
 .frontpage-content {
   p a, li a {
 
