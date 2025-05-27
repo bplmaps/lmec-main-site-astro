@@ -11,7 +11,13 @@ body {
   color: $white;
 }
 
+* {
+  scroll-margin-top: 90px;
 
+  @media (min-width: 992px) {
+    scroll-margin-top: 98px;
+  }
+}
 
 ol,
 ul {
@@ -327,6 +333,18 @@ textarea.form-control{
     font-size: 90%;
   } }
 
+}
+
+.content *:has(> [role="doc-endnote"]) {
+  font-size: 90%;
+  padding-left: 20px;
+}
+
+.content * > [role="doc-endnote"] {
+  position: absolute;
+  width: 1em;
+  text-align: right;
+  margin-left: -18px;
 }
 
 .frontpage-content {

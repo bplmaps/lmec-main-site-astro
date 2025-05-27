@@ -65,7 +65,8 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
 ---
 
 <div {...storyblokEditable(blok)}>
-  {richTextParts.map((part, index) => {
+  {richTextParts.map((part) => {
+    // Inject our own custom components
     if (part.startsWith('__INDEX:')) {
       const componentIndex = parseInt(part.replace('__INDEX:', ''));
       const storedComponent = storedComponents.find(comp => comp.index === componentIndex);
@@ -113,6 +114,12 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
         }
       }
     }
+
+    // Replace inline markdown-formatted footnotes with superscripts
+    part = part.replaceAll(/\[\^(\d+)\](?!:)/gm, '<sup><a href="#fn:$1" data-footnote="$1" class="footnote-ref" role="doc-noteref">$1</a></sup>');
+
+    // Replace markdown-formatted endnotes with decimal-formatted list
+    part = part.replaceAll(/\[\^(\d+)\]:/gm, '<span id="fn:$1" data-endnote="$1" role="doc-endnote">$1.</span>');
 
     return <Fragment set:html={part} />;
   })}
