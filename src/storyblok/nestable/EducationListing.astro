@@ -1,11 +1,36 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import RichText from '../../storyblok/RichText.astro';
 
 export interface Props {
-  blok: {};
+  blok: {
+    title: string;
+    subtitle: string;
+    image: {
+      filename: string;
+    };
+    description: object;
+    signup_link: {
+      url: string;
+    };
+  };
 }
 
 const { blok } = Astro.props
 ---
 
-<div {...storyblokEditable(blok)} />
+<div {...storyblokEditable(blok)} class="d-flex py-4">
+  <div class="flex-shrink-1">
+    <img src={blok.image.filename} class="me-3"  width="250px">
+  </div>
+  <div class="flex-grow-1 ms-3">
+    <h4 class="mt-0">{blok.title}</h4>
+    <h6 class="text-muted">{blok.subtitle}</h6>
+    <div class="pd-text">
+      <RichText blok={{ body: blok.description }} />
+    { blok.signup_link.url && (
+      <a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><i class="fas fa-user-plus"></i> Sign up here</a>
+    )}
+    </div>
+  </div>
+</div>
