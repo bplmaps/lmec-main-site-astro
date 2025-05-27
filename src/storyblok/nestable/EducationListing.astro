@@ -28,10 +28,9 @@ const { blok } = Astro.props
     <h6 class="text-muted">{blok.subtitle}</h6>
     <div class="pd-text">
       <RichText blok={{ body: blok.description }} />
-    </div>
     { blok.signup_link.url && (
       <a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><i class="fas fa-user-plus"></i> Sign up here</a>
     )}
+    </div>
   </div>
 </div>
-
