@@ -16,6 +16,7 @@ while (true) {
     content_type: 'event-page',
     per_page: perPage,
     page: page,
+    sort_by: 'content.eventDate:desc',
   })
   let events = data.stories
   events = Object.values(events)
