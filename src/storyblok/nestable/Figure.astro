@@ -26,13 +26,13 @@ const { blok } = Astro.props
   {blok.link && blok.link.cached_url &&
     <a href={blok.link.cached_url} target="" rel="">
       {blok.imageSrc &&
-        <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : blok.caption} />
+        <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
       }
     </a>
   }
 
   {!(blok.link && blok.link.cached_url) &&
-    <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : blok.caption} />
+    <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
   }
   
   {(blok.title || blok.caption) &&
