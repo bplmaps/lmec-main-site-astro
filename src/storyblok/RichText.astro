@@ -3,6 +3,7 @@ import { storyblokEditable } from '@storyblok/astro';
 import { RichTextSchema, renderRichText } from '@storyblok/js';
 import AlertBox from './nestable/AlertBox.astro';
 import Button from './nestable/Button.astro';
+import CardHolder from './nestable/CardHolder.astro'
 import Carousel from './nestable/Carousel.astro';
 import CartographyChallenges from './nestable/CartographyChallenges.astro';
 import UnionSearch from './nestable/UnionSearch.astro';
@@ -10,7 +11,7 @@ import EducationListing from './nestable/EducationListing.astro';
 import EventTagListing from './nestable/EventTagListing.astro';
 import ExhibitionEvents from './nestable/ExhibitionEvents.astro';
 import Figure from './nestable/Figure.astro';
-import GrantsInAid from './nestable/GrantsInAid.astro';
+import GrantInAid from './nestable/GrantInAid.astro';
 import HoursTable from './nestable/HoursTable.astro';
 import HtmlBlock from './nestable/HtmlBlock.astro';
 import MaplibreGlMap from './nestable/MaplibreGlMap.astro';
@@ -77,6 +78,8 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
             return <Button blok={storedComponent.params} />;
           case 'carousel':
             return <Carousel blok={storedComponent.params} />;
+          case 'card-holder':
+            return <CardHolder blok={storedComponent.params} />;
           case 'cartography-challenges':
             return <CartographyChallenges blok={storedComponent.params} />;
           case 'digital-collections-union-search':
@@ -89,8 +92,8 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
             return <ExhibitionEvents blok={storedComponent.params} />;
           case 'figure':
             return <Figure blok={storedComponent.params} />;
-          case 'grants-in-aid':
-            return <GrantsInAid blok={storedComponent.params} />;
+          case 'grant-in-aid':
+            return <GrantInAid blok={storedComponent.params} />;
           case 'hours-table':
             return <HoursTable blok={storedComponent.params} />;
           case 'html-block':

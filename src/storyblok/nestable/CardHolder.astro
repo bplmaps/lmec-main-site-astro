@@ -1,0 +1,20 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+
+export interface Props {
+  blok: {
+    cardList: [];
+  };
+}
+
+const { blok } = Astro.props
+---
+
+<div {...storyblokEditable(blok)} class="container">
+    <div class="row mt-10">
+        {blok.cardList.map((card: typeof blok) => {
+            return <StoryblokComponent blok={card}/>
+        })}
+    </div>
+</div>
