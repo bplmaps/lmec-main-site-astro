@@ -28,8 +28,6 @@ export default defineConfig({
         'grant-in-aid': 'storyblok/nestable/GrantInAid',
         'hours-table': 'storyblok/nestable/HoursTable',
         'html-block': 'storyblok/nestable/HtmlBlock',
-        'maplibre-gl-map': 'storyblok/nestable/MaplibreGlMap',
-        'resources-list': 'storyblok/nestable/ResourcesList',
         'small-grants': 'storyblok/nestable/SmallGrants',
         'staff-list': 'storyblok/nestable/StaffList',
       },

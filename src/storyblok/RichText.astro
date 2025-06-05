@@ -14,8 +14,6 @@ import Figure from './nestable/Figure.astro';
 import GrantInAid from './nestable/GrantInAid.astro';
 import HoursTable from './nestable/HoursTable.astro';
 import HtmlBlock from './nestable/HtmlBlock.astro';
-import MaplibreGlMap from './nestable/MaplibreGlMap.astro';
-import ResourcesList from './nestable/ResourcesList.astro';
 import SmallGrants from './nestable/SmallGrants.astro';
 import StaffList from './nestable/StaffList.astro';
 
@@ -98,10 +96,6 @@ const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
             return <HoursTable blok={storedComponent.params} />;
           case 'html-block':
             return <HtmlBlock blok={storedComponent.params} />;
-          case 'maplibre-gl-map':
-            return <MaplibreGlMap blok={storedComponent.params} />;
-          case 'resources-list':
-            return <ResourcesList blok={storedComponent.params} />;
           case 'small-grants':
             return <SmallGrants blok={storedComponent.params} />;
           case 'staff-list':
