@@ -2,10 +2,42 @@
 import { storyblokEditable } from '@storyblok/astro';
 
 export interface Props {
-  blok: {};
+  blok: {
+    name: string;
+    deadline: Date;
+    headerImage: {
+      filename: string;
+    };
+    themes: [];
+    challengeURL: {
+      url: string;
+    }
+    winningMap: {
+      url: string;
+    }
+  };
 }
 
 const { blok } = Astro.props
 ---
 
-<div {...storyblokEditable(blok)} />
+<div {...storyblokEditable(blok)} class="col-lg-5 col-md-5 col-sm-6 mb-5 mb-lg-0 my-3">
+  <div class="card rounded-0 hover-shadow alt-gallery-card">
+    <div class="card-img position-relative">
+      <img class="card-img-top rounded-0" src={ blok.headerImage.filename } height="100px">
+    </div>
+    <div class="card-body">
+      <h5 class="card-title"><a href="{{ .Path }}" target="_blank">{ blok.name}</a></h5>
+      <span class="badge bg-success font-secondary text-white fw-normal mt-1">Deadline: { new Date(blok.deadline).toLocaleDateString() }</span>
+      <br><br>
+      {blok.themes.map((theme: string) => {
+        return <span class="badge badge-pill badge-info mb-1">{theme}</span>
+      })}
+      <br><br>
+      <a href={ blok.challengeURL.url } target="_blank" class="btn btn-primary btn-primary-outline btn-xs mb-2"><i class="fas fa-external-link-square-alt me-2"></i> Read the challenge </a>
+      {blok.winningMap && 
+        <a href={ blok.winningMap.url } target="_blank" class="btn btn-primary btn-primary-outline btn-xs mb-2"><i class="fas fa-external-link-square-alt me-2"></i> View the winning map </a>
+      }
+    </div>
+  </div>
+</div>
