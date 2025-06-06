@@ -1,91 +1,21 @@
 ---
-const weekly = [
-  {
-    day: 'Monday',
-    special: 'Closed',
-  },
-  {
-    day: 'Tuesday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    day: 'Wednesday',
-    open: '1 pm',
-    close: '7 pm',
-  },
-  {
-    day: 'Thursday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    day: 'Friday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    day: 'Saturday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    day: 'Sunday',
-    open: '1 pm',
-    close: '5 pm',
-  },
-];
+import { getDatasource } from "../../lib/utils";
 
-const exceptions = [
-  {
-    date: 'September 1, 2024',
-    name: 'The day before Labor Day',
-    special: 'Closed',
-  },
-  {
-    date: 'September 2, 2024',
-    name: 'Labor Day',
-    special: 'Closed',
-  },
-  {
-    date: 'October 14, 2024',
-    name: 'Indigenous People’s Day',
-    special: 'Closed',
-  },
-  {
-    date: 'November 11, 2024',
-    name: 'Veteran’s Day',
-    special: 'Closed',
-  },
-  {
-    date: 'November 27, 2024',
-    name: 'The day before Thanksgiving',
-    special: 'Closed',
-  },
-  {
-    date: 'November 28, 2024',
-    name: 'Thanksgiving',
-    special: 'Closed',
-  },
-  {
-    date: 'December 24, 2024',
-    name: 'Christmas Eve',
-    special: 'Closed',
-  },
-  {
-    date: 'December 25, 2024',
-    name: 'Christmas Day',
-    special: 'Closed',
-  },
-];
+const hours  = await getDatasource("14355", "open-hours");
+const exceptions  = await getDatasource("14397", "schedule-exceptions");
+
+const dataBack = {
+  weeklyHours: hours,
+  scheduleExceptions: exceptions
+};
 
 const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
 const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'});
 
 let showException = false;
 
-exceptions.forEach((exception) => {
-  if (exception.date == todayDate) {
+dataBack.scheduleExceptions.forEach((exception: any) => {
+  if (exception.name === todayDate) {
     showException = true;
   }
 });
@@ -96,11 +26,11 @@ exceptions.forEach((exception) => {
 
   {showException &&
     <>
-      {exceptions.map((exception: any) => (
+      {dataBack.scheduleExceptions.map((exception: any) => (
         <>
-          {exception.date == todayDate &&
+          {exception.name == todayDate &&
             <>
-              {todayDate} · <strong>{exception.special}</strong> ({exception.name}) · <a href="/about/hours-directions">More hours</a>
+              {todayDate} · <strong>{exception.value}</strong> · <a href="/about/hours-directions">More hours</a>
             </>
           }
         </>
@@ -110,23 +40,16 @@ exceptions.forEach((exception) => {
   
   {!showException &&
     <>
-      {weekly.map((hours: any) => (
+      {dataBack.weeklyHours.map((day: any) => (
         <>
-          {hours.day == today &&
+          {day.name == today &&
             <>
               <>
                 {today}
               </>
-              {hours.special &&
-                <>
-                  {hours.special}
-                </>
-              }
-              {!hours.special &&
-                <>
-                  {hours.open} – {hours.close}
-                </>
-              }
+              <>
+                {day.value}
+              </>
               · <a href="./about/hours-directions">More hours</a>
             </>
           }

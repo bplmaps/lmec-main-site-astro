@@ -1,11 +1,52 @@
 ---
-import { storyblokEditable } from '@storyblok/astro';
+import { getDatasource } from "../../lib/utils";
 
-export interface Props {
-  blok: {};
-}
+const hours  = await getDatasource("14355", "open-hours");
+const exceptions  = await getDatasource("14397", "schedule-exceptions");
 
-const { blok } = Astro.props
+const dataBack = {
+  weeklyHours: hours,
+  scheduleExceptions: exceptions
+};
 ---
 
-<div {...storyblokEditable(blok)} />
+<div>
+  <h4>Gallery Hours</h4>
+  <table>
+      <thead>
+          <tr>
+              <td><strong>Day</strong></td>
+              <td><strong>Hours</strong></td>
+          </tr>
+      </thead>
+      <tbody>
+        {dataBack.weeklyHours.map((hour: any) => (
+          <tr>
+              <td>{hour.name}</td>
+              <td>{hour.value}</td>                  
+          </tr>
+        ))}
+      </tbody>
+  </table>
+</div>
+
+<div>
+  <h4>Special Hours</h4>
+  <table>
+      <thead>
+          <tr>
+              <td><strong>Date</strong></td>
+              <td><strong>Details</strong></td>
+          </tr>
+      </thead>
+      <tbody>
+        {dataBack.scheduleExceptions.map((exception: any) => (
+          <tr>
+              <td>{exception.name}</td>
+              <td>{exception.value}</td>                  
+          </tr>
+        ))}
+          
+      </tbody>
+  </table>
+</div>
