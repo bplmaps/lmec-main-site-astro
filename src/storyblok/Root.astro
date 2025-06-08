@@ -117,10 +117,6 @@ blok.upcomingLivestream.forEach((livestream: any) => {
       let startTime = new Date(`${livestream.start_time}`);
       let endTime = new Date(`${livestream.end_time}`);
       let n = new Date();
-      console.log(n);
-      console.log(startTime);
-      console.log(endTime);
-      console.log(eval(`{n<=endTime}`));
       if(n >= startTime && n <= endTime) {
         document.getElementById("livestream-section").classList.remove("d-none");
         document.getElementById("livestream-container").innerHTML = `${livestream.embed_link}`
