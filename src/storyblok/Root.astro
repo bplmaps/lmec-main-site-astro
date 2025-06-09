@@ -8,6 +8,7 @@ import AudiencesSection from "../components/Home/AudiencesSection.astro";
 import SearchSection from "../components/Home/SearchSection.astro";
 import EventsSection from "../components/Home/EventsSection.astro";
 import ArticlesSection from "../components/Home/ArticlesSection.astro";
+import RichText from './RichText.astro';
 
 export interface Props {
 	blok: {
@@ -23,10 +24,41 @@ export interface Props {
       button_link: object;
       button_text: string;
     }[],
+    frontpageFeature: {
+      enabled: boolean;
+      bg_image: object;
+      title: string;
+      content: object;
+      button_text: string;
+      button_link: {
+        url: string;
+      };
+    }[],
+    upcomingLivestream: {
+      enabled: boolean;
+      embed_link: object;
+      start_time: string;
+      end_time: string;
+    }[]
   };
 }
 
 const { blok } = Astro.props
+
+let showFeature = false
+let showLivestream = false
+
+blok.frontpageFeature.forEach((feature: any) => {
+  if (feature.enabled) {
+    showFeature = true;
+  }
+});
+
+blok.upcomingLivestream.forEach((livestream: any) => {
+  if (livestream.enabled) {
+    showLivestream = true;
+  }
+});
 ---
 
 <div {...storyblokEditable(blok)}>
@@ -71,6 +103,28 @@ const { blok } = Astro.props
     </section>
   }
 
+  {showLivestream &&
+    blok.upcomingLivestream.map((livestream: any) => (
+    <section class="section bg-dark d-none p-4" id="livestream-section">
+      <div class="container">
+        <div class="row" id="streaming-now-badge"><h2 class="mx-auto"><span class="badge badge-info"><i class="fas fa-video me-2"></i>Streaming live now</span></h2></div>
+            <div class="row">
+              <div class="mx-auto" id="livestream-container">
+            </div>
+        </div>
+      </div>
+      <script is:inline define:vars={{ livestream }}>
+      let startTime = new Date(`${livestream.start_time}`);
+      let endTime = new Date(`${livestream.end_time}`);
+      let n = new Date();
+      if(n >= startTime && n <= endTime) {
+        document.getElementById("livestream-section").classList.remove("d-none");
+        document.getElementById("livestream-container").innerHTML = `${livestream.embed_link}`
+      }
+    </script>
+    </section>
+  ))}
+
   <section class="section py-3 cta frontpage-content">
     <div class="container">
       <div class="row">
@@ -102,6 +156,30 @@ const { blok } = Astro.props
 
   <AudiencesSection />
   <SearchSection />
+  
+  {showFeature &&
+    blok.frontpageFeature.map((feature: any) => (
+      <section class="section bg-cover frontpage-feature" style=`background-image: url(${feature.bg_image.filename})`>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 col-sm-8">
+              <div class="p-5 frontpage-feature-callout">
+                <h3 class="section-title mb-2">{feature.title}</h3>
+                {feature.content && (
+                  <div class="alert-body">
+                    <RichText blok={{ body: feature.content }} />
+                  </div>
+                )}
+                <a class="btn btn-primary btn-lg" href={feature.button_link.url}>
+                  <i class="ti-control-play"></i> {feature.button_text}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  ))}
+    
   <EventsSection />
   <ArticlesSection />
 </div>
