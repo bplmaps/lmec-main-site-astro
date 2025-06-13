@@ -1,0 +1,33 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import type { ISbResult } from "@storyblok/astro";
+import { getPath } from '../../lib/utils';
+
+export interface Props {
+	uuid: string;
+}
+
+const { uuid } = Astro.props;
+
+const storyblokApi = useStoryblokApi()
+ 
+const { data }: ISbResult = await storyblokApi.get('cdn/stories/' + uuid, {
+  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+  find_by: 'uuid',
+} as any)
+
+let page = data.story
+---
+
+
+<a href={getPath(page.full_slug)} class="card rounded-0 hover-shadow border-top-0 border-left-0 border-right-0 page-card">
+  {page.content.header_img && 
+    <img class="card-img-top rounded-0" src={page.content.header_img.filename} alt={page.name}>
+  }
+  <div class="card-body">
+    <h3 class="card-title not-content">{page.name}</h3>
+    {page.content.page_description && 
+      <p class="card-text">{page.content.page_description}</p>
+    }
+  </div>
+</a>
