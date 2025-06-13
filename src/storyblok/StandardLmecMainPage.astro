@@ -1,10 +1,12 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import RichText from '../storyblok/RichText.astro';
+import Card from '../components/Page/Card.astro';
 
 export interface Props {
 	blok: {
     body: any;
+    cards: string[];
   };
 }
 
@@ -14,5 +16,15 @@ const { blok } = Astro.props
 {blok.body && (
   <div {...storyblokEditable(blok)}>
     <RichText blok={{ body: blok.body }} />
+
+    {blok.cards &&
+      <div class="row">
+        {blok.cards.map((uuid: string) => (
+          <div class="col-lg-4 col-sm-6 mb-4">
+            <Card uuid={uuid} />
+          </div>
+        ))}
+      </div>
+    }
   </div>
 )}

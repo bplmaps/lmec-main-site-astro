@@ -57,17 +57,19 @@ const page = (data as any).story
 <Layout title={`${page.name}`} subheading={`${page.content.page_description ? page.content.page_description : ''}`} image={`${page.content.header_img && page.content.header_img.filename}`}>
   <section class="section-sm">
     <div class="row">
-      <div class="col-lg-8 order-1 order-lg-1">
+      <div class={`${!page.content.hide_sidebar ? 'col-lg-8 order-1 order-lg-1' : 'col-12'}`}>
         <div class="row">
           <div class="col-12 mb-5 content">
             <StoryblokComponent name={page.name} blok={page.content} />
           </div>
         </div>
       </div>
-      
-      <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
-        <Sidebar path={path} />
-      </aside>
+
+      {!page.content.hide_sidebar &&      
+        <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
+          <Sidebar path={path} />
+        </aside>
+      }
     </div>
   </section>
 </Layout>
