@@ -38,16 +38,17 @@ allEvents = allEvents.map((event: any) => {
       eventDate: event.content.eventDate,
       tags: event.content.tags,
       contentType: event.content.component,
+      year: new Date(event.content.eventDate).getFullYear(),
     },
   }
 })
 
-const upcomingEvents = allEvents.filter((event: any) => {
-  return new Date(event.params.eventDate) >= new Date()
-})
-
 const pastEvents = allEvents.filter((event: any) => {
   return new Date(event.params.eventDate) < new Date()
+})
+
+const upcomingEvents = allEvents.reverse().filter((event: any)=> {
+  return new Date(event.params.eventDate) >= new Date()
 })
 ---
 

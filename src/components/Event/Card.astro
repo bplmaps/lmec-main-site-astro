@@ -25,7 +25,7 @@ const { thumbnail, name, date, tags, href } = Astro.props;
     {date &&
       <div class="card-date">
         <span>{new Date(date).getDate()}</span><br>
-        {new Date(date).toLocaleString('en-US', { month: 'long' })}
+        {new Date(date).toLocaleString('en-US', { month: 'short' })}
       </div>
     }
   </div>
@@ -50,3 +50,10 @@ const { thumbnail, name, date, tags, href } = Astro.props;
     }
   </div>
 </div>
+
+<style>
+  .card-img-top {
+    height: 175px;
+    object-fit: cover;
+  } 
+</style>
