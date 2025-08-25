@@ -20,7 +20,7 @@ let page = data.story
 ---
 
 
-<a href={getPath(page.full_slug)} class="card rounded-0 hover-shadow border-top-0 border-left-0 border-right-0 page-card">
+<a href=`/${getPath(page.full_slug)}` class="card rounded-0 hover-shadow border-top-0 border-left-0 border-right-0 page-card">
   {page.content.header_img && 
     <img class="card-img-top rounded-0" src={page.content.header_img.filename} alt={page.name}>
   }
