@@ -5,17 +5,11 @@ import RichText from '../../storyblok/RichText.astro';
 export interface Props {
   blok: {
     class: string;
-    link: {
-      cached_url: string;
-    }
-    imageSrc: string;
+    imageSrc: {
+      url: string;
+    };
     imageAlt: string;
-    title: string;
     caption: string;
-    attrLink: {
-      cached_url: string;
-    }
-    attrText: string;
   };
 }
 
@@ -23,32 +17,12 @@ const { blok } = Astro.props
 ---
 
 <figure {...storyblokEditable(blok)} class={blok.class}>
-  {blok.link && blok.link.cached_url &&
-    <a href={blok.link.cached_url} target="" rel="">
-      {blok.imageSrc &&
-        <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
-      }
-    </a>
-  }
-
-  {!(blok.link && blok.link.cached_url) &&
-    <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
-  }
+  <img src={blok.imageSrc.url} alt={blok.imageAlt ? blok.imageAlt : ''} />
   
-  {(blok.title || blok.caption) &&
+  {blok.caption &&
     <figcaption>
-      {blok.title && 
-        <h4>{blok.title}</h4>
-      }
-
       {blok.caption &&
         <RichText blok={{ body: blok.caption }} />
-      }
-
-      {blok.attrLink && 
-        <a href={blok.attrLink.cached_url} target="" rel="">
-          {blok.attrText}
-        </a>
       }
     </figcaption>
   }
