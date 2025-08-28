@@ -26,7 +26,6 @@ articles = articles.map((article: any) => {
       slug: article.slug,
       headerImage: article.content.headerImage,
       publishDate: article.content.publishDate,
-      tags: article.content.tags,
     },
   }
 })
@@ -39,7 +38,7 @@ articles = articles.map((article: any) => {
     <p>
       {tags.map((tag: string) => (
         <span class="badge rounded-pill bg-light text-secondary mb-1 tag-list">
-          {tag}
+          <a href=`/tags/${tag.replace(/\s+/g, '-').toLowerCase()}`>{tag}</a>
         </span>
       ))}
     </p>

@@ -53,5 +53,5 @@ const article = (data as any).story
 ---
 
 <Layout title={`${article.name}`} description={`${article.content.description}`} pill="Article" subheading={`${article.content.description}`} image={`${article.content.headerImage && article.content.headerImage.filename}`}>
-  <StoryblokComponent name={article.name} blok={article.content} />
+  <StoryblokComponent name={article.name} blok={article.content} tags={article.tag_list}/>
 </Layout>
