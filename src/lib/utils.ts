@@ -1,4 +1,8 @@
 import { date } from "astro:schema";
+import { useStoryblokApi } from "@storyblok/astro";
+
+const storyblokApi = useStoryblokApi()
+
 
 export function createSlug (title: string) {
   return (
@@ -45,3 +49,28 @@ export async function getDatasource(sourceID: string, sourceName: string) {
   return datasourceActuals.datasource_entries
   console.log(datasourceActuals)
 }
+
+// Function to get the 4 most recent articles for article sidebar
+
+export const fourRecentArticles = async () => {
+  const sidebar_data = await storyblokApi.get('cdn/stories', {
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+    starts_with: 'main-site/',
+    per_page: 4,
+    content_type: 'article-page',
+  })
+
+  let four_articles = sidebar_data.data.stories
+  four_articles = Object.values(four_articles)
+  four_articles = four_articles.map((article: any) => {
+    return {
+      params: {
+        name: article.name,
+        slug: article.slug,
+        headerImage: article.content.headerImage,
+        publishDate: article.content.publishDate,
+      },
+    }
+  })
+  return four_articles;
+};
