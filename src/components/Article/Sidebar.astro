@@ -29,7 +29,6 @@ articles = articles.map((article: any) => {
     },
   }
 })
-
 ---
 
 {tags &&
@@ -74,3 +73,7 @@ articles = articles.map((article: any) => {
     ))}
   </div>
 }
+
+<script define:vars={{ articles }}>
+  console.log(JSON.stringify(articles));
+</script>
