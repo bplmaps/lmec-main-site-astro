@@ -1,34 +1,16 @@
 ---
 import { useStoryblokApi } from "@storyblok/astro";
+import { fourRecentArticles } from "../../lib/utils";
 
 const storyblokApi = useStoryblokApi()
 
 export interface Props {
-	id: string;
 	tags: string[];
 }
 
-const { id, tags } = Astro.props;
+const { tags } = Astro.props;
+const sidebar_articles = await fourRecentArticles();
 
-const { data } = await storyblokApi.get('cdn/stories', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-  per_page: 4,
-  excluding_ids: id,
-  content_type: 'article-page',
-})
-let articles = data.stories
-articles = Object.values(articles)
-articles = articles.map((article: any) => {
-  return {
-    params: {
-      name: article.name,
-      slug: article.slug,
-      headerImage: article.content.headerImage,
-      publishDate: article.content.publishDate,
-    },
-  }
-})
 ---
 
 {tags &&
@@ -44,10 +26,10 @@ articles = articles.map((article: any) => {
   </div>
 }
 
-{articles &&
+{sidebar_articles &&
   <div class="bg-white">
-    <h4 class="mb-4">Other Articles</h4>
-    {articles.map((article: any) => (
+    <h4 class="mb-4">Recent Articles</h4>
+    {sidebar_articles.map((article: any) => (
       <div class="d-flex mb-4">
         {article.params.headerImage && article.params.headerImage.filename &&
           <div class="flex-shrink-0">
@@ -73,7 +55,3 @@ articles = articles.map((article: any) => {
     ))}
   </div>
 }
-
-<script define:vars={{ articles }}>
-  console.log(JSON.stringify(articles));
-</script>
