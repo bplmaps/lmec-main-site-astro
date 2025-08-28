@@ -17,13 +17,11 @@ const { blok } = Astro.props
 ---
 
 <figure {...storyblokEditable(blok)} class={blok.class}>
-  <img src={blok.imageSrc.url} alt={blok.imageAlt ? blok.imageAlt : ''} />
+  <img src={blok.imageSrc.url ? blok.imageSrc.url : ''} alt={blok.imageAlt ? blok.imageAlt : ''} />
   
   {blok.caption &&
     <figcaption>
-      {blok.caption &&
         <RichText blok={{ body: blok.caption }} />
-      }
     </figcaption>
   }
 </figure>
