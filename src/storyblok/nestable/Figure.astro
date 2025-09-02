@@ -8,7 +8,10 @@ export interface Props {
     link: {
       cached_url: string;
     }
-    imageSrc: string;
+    imageSrc: {
+      url: string;
+      cached_url: string;
+    }
     imageAlt: string;
     title: string;
     caption: string;
@@ -25,14 +28,14 @@ const { blok } = Astro.props
 <figure {...storyblokEditable(blok)} class={blok.class}>
   {blok.link && blok.link.cached_url &&
     <a href={blok.link.cached_url} target="" rel="">
-      {blok.imageSrc &&
-        <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
+      {blok.imageSrc && blok.imageSrc.url &&
+        <img src={blok.imageSrc.url} alt={blok.imageAlt ? blok.imageAlt : ''} />
       }
     </a>
   }
 
   {!(blok.link && blok.link.cached_url) &&
-    <img src={blok.imageSrc} alt={blok.imageAlt ? blok.imageAlt : ''} />
+    <img src={blok.imageSrc.url} alt={blok.imageAlt ? blok.imageAlt : ''} />
   }
   
   {(blok.title || blok.caption) &&

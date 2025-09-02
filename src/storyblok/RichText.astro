@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import { RichTextSchema, renderRichText } from '@storyblok/js';
+import { richTextResolver } from '@storyblok/richtext';
 import AlertBox from './nestable/AlertBox.astro';
 import Button from './nestable/Button.astro';
 import CardHolder from './nestable/CardHolder.astro'
@@ -24,94 +24,124 @@ export interface Props {
 }
 
 const { blok } = Astro.props;
+const { render } = richTextResolver();
 
-const richTextNodes = blok.body?.content || [];
-const textOnlyNodes: any[] = [];
-const storedComponents: { index: number; params: any; }[] = [];
-
-richTextNodes.forEach((node: { type: string; attrs: { body: any[]; }; }, nodeIndex: any) => {
-  if (node.type === 'blok') {
-    node.attrs.body.forEach((component: any, componentIndex: any) => {
-      const index = parseInt(`${nodeIndex}${componentIndex}`);
-      // adds a placeholder for the component
-      textOnlyNodes.push({
-        ...component,
-        content: [{ type: 'text', text: `[__COMPONENT:__INDEX:${index}]` }]
-      });
-      // stores the component for later replacement
-      storedComponents.push({
-        index,
-        params: component
-      });
-    });
-  } else {
-    textOnlyNodes.push(node);
+const renderComponent = (component: any) => {
+  switch(component.component) {
+    case 'alert-box':
+      return { type: 'AlertBox', props: component };
+    case 'button':
+      return { type: 'Button', props: component };
+    case 'carousel':
+      return { type: 'Carousel', props: component };
+    case 'card-holder':
+      return { type: 'CardHolder', props: component };
+    case 'cartography-challenges':
+      return { type: 'CartographyChallenges', props: component };
+    case 'digital-collections-union-search':
+      return { type: 'UnionSearch', props: component };
+    case 'education-listing':
+      return { type: 'EducationListing', props: component };
+    case 'event-tag-listing':
+      return { type: 'EventTagListing', props: component };
+    case 'exhibition-events':
+      return { type: 'ExhibitionEvents', props: component };
+    case 'figure':
+      return { type: 'Figure', props: component };
+    case 'grant-in-aid':
+      return { type: 'GrantInAid', props: component };
+    case 'hours-table':
+      return { type: 'HoursTable', props: component };
+    case 'html-block':
+      return { type: 'HtmlBlock', props: component };
+    case 'small-grants':
+      return { type: 'SmallGrants', props: component };
+    case 'staff-list':
+      return { type: 'StaffList', props: component };
+    default:
+      return { type: 'unknown', props: component };
   }
-});
-
-const textBlok = {
-  ...blok.body,
-  content: textOnlyNodes
 };
 
-const richTextString = renderRichText(textBlok, {
-  schema: RichTextSchema,
-}) ?? '';
+const renderNode = (node: any) => {
+  if (node.type === 'blok') {
+    return node.attrs.body.map((component: any) => renderComponent(component));
+  }
 
-const richTextParts = richTextString.split(/\[__COMPONENT:(__INDEX:\d+)\]/);
----
-
-<div {...storyblokEditable(blok)}>
-  {richTextParts.map((part) => {
-    // Inject our own custom components
-    if (part.startsWith('__INDEX:')) {
-      const componentIndex = parseInt(part.replace('__INDEX:', ''));
-      const storedComponent = storedComponents.find(comp => comp.index === componentIndex);
-    
-      if (storedComponent) {
-        switch(storedComponent.params.component) {
-          case 'alert-box':
-            return <AlertBox blok={storedComponent.params} />;
-          case 'button':
-            return <Button blok={storedComponent.params} />;
-          case 'carousel':
-            return <Carousel blok={storedComponent.params} />;
-          case 'card-holder':
-            return <CardHolder blok={storedComponent.params} />;
-          case 'cartography-challenges':
-            return <CartographyChallenges blok={storedComponent.params} />;
-          case 'digital-collections-union-search':
-            return <UnionSearch blok={storedComponent.params} />;
-          case 'education-listing':
-            return <EducationListing blok={storedComponent.params} />;
-          case 'event-tag-listing':
-            return <EventTagListing blok={storedComponent.params} />;
-          case 'exhibition-events':
-            return <ExhibitionEvents blok={storedComponent.params} />;
-          case 'figure':
-            return <Figure blok={storedComponent.params} />;
-          case 'grant-in-aid':
-            return <GrantInAid blok={storedComponent.params} />;
-          case 'hours-table':
-            return <HoursTable blok={storedComponent.params} />;
-          case 'html-block':
-            return <HtmlBlock blok={storedComponent.params} />;
-          case 'small-grants':
-            return <SmallGrants blok={storedComponent.params} />;
-          case 'staff-list':
-            return <StaffList blok={storedComponent.params} />;
-          default:
-            return `<!-- Component not found: ${storedComponent.params.component} -->`;
+  try {
+    if (node.type === 'paragraph' && node.content) {
+      node.content.map((item: any) => {
+        if (item.type === 'text') {
+          item.text = item.text === null ? '' : item.text;
         }
-      }
+
+        return item;
+      });
+    }
+
+    // Pass the node directly to render - it already has the required type property
+    let content = render(node) as string;
+    
+    if (!content || content.trim() === '') {
+      return [];
     }
 
     // Replace inline markdown-formatted footnotes with superscripts
-    part = part.replaceAll(/\[\^(\d+)\](?!:)/gm, '<sup><a href="#fn:$1" data-footnote="$1" class="footnote-ref" role="doc-noteref">$1</a></sup>');
-
+    content = content.replaceAll(/\[\^(\d+)\](?!:)/gm, '<sup><a href="#fn:$1" data-footnote="$1" class="footnote-ref" role="doc-noteref">$1</a></sup>');
+    
     // Replace markdown-formatted endnotes with decimal-formatted list
-    part = part.replaceAll(/\[\^(\d+)\]:/gm, '<span id="fn:$1" data-endnote="$1" role="doc-endnote">$1.</span>');
+    content = content.replaceAll(/\[\^(\d+)\]:/gm, '<span id="fn:$1" data-endnote="$1" role="doc-endnote">$1.</span>');
 
-    return <Fragment set:html={part} />;
+    return { type: 'html', content };
+  } catch (error) {
+    console.error('Error rendering node:', node, error);
+    return [];
+  }
+};
+
+const richTextNodes = (blok.body?.content || []).filter((node: { type: any; }) => node && node.type);
+const processedNodes = richTextNodes.flatMap(renderNode);
+---
+
+<div {...storyblokEditable(blok)}>
+  {processedNodes.map((item: any) => {
+    if (item.type === 'html') {
+      return <Fragment set:html={item.content} />;
+    }
+    
+    switch(item.type) {
+      case 'AlertBox':
+        return <AlertBox blok={item.props} />;
+      case 'Button':
+        return <Button blok={item.props} />;
+      case 'Carousel':
+        return <Carousel blok={item.props} />;
+      case 'CardHolder':
+        return <CardHolder blok={item.props} />;
+      case 'CartographyChallenges':
+        return <CartographyChallenges blok={item.props} />;
+      case 'UnionSearch':
+        return <UnionSearch blok={item.props} />;
+      case 'EducationListing':
+        return <EducationListing blok={item.props} />;
+      case 'EventTagListing':
+        return <EventTagListing blok={item.props} />;
+      case 'ExhibitionEvents':
+        return <ExhibitionEvents blok={item.props} />;
+      case 'Figure':
+        return <Figure blok={item.props} />;
+      case 'GrantInAid':
+        return <GrantInAid blok={item.props} />;
+      case 'HoursTable':
+        return <HoursTable blok={item.props} />;
+      case 'HtmlBlock':
+        return <HtmlBlock blok={item.props} />;
+      case 'SmallGrants':
+        return <SmallGrants blok={item.props} />;
+      case 'StaffList':
+        return <StaffList blok={item.props} />;
+      default:
+        return `<!-- Unknown component: ${item.props.component} -->`;
+    }
   })}
 </div>
