@@ -10,7 +10,7 @@ import Countable from 'countable';
 
 const { render } = richTextResolver()
 
-const { blok } = Astro.props;
+const { blok, tags } = Astro.props;
 
 let countWords = 0;
 let readingTime = 0;
@@ -19,6 +19,7 @@ Countable.count(render(blok.body), (counter : any) => {
   countWords = counter.words
   readingTime = Math.round(countWords / 238);
 })
+
 ---
 
 <article {...storyblokEditable(blok)} class="section-sm">
@@ -51,7 +52,7 @@ Countable.count(render(blok.body), (counter : any) => {
     </div>
 
     <aside class="col-lg-4 order-2 order-lg-2 section-sidebar">
-      <Sidebar id={blok.id} tags={blok.tags} />
+      <Sidebar tags={tags} />
     </aside>
   </div>
 </article>
