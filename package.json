@@ -13,10 +13,10 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@popperjs/core": "^2.11.8",
-    "@storyblok/astro": "^6.0.2",
-    "@storyblok/richtext": "^3.0.2",
+    "@storyblok/astro": "^6.2.0",
+    "@storyblok/richtext": "^3.3.0",
     "animate.css": "^4.1.1",
-    "astro": "^5.4.2",
+    "astro": "^5.5.0",
     "astro-seo": "^0.8.4",
     "bootstrap": "^5.3.3",
     "countable": "^3.0.1",
