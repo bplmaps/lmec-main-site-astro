@@ -58,8 +58,9 @@ allPages = allPages.map((page: any) => {
   }
 })
 let startpages = allPages.filter((page: Page) => {
-  return page.params.is_startpage;
-})
+    return page.params.is_startpage;
+  })
+  .sort((a, b) => a.params.name > b.params.name ? 1 : -1);
 
 allPages = allPages.filter((page: Page) => {
   return !page.params.hide_from_menu;
