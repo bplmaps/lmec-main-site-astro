@@ -19,7 +19,7 @@ const { blok } = Astro.props
     {blok.images.map((image: any) => (
       <div class="swiper-slide">
         <img src={image.imageURL.filename} />
-        {image.caption && (
+        {image.caption.content[0].content && (
            <figcaption class="carousel-caption d-none d-md-block">
             <RichText blok={{ body: image.caption }} />
            </figcaption>
