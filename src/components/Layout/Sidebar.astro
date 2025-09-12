@@ -22,10 +22,6 @@ const folders = path.split('/');
 
 let folder = folders[0];
 
-if (folders.length > 1) {
-  folder = folders[folders.length - 2];
-}
-
 const storyblokApi = useStoryblokApi()
 let allPages = [];
 
@@ -64,8 +60,9 @@ allPages = allPages.map((page: any) => {
 let startpages = allPages.filter((page: Page) => {
   return page.params.is_startpage;
 })
+
 allPages = allPages.filter((page: Page) => {
-  return !page.params.is_startpage;
+  return !page.params.hide_from_menu;
 })
 ---
 {allPages &&
