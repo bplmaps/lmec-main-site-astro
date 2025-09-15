@@ -62,15 +62,17 @@ let startpages = allPages.filter((page: Page) => {
   })
   .sort((a, b) => a.params.name > b.params.name ? 1 : -1);
 
+let menuTitle = startpages[0];
+
 allPages = allPages.filter((page: Page) => {
-  return !page.params.hide_from_menu;
+  return !page.params.hide_from_menu && page.params.path!=menuTitle.params.path;
 })
 ---
 {allPages &&
   <div class="bg-white mb-5">
     {startpages.length > 0 &&
       <h5 class="mb-3 section-toplevel-link">
-        <a href={startpages[0].params.path}>{startpages[0].params.name}</a>
+        <a href={menuTitle.params.path}>{menuTitle.params.name}</a>
       </h5>
     }
     <ul class="font-secondary text-secondary m-0 p-0">
