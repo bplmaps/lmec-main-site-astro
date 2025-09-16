@@ -63,7 +63,7 @@ stories = Object.values(stories);
 stories = stories.map((story: any) => {
   return {
     params: {
-      title: story.content.title,
+      title: story.name,
       description: story.content.description,
       slug: story.slug,
       headerImage: story.content.headerImage,
