@@ -1,0 +1,6 @@
+- name: More or Less in Common Digital Exhibition
+  url_path: /digital-exhibitions/more-or-less-in-common/
+  build_root: ../other-properties/digital-exhibitions/more-or-less-in-common/
+- name: Mapping a World of Cities
+  url_path: /projects/mapping-a-world-of-cities/
+  build_root: ../other-properties/mapping-a-world-of-cities
