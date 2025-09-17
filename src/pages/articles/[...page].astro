@@ -40,7 +40,7 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   allArticles = allArticles.map((article: any) => {
     return {
       params: {
-        title: article.content.title,
+        title: article.name,
         description: article.content.description,
         slug: article.slug,
         headerImage: article.content.headerImage,

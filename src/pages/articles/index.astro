@@ -26,7 +26,7 @@ articles = Object.values(articles)
 articles = articles.map((article: any) => {
   return {
     params: {
-      title: article.content.title,
+      title: article.name,
       description: article.content.description,
       slug: article.slug,
       headerImage: article.content.headerImage,
