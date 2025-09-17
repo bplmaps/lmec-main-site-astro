@@ -1,6 +1,51 @@
+- name: Becoming Boston
+  url_path: /digital-exhibitions/becoming-boston/
+  build_root: ../other-properties/digital-exhibitions/becoming-boston/
+- name: Bending Lines
+  url_path: /digital-exhibitions/bending-lines/
+  build_root: ../other-properties/digital-exhibitions/bending-lines/
+- name: Building Blocks
+  url_path: /digital-exhibitions/building-blocks/
+  build_root: ../other-properties/digital-exhibitions/building-blocks/
+- name: Getting Around Town
+  url_path: /digital-exhibitions/getting-around-town/
+  build_root: ../other-properties/digital-exhibitions/getting-around-town/
+- name: Heaven & Earth
+  url_path: /digital-exhibitions/heaven-and-earth/
+  build_root: ../other-properties/digital-exhibitions/heaven-and-earth/
 - name: More or Less in Common Digital Exhibition
   url_path: /digital-exhibitions/more-or-less-in-common/
   build_root: ../other-properties/digital-exhibitions/more-or-less-in-common/
+- name: Processing Place
+  url_path: /digital-exhibitions/processing-place/
+  build_root: ../other-properties/digital-exhibitions/processing-place/
+- name: More or Less in Common Digital Exhibition
+  url_path: /digital-exhibitions/terrains-of-independence/
+  build_root: ../other-properties/digital-exhibitions/terrains-of-independence/
 - name: Mapping a World of Cities
   url_path: /projects/mapping-a-world-of-cities/
-  build_root: ../other-properties/mapping-a-world-of-cities
+  build_root: ../other-properties/mapping-a-world-of-cities/
+- name: WP Content
+  url_path: /wp-content/
+  build_root: ../other-properties/wp-content/
+- name: Copying Maps East Asia Map Chat
+  url_path: /projects/copying-maps-east-asia-map-chat/
+  build_root: ../other-properties/map-chats/copying-maps-east-asia-map-chat/
+- name: Jain Map Chat
+  url_path: /projects/jain-map-chat/
+  build_root: ../other-properties/map-chats/jain-map-chat/
+- name: Manchu Map Chat
+  url_path: /projects/manchu-map-chat/
+  build_root: ../other-properties/map-chats/manchu-map-chat/
+- name: Opium War Map Chat
+  url_path: /projects/opium-war-map-chat/
+  build_root: ../other-properties/map-chats/manchu-map-chat/
+- name: Remapping the World in Japan
+  url_path: /projects/remapping-the-world-in-japan/
+  build_root: ../other-properties/map-chats/remapping-the-world-in-japan/
+- name: Tracing the Copy Map Chat
+  url_path: /projects/tracing-the-copy-map-chat/
+  build_root: ../other-properties/map-chats/tracing-the-copy-map-chat/
+- name: Yeojido Map Chat
+  url_path: /projects/yeojido-map-chat/
+  build_root: ../other-properties/map-chats/yeojido-map-chat/
