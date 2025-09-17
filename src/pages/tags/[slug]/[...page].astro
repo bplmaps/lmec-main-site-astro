@@ -107,7 +107,7 @@ stories = stories.map((story: any) => {
 console.log(stories);
 ---
 
-<Layout title=`Pages Tagged: ${tag.name}` description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
+<Layout title={tag.name} description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
   <section class="section">
     <div class="row">
       {stories.map((story: any) => (
