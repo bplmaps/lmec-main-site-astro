@@ -4,7 +4,6 @@ import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
 import HoursCTA from "../components/Home/HoursCTA.astro";
-import AudiencesSection from "../components/Home/AudiencesSection.astro";
 import SearchSection from "../components/Home/SearchSection.astro";
 import EventsSection from "../components/Home/EventsSection.astro";
 import ArticlesSection from "../components/Home/ArticlesSection.astro";
@@ -39,7 +38,12 @@ export interface Props {
       embed_link: object;
       start_time: string;
       end_time: string;
-    }[]
+    }[],
+    audienceList: {
+      audienceName: string;
+      description: string;
+      links: [],
+    }[],
   };
 }
 
@@ -154,7 +158,34 @@ blok.upcomingLivestream.forEach((livestream: any) => {
     </div>
   </section>
 
-  <AudiencesSection />
+  {blok.audienceList.length > 0 &&
+  <section class="section pt-1 pb-0 frontpage-content">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2">
+        {blok.audienceList.map((audience: any) => (
+          <div class="col mb-1">
+            <div class="card frontpage-audience-card border-0">
+              <div class="card-body">
+                <h2 class="card-title" style={`color: ${audience.color};`}>{ audience.audienceName }</h2>
+                <div class="card-subtitle text-secondary pb-3">{ audience.description }</div>
+                <ul class="p-0">
+                  {audience.links.map((link: any) => (
+                    <li class="mx-0 my-2">
+                      <i class="fas fa-angle-right me-1"></i>
+                      <a href={link.link} class="card-link font-secondary me-4">
+                        {link.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  }
   <SearchSection />
   
   {showFeature &&
