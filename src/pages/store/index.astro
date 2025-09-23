@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+import StorePage from '../../storyblok/StorePage.astro';
+
+const storyblokApi = useStoryblokApi()
+
+const { data } = await storyblokApi.get(
+  `cdn/stories/main-site/store-test`,
+  {
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+  }
+)
+ 
+const giftstore = (data as any).story
+---
+
+<Layout title={giftstore.name} description={`${giftstore.content.description}`} store={true} subheading={`${giftstore.content.description}`} image={`${giftstore.content.headerImage && giftstore.content.headerImage.filename}`}>
+   <StoryblokComponent blok={giftstore.content} />
+</Layout>

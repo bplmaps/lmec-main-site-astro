@@ -1,0 +1,67 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import RichText from '../storyblok/RichText.astro';
+import Card from '../components/Store/Card.astro';
+import { string } from 'astro:schema';
+
+export interface Props {
+	blok: {
+    body: any;
+    products: {
+        title: string;
+        productImage: {
+            filename: string;
+            alt: string;
+        };
+        description: string;
+        itemID: string;
+        itemPrice: number;
+        itemWeight: number;
+        itemBody: string;
+    }[];
+    reproductions: {
+      title: string;
+      productImage: {
+          filename: string;
+          alt: string;
+      };
+      description: string;
+      itemID: string;
+      itemPrice: number;
+      itemWeight: number;
+      itemBody: string;
+    }[];
+  };
+}
+
+const { blok } = Astro.props
+console.log(blok.products);
+---
+<article {...storyblokEditable(blok)} class="section-sm">
+  {blok.body && (
+  <div {...storyblokEditable(blok)}>
+    <RichText blok={{ body: blok.body }} />
+
+    {blok.products &&
+        <h2 id="Products">Products</h2>
+        <div class="row">
+        {blok.products.map(product => (
+            <div class="col-lg-4 col-sm-6 mb-4">
+              <Card title={product.title} productImage={product.productImage} description={product.description} itemID={product.itemID} itemPrice={product.itemPrice} itemWeight={product.itemWeight} itemBody={product.itemBody}/>
+            </div>
+        ))}
+        </div>
+    }
+    {blok.reproductions &&
+        <h2 id="Reproductions">Reproductions</h2>
+        <div class="row">
+        {blok.reproductions.map(repro => (
+            <div class="col-lg-4 col-sm-6 mb-4">
+              <Card title={repro.title} productImage={repro.productImage} description={repro.description} itemID={repro.itemID} itemPrice={repro.itemPrice} itemWeight={repro.itemWeight} itemBody={repro.itemBody}/>
+            </div>
+        ))}
+        </div>
+    }
+  </div>
+)}
+</article>
