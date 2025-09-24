@@ -12,10 +12,9 @@ interface Props {
   subheading?: string;
   pill?: string;
   noindex?: boolean;
-  store: boolean;
 }
 
-const { title, description, image, subheading, pill, noindex, store } = Astro.props;
+const { title, description, image, subheading, pill, noindex } = Astro.props;
 
 const siteTitle = "Leventhal Map &amp; Education Center at the Boston Public Library";
 const siteImage = "https://ark.digitalcommonwealth.org/ark:/50959/3f463529r/thumbnail";
@@ -191,17 +190,7 @@ const secondaryMenuLinks = [
 		<slot name="root">
 			<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
 		</slot>
-		{store &&
-			// <!-- Account Bar -->
-			<section class="bg-dark">
-				<div class="container p-3">
-					<button type="button" class="btn btn-secondary snipcart-checkout">
-						<i class="fas fa-shopping-cart me-2"></i> Shopping cart <span class="badge bg-light text-secondary ms-2 snipcart-items-count"></span>
-					</button>
-					<button class="btn btn-secondary snipcart-customer-signin"><i class="far fa-user-circle me-2"></i> Account</button>
-				</div>
-			</section>
-			}
+		<slot name="giftstore" />
 		<div class="container">
 			<slot />
 		</div>
