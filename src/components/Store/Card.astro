@@ -10,12 +10,15 @@ export interface Props {
   itemPrice: number;
   itemWeight: number;
   itemBody: string;
+  itemHeight: number;
+  itemWidth: number;
+  dcLink: string;
 }
 
-const { title, productImage, description, itemID, itemPrice, itemWeight, itemBody} = Astro.props;
+const { title, productImage, description, itemID, itemPrice, itemWeight, itemBody, itemHeight, itemWidth, dcLink} = Astro.props;
 ---
 
-<article class="card rounded-0 border-bottom border-primary border-top-0 border-left-0 border-right-0 hover-shadow">
+<article class="card rounded-0 border-bottom border-primary border-top-0 border-left-0 border-right-0 hover-shadow store-card">
   {productImage && productImage.filename &&
     <img
     class="card-img-top rounded-0"
@@ -37,17 +40,25 @@ const { title, productImage, description, itemID, itemPrice, itemWeight, itemBod
         {description}
       </p>
     }
+    { itemHeight && itemWidth &&
+      <p class="card-text">Image: {itemWidth} inches wide × {itemHeight} inches high</p>
+      <p class="card-text">Paper: {+itemWidth + +4} inches wide × {+itemHeight + +4} inches high</p>
+    }
     <button class="snipcart-add-item btn btn-primary mb-2"
       data-item-id={itemID}
       data-item-price={itemPrice}
-      data-item-url="{}"
-      data-item-description="{}"
-      data-item-image="{}"
-      data-item-name="{}"
-      data-item-weight="{}">
+      data-item-url={}
+      data-item-description={}
+      data-item-image={}
+      data-item-name={title}
+      data-item-weight={}
+    >
     <i class="fas fa-plus-circle me-2"></i> Add to cart</button></br>
     {itemBody &&
-      <a class="btn btn-primary-outline btn-sm mb-2" href="{{ .Permalink }}">Details</a>
+      <buton class="btn btn-primary-outline btn-sm mb-2">Details</buton>
+    }
+    {dcLink &&
+      <a class="btn btn-primary-outline btn-sm mb-2" href={dcLink} target="_blank">Digital Collections Record</a>
     }
   </div>
 </article>
