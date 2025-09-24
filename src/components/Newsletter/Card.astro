@@ -1,0 +1,37 @@
+---
+export interface Props {
+	pubDate: string;
+    subjLine: string;
+    bannerImage: {
+        filename: string;
+        alt: string;
+    },
+    slug: string;
+}
+
+const { pubDate, subjLine, bannerImage, slug } = Astro.props;
+---
+
+<div class="card border-0 rounded-0 hover-shadow">
+  <div class="card-img position-relative">
+    {bannerImage && bannerImage.filename &&
+      <img
+        class="card-img-top rounded-0"
+        height="150vh"
+        src={bannerImage.filename}
+        alt={bannerImage.alt}
+      />
+    }
+    {pubDate &&
+      <div class="card-date">
+        <span>{new Date(pubDate).getDate()}</span><br>
+        {new Date(pubDate).toLocaleString('en-US', { month: 'short' })}<br>
+        {new Date(pubDate).getFullYear()}
+      </div>
+    }
+  </div>
+  <div class="card-body">
+    <h6>{new Date(pubDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' } )}</h6>
+    <h4 class="card-title"><a href={slug}>{subjLine}</a></h4>
+    </div>
+</div>
