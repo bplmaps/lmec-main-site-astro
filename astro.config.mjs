@@ -13,7 +13,6 @@ export default defineConfig({
         'root': 'storyblok/Root',
         'article-page': 'storyblok/ArticlePage',
         'event-page': 'storyblok/EventPage',
-        'newsletter-page': 'storyblok/NewsletterPage',
         'staff-page': 'storyblok/StaffPage',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
         'alert-box': 'storyblok/nestable/AlertBox',
