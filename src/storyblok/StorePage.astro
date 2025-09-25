@@ -1,8 +1,8 @@
 ---
-import { storyblokEditable } from '@storyblok/astro';
+import { renderRichText, storyblokEditable } from '@storyblok/astro';
 import RichText from '../storyblok/RichText.astro';
-import Card from '../components/Store/Card.astro';
-import { string } from 'astro:schema';
+import ProductCard from '../components/Store/ProductCard.astro';
+import ReproCard from '../components/Store/ReproCard.astro';
 
 export interface Props {
 	blok: {
@@ -16,11 +16,13 @@ export interface Props {
         description: string;
         itemID: string;
         itemPrice: number;
+        itemPriceText: string;
         itemWeight: number;
-        itemBody: string;
+        itemBody: any;
     }[];
     reproductions: {
       title: string;
+      itemID: string;
       digitalCollectionsLink: {
         url: string;
       };
@@ -48,7 +50,7 @@ const { blok } = Astro.props
         <div class="row">
         {blok.products.map(product => (
             <div class="col-lg-4 col-sm-6 mb-4">
-              <Card title={product.title} productImage={product.productImage} description={product.description} itemID={product.itemID} itemPrice={product.itemPrice} itemWeight={product.itemWeight} itemBody={product.itemBody}/>
+              <ProductCard title={product.title} productImage={product.productImage} description={product.description} itemID={product.itemID} itemPrice={product.itemPrice} itemPriceText={product.itemPriceText} itemWeight={product.itemWeight} itemDetails={renderRichText(product.itemBody)}/>
             </div>
         ))}
         </div>
@@ -58,7 +60,7 @@ const { blok } = Astro.props
         <div class="row">
         {blok.reproductions.map(repro => (
             <div class="col-lg-4 col-sm-6 mb-4">
-              <Card title={repro.title} dcLink={repro.digitalCollectionsLink.url} productImage={repro.productImage} itemPrice={repro.itemPrice} itemHeight={repro.itemHeight} itemWidth={repro.itemWidth}/>
+              <ReproCard title={repro.title} itemID={repro.itemID} dcLink={repro.digitalCollectionsLink.url} productImage={repro.productImage} itemPrice={repro.itemPrice} itemHeight={repro.itemHeight} itemWidth={repro.itemWidth}/>
             </div>
         ))}
         </div>

@@ -1,21 +1,20 @@
 ---
+import { renderRichText } from '@storyblok/astro';
+
 export interface Props {
   title: string;
+  itemID: string;
   productImage: {
       filename: string;
       alt:string;
   };
-  description: string;
-  itemID: string;
   itemPrice: number;
-  itemWeight: number;
-  itemBody: string;
   itemHeight: number;
   itemWidth: number;
   dcLink: string;
 }
 
-const { title, productImage, description, itemID, itemPrice, itemWeight, itemBody, itemHeight, itemWidth, dcLink} = Astro.props;
+const { title, itemID, productImage, itemPrice, itemHeight, itemWidth, dcLink} = Astro.props;
 ---
 
 <article class="card rounded-0 border-bottom border-primary border-top-0 border-left-0 border-right-0 hover-shadow store-card">
@@ -33,30 +32,20 @@ const { title, productImage, description, itemID, itemPrice, itemWeight, itemBod
       </h4>
     }
     {itemPrice &&
-      <h5>${itemPrice}</h5>
-    }
-    {description &&
-      <p class="card-text">
-        {description}
-      </p>
+      <h5>{itemPrice}</h5>
     }
     { itemHeight && itemWidth &&
       <p class="card-text">Image: {itemWidth} inches wide × {itemHeight} inches high</p>
-      <p class="card-text">Paper: {+itemWidth + +4} inches wide × {+itemHeight + +4} inches high</p>
+      <p class="card-text">Paper: {+itemWidth + 4} inches wide × {+itemHeight + 4} inches high</p>
     }
     <button class="snipcart-add-item btn btn-primary mb-2"
-      data-item-id={itemID}
+      data-item-id=`repro-${itemID}`
       data-item-price={itemPrice}
-      data-item-url={}
-      data-item-description={}
-      data-item-image={}
+      data-item-description=`Printed reproduction of ${title}, image ${itemWidth} inches wide × ${itemHeight} inches high with 2 inch margins on all sides`
+      data-item-image={productImage.filename}
       data-item-name={title}
-      data-item-weight={}
     >
     <i class="fas fa-plus-circle me-2"></i> Add to cart</button></br>
-    {itemBody &&
-      <buton class="btn btn-primary-outline btn-sm mb-2">Details</buton>
-    }
     {dcLink &&
       <a class="btn btn-primary-outline btn-sm mb-2" href={dcLink} target="_blank">Digital Collections Record</a>
     }
