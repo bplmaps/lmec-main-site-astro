@@ -1,0 +1,41 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useStoryblokApi } from "@storyblok/astro";
+import Card from '../../components/Newsletter/Card.astro';
+import { createSlug } from '../../lib/utils';
+
+const storyblokApi = useStoryblokApi();
+
+const data = await storyblokApi.get('cdn/stories', {
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+    starts_with: 'main-site/',
+    content_type: 'newsletter-page',
+    sort_by: 'content.newsletterPubDate:desc',
+});
+
+let newsletters = data.data.stories;
+newsletters = Object.values(newsletters);
+newsletters = newsletters.map((newsletter: any) => {
+  return {
+    params: {
+      pubDate: newsletter.content.newsletterPubDate,
+      subjLine: newsletter.content.subjectLine,
+      bannerImage: newsletter.content.bannerImageURL,
+      slug: newsletter.slug,
+    },
+  }
+})
+---
+<Layout title="Newsletters" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
+    <section class="section">
+        <div class="container">
+            <div class="row">
+            {newsletters.map((newsletter: any) => (
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <Card slug={`/newsletters/${newsletter.params.slug}`} bannerImage={newsletter.params.bannerImage} subjLine={newsletter.params.subjLine} pubDate={newsletter.params.pubDate} />
+                </div>
+            ))}
+            </div>
+        </div>
+    </section>
+</Layout>

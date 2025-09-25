@@ -1,0 +1,169 @@
+---
+import { renderRichText, useStoryblokApi } from "@storyblok/astro";
+ 
+
+export async function getStaticPaths() {
+  const storyblokApi = useStoryblokApi()
+  const allNewsletters = [];
+
+  let page = 1;
+  const perPage = 100;
+
+  while (true) {
+    const { data } = await storyblokApi.get('cdn/stories', {
+      version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+      starts_with: 'main-site/newsletters',
+      content_type: 'newsletter-page',
+      per_page: perPage,
+      page: page,
+    })
+    let newsletters = data.stories
+    newsletters = Object.values(newsletters)
+
+    if (newsletters.length === 0) {
+      break; // Exit the loop if no stories are returned (i.e., last page)
+    }
+
+    allNewsletters.push(...newsletters);
+    page++;
+  }
+
+  return allNewsletters.map((newsletter: any) => {
+    return {
+      params: {
+        slug: newsletter.slug,
+      },
+    }
+  })
+}
+
+const { slug } = Astro.params
+
+const storyblokApi = useStoryblokApi()
+ 
+const { data } = await storyblokApi.get(
+  `cdn/stories/main-site/newsletters/${slug}`,
+  {
+    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+  }
+)
+ 
+const newsletter = (data as any).story
+let newsletterBlocks = newsletter.content.contentBlocks;
+---
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style is:global>
+			@import url("https://use.typekit.net/hnl4gif.css");
+			
+			p a {
+				color: maroon; background-image: linear-gradient(0deg, rgba(0, 102, 136, 0.2) 10%, transparent 0); text-decoration: none;
+			}
+			
+			a.button {
+				background-color: #006688; padding: 5px 10px; border-radius: 3px; color: white; text-decoration: none; font-family: hero-new, serif;
+			}
+			
+			.doubleblock-holder {
+				width: 100%; padding: 20px 0; border-top: 1px dashed #999;
+			}
+			
+			.doubleblock-inner {
+				width: 49%; display: inline-block; vertical-align: middle;
+			}
+			
+			.doubleblock-contents {
+				padding: 10px;
+			}
+			
+			.doubleblock-contents img {
+				max-width: 100%; height: auto;
+			}
+			
+			@media screen and (max-width: 700px) {
+				.doubleblock-inner {
+					width: 100%;
+				}
+			}
+		</style>
+	</head>
+    <body>
+        <table style="width: 100%; max-width: 1000px; margin-left: auto; margin-right: auto;">
+        <tbody>
+            <tr>
+                <td style="width: 100%; background-color: #1a1a37; font-family: hero-new, sans-serif;">
+                    <a href="https://leventhalmap.org"><img src="https://s3.us-east-2.wasabisys.com/lmec-public-files/images/MapCenter_allwhite.png" alt="LMEC Logo" style="max-height: 50px; width: auto; margin: 15px;"></a>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100%; margin: 0; padding: 0; background-color: #222;">
+                    <div style="font-family: hero-new, sans-serif; color: #fff; padding: 15px; font-size: 1.8em;">News from the <span style="font-weight: 800; background-image: linear-gradient(0deg, #054571 40%, transparent 0); padding: 0 3px;">Leventhal Map &amp; Education Center</span>
+                        <br>
+                        <span style="font-family: freight-micro-pro, serif; font-size: 0.9em; font-style: italic;">{new Date(newsletter.content.newsletterPubDate).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    <img src={newsletter.content.bannerImageURL.filename} style="width: 100%; max-width: 100%; max-height: 150px; height: auto; margin: 0px; padding: 0px; border: 0px; object-fit: cover;" width="100%">
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100%; font-family: freight-micro-pro, serif; font-size: 0.8em; text-align: right; background-color: #ddd; padding: 10px;" set:html={renderRichText(newsletter.content.bannerImageCaption)}>
+                </td>
+            </tr>
+            <tr>
+                <td class="content" style="padding: 15px; font-size: 1.1em; font-family: freight-micro-pro, georgia, serif; border-bottom: 1px solid #1a1a37;">
+                    <div style="font-size: 1.2em;">
+                        <div style="padding-bottom: 15px; padding-left: 20px; padding-right: 20px;" set:html={renderRichText(newsletter.content.introductoryText)}>
+                        </div>
+                        { newsletterBlocks.map((content: any) =>
+                            <div class="doubleblock-holder">
+                                <div class="doubleblock-inner">
+                                    <div class="doubleblock-contents">
+                                        <a href={content.contentBlockURL.url} rel="noopener noreferrer">
+                                            <img src={content.contentBlockImage.filename} style="width: 424px; height: auto;" alt={content.contentBlockImageAltText} width="424">
+                                        </a> 
+                                    </div>
+                                </div>
+                                <div class="doubleblock-inner">
+                                    <div class="doubleblock-contents">
+                                        <p><strong style="font-family: hero-new, sans-serif; color: #1a1a37; font-size: 1.3em;">{content.contentBlockHeader}</strong></p>
+                                        <p set:html={renderRichText(content.contentBlockText )}></p>
+                                        <p><a class="button" href={content.contentBlockURL.url} rel="noopener noreferrer" target="_blank">{content.contentBlockButtonText} →</a>&nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-family: freight-micro-pro; text-align: center;">
+                    <p>The Leventhal Map &amp; Education Center is an independent nonprofit. We rely on the contributions of
+                        donors like you to support our mission of preserving the past and advancing the future of maps and
+                        geography.</p>
+                    <p><a class="button" href="https://www.leventhalmap.org/donate/?form=GENCAMPAIGN">Donate online now</a>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-family: hero-new, sans-serif; color: #333333; font-weight: 300; font-size: 0.8em;">
+                    <p style="text-align: center;"><a href="{{UnsubscribeURL}}" style="color: #333333;">Unsubscribe from this list</a></p>
+
+                    <p style="text-align: center;"><a href="{{WebVersionURL}}">View this email in your browser</a></p>
+
+                    <p style="text-align: center;">Leventhal Map &amp; Education Center at the Boston Public Library</p>
+
+                    <p style="text-align: center;">617.859.2387 · <a href="mailto:info@leventhalmap.org">info@leventhalmap.org</a></p>
+
+                    <p style="text-align: center;" set:text="{{SenderInfoLine}}"></p>
+
+                    <p style="text-align: center;"><a href="https://www.leventhalmap.org/privacy/" rel="noopener noreferrer"
+                        target="_blank">Privacy Policy</a></p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
