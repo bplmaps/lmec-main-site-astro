@@ -15,6 +15,7 @@ export default defineConfig({
         'event-page': 'storyblok/EventPage',
         'staff-page': 'storyblok/StaffPage',
         'standard-lmec-main-page': 'storyblok/StandardLmecMainPage',
+        'store-page': 'storyblok/StorePage',
         'alert-box': 'storyblok/nestable/AlertBox',
         'button': 'storyblok/nestable/Button',
         'card-holder': 'storyblok/nestable/CardHolder',

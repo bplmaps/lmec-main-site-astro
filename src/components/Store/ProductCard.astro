@@ -1,0 +1,68 @@
+---
+export interface Props {
+  title: string;
+  productImage: {
+      filename: string;
+      alt:string;
+  };
+  description: string;
+  itemID: string;
+  itemPrice: number;
+  itemPriceText: string;
+  itemWeight: number;
+  itemDetails: any;
+}
+
+const { title, productImage, description, itemID, itemPrice, itemPriceText, itemWeight, itemDetails} = Astro.props;
+---
+
+<article class="card rounded-0 border-bottom border-primary border-top-0 border-left-0 border-right-0 hover-shadow store-card">
+  {productImage && productImage.filename &&
+    <img
+    class="card-img-top rounded-0"
+      src={productImage.filename}
+      alt={productImage.alt}
+    />
+  }
+  <div class="card-body">
+    {title &&
+      <h4 class="card-title">
+        {title}
+      </h4>
+    }
+    {itemPrice &&
+      <h5>{itemPriceText}</h5>
+    }
+    {description &&
+      <p class="card-text">
+        {description}
+      </p>
+    }
+    <button class="snipcart-add-item btn btn-primary mb-2"
+      data-item-id={itemID}
+      data-item-price={itemPrice}
+      data-item-description={description}
+      data-item-image={productImage.filename}
+      data-item-name={title}
+      data-item-weight={itemWeight}
+    >
+    <i class="fas fa-plus-circle me-2"></i> Add to cart</button></br>
+    {itemDetails &&
+      <buton class="btn btn-primary-outline btn-sm mb-2" data-bs-toggle="modal" data-bs-target="#storeModal" data-bs-title={title} data-bs-details={itemDetails}>Details</buton>
+    }
+  </div>
+</article>
+
+<!-- Modal -->
+<div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="storeModalLabel" set:html={title}></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" set:html={itemDetails}>
+      </div>
+    </div>
+  </div>
+</div>
