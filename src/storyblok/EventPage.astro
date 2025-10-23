@@ -43,7 +43,7 @@ const { blok } = Astro.props;
                 Time
               </h3>
               <p class="mb-0">
-                {new Date(`${blok.eventDate}Z`).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit", timeZoneName: "short", timeZone: 'America/New_York'})}
+                {new Date(`${blok.eventDate}Z`).toLocaleTimeString('en-US', { hour: "numeric", minute: "2-digit", timeZoneName: "short", timeZone: 'America/New_York'})}
               </p>
             </div>
           </div>
