@@ -51,70 +51,70 @@
   build_root: ../other-properties/map-chats/yeojido-map-chat/
 - name: America Transformed
   url_path: /digital-exhibitions/america-transformed
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/america-transformed
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/america-transformed
 - name: America Votes
   url_path: /digital-exhibitions/america-votes
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/america-votes
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/america-votes
 - name: Back to School
   url_path: /digital-exhibitions/back-to-school
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/back-to-school
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/back-to-school
 - name: Beneath Our Feet
   url_path: /digital-exhibitions/beneath-our-feet
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/beneath-our-feet
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/beneath-our-feet
 - name: Boston & Beyond
   url_path: /digital-exhibitions/boston-beyond
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/boston-beyond
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/boston-beyond
 - name: Boston in the Gilded Age
   url_path: /digital-exhibitions/boston-in-the-gilded-age
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/boston-in-the-gilded-age
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/boston-in-the-gilded-age
 - name: Breathing Room
   url_path: /digital-exhibitions/breathing-room
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/breathing-room
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/breathing-room
 - name: Charting an Empire
   url_path: /digital-exhibitions/charting-an-empire
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/charting-an-empire
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/charting-an-empire
 - name: City of Neighborhoods
   url_path: /digital-exhibitions/city-of-neighborhoods
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/city-of-neighborhoods
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/city-of-neighborhoods
 - name: Crossing Boundaries
   url_path: /digital-exhibitions/crossing-boundaries
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/crossing-boundaries
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/crossing-boundaries
 - name: Faces & Places
   url_path: /digital-exhibitions/faces-places
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/faces-places
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/faces-places
 - name: From the Sea to the Mountains
   url_path: /digital-exhibitions/from-the-sea-to-the-mountains
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/from-the-sea-to-the-mountains
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/from-the-sea-to-the-mountains
 - name: Hy-Brasil
   url_path: /digital-exhibitions/hy-brasil
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/hy-brasil
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/hy-brasil
 - name: Journeys of the Imagination
   url_path: /digital-exhibitions/journeys-of-the-imagination
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/journeys-of-the-imagination
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/journeys-of-the-imagination
 - name: Literary Landscapes
   url_path: /digital-exhibitions/literary-landscapes
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/literary-landscapes
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/literary-landscapes
 - name: Made in Boston
   url_path: /digital-exhibitions/made-in-boston
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/made-in-boston
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/made-in-boston
 - name: Regions and Seasons
   url_path: /digital-exhibitions/regions-and-seasons
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/regions-and-seasons
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/regions-and-seasons
 - name: Shakespeare Here and Everywhere
   url_path: /digital-exhibitions/shakespeare-here-and-everywhere
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/shakespeare-here-and-everywhere
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/shakespeare-here-and-everywhere
 - name: Torn in Two
   url_path: /digital-exhibitions/torn-in-two
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/torn-in-two
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/torn-in-two
 - name: Unconventional Maps
   url_path: /digital-exhibitions/unconventional-maps
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/unconventional-maps
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/unconventional-maps
 - name: We Are One
   url_path: /digital-exhibitions/we-are-one
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/we-are-one
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/we-are-one
 - name: Who We Are
   url_path: /digital-exhibitions/who-we-are
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/who-we-are
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/who-we-are
 - name: Women in Cartography
   url_path: /digital-exhibitions/women-in-cartography
-  build_root: ../other-properties/legacy-digital/exhibitions/exhibits/women-in-cartography
+  build_root: ../other-properties/legacy-digital-exhibitions/exhibits/women-in-cartography
