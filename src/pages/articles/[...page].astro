@@ -93,7 +93,20 @@ if (page) {
     sort_by: 'sort_by_date:desc:nulls_last',
   });
 
-  articles = articlesResponse.data.stories;
+  articles = articlesResponse.data.stories.map((article: any) => {
+    return {
+      params: {
+        title: article.name,
+        description: article.content.description,
+        slug: article.slug,
+        headerImage: article.content.headerImage,
+        publishedAt: article.content.publishDate,
+        author: article.content.author,
+        contentType: article.content.component,
+      },
+    };
+  });
+
   const totalArticles = Number(articlesResponse.total);
   totalPages = Math.ceil(totalArticles / articlesPerPage);
 }
