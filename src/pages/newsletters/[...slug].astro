@@ -1,6 +1,8 @@
 ---
-import { renderRichText, useStoryblokApi } from "@storyblok/astro";
+import { useStoryblokApi } from "@storyblok/astro";
+import { richTextResolver } from "@storyblok/richtext";
  
+const { render } = richTextResolver()
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
@@ -50,6 +52,7 @@ const { data } = await storyblokApi.get(
  
 const newsletter = (data as any).story
 let newsletterBlocks = newsletter.content.contentBlocks;
+
 ---
 <!DOCTYPE html>
 <html>
@@ -108,13 +111,13 @@ let newsletterBlocks = newsletter.content.contentBlocks;
                 </td>
             </tr>
             <tr>
-                <td style="width: 100%; font-family: freight-micro-pro, serif; font-size: 0.8em; text-align: right; background-color: #ddd; padding: 10px;" set:html={renderRichText(newsletter.content.bannerImageCaption)}>
+                <td style="width: 100%; font-family: freight-micro-pro, serif; font-size: 0.8em; text-align: right; background-color: #ddd; padding: 10px;" set:html={render(newsletter.content.bannerImageCaption)}>
                 </td>
             </tr>
             <tr>
                 <td class="content" style="padding: 15px; font-size: 1.1em; font-family: freight-micro-pro, georgia, serif; border-bottom: 1px solid #1a1a37;">
                     <div style="font-size: 1.2em;">
-                        <div style="padding-bottom: 15px; padding-left: 20px; padding-right: 20px;" set:html={renderRichText(newsletter.content.introductoryText)}>
+                        <div style="padding-bottom: 15px; padding-left: 20px; padding-right: 20px;" set:html={render(newsletter.content.introductoryText)}>
                         </div>
                         { newsletterBlocks.map((content: any) =>
                             <div class="doubleblock-holder">
@@ -128,7 +131,7 @@ let newsletterBlocks = newsletter.content.contentBlocks;
                                 <div class="doubleblock-inner">
                                     <div class="doubleblock-contents">
                                         <p><strong style="font-family: hero-new, sans-serif; color: #1a1a37; font-size: 1.3em;">{content.contentBlockHeader}</strong></p>
-                                        <p set:html={renderRichText(content.contentBlockText )}></p>
+                                        <p set:html={render(content.contentBlockText )}></p>
                                         <p><a class="button" href={content.contentBlockURL.url} rel="noopener noreferrer" target="_blank">{content.contentBlockButtonText} →</a>&nbsp;
                                         </p>
                                     </div>
