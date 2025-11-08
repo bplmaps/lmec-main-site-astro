@@ -30,7 +30,7 @@ const { blok } = Astro.props;
                 Date
               </h3>
               <p class="mb-0">
-                {new Date(`${blok.eventDate}Z`).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})}
+                {new Date(`${blok.eventDate}Z`).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'long'})}
               </p>
             </div>
           </div>
