@@ -16,7 +16,7 @@
     "@storyblok/astro": "^7.3.5",
     "@storyblok/richtext": "^3.3.0",
     "animate.css": "^4.1.1",
-    "astro": "^5.5.0",
+    "astro": "^5.15.4",
     "astro-seo": "^0.8.4",
     "bootstrap": "^5.3.3",
     "countable": "^3.0.1",
@@ -24,6 +24,6 @@
     "sharp": "^0.33.5",
     "swiper": "^11.2.5",
     "typescript": "^5.8.2",
-    "vite": "^5.4.14"
+    "vite": "^7.2.2"
   }
 }
