@@ -26,6 +26,84 @@ export interface Props {
 const { blok } = Astro.props;
 const { render } = richTextResolver();
 
+const mergeAdjacentLinks = (html: string): string => {
+  // Safety check: return original if input is invalid
+  if (!html || typeof html !== 'string') {
+    return html;
+  }
+  
+  let result = html;
+  let modified = true;
+  let iterations = 0;
+  const MAX_ITERATIONS = 100; // Prevent infinite loops
+  
+  // Keep looping until no more adjacent links can be merged
+  while (modified && iterations < MAX_ITERATIONS) {
+    modified = false;
+    iterations++;
+    
+    try {
+      // Pattern to match: </a> followed by <a> (with possible inline tags and whitespace between)
+      const adjacentLinkPattern = /<\/a>((?:<(?:em|strong|i|b|span|sup|sub)[^>]*>|<\/(?:em|strong|i|b|span|sup|sub)>|\s)*)<a\s+([^>]+)>/g;
+      
+      const tempResult = result.replace(adjacentLinkPattern, (match, betweenTags, secondAttrs, offset) => {
+        try {
+          // Find the opening tag of the first link by looking backwards
+          const beforeMatch = result.substring(0, offset);
+          const firstLinkMatch = beforeMatch.match(/<a\s+([^>]+)>(?:(?!<a\s+)[\s\S])*?$/);
+          
+          if (!firstLinkMatch) return match;
+          
+          const firstAttrs = firstLinkMatch[1];
+          
+          // Extract href from both links - be defensive about attribute format
+          const href1Match = firstAttrs.match(/href\s*=\s*["']([^"']+)["']/);
+          const href2Match = secondAttrs.match(/href\s*=\s*["']([^"']+)["']/);
+          
+          const href1 = href1Match ? href1Match[1] : null;
+          const href2 = href2Match ? href2Match[1] : null;
+          
+          // Only merge if both hrefs exist and match exactly
+          if (href1 && href2 && href1 === href2) {
+            // Additional safety: check that attributes are substantially similar
+            // (same target, same data-popup, etc.)
+            const target1 = firstAttrs.match(/target\s*=\s*["']([^"']+)["']/)?.[1];
+            const target2 = secondAttrs.match(/target\s*=\s*["']([^"']+)["']/)?.[1];
+            const popup1 = firstAttrs.match(/data-popup\s*=\s*["']([^"']+)["']/)?.[1];
+            const popup2 = secondAttrs.match(/data-popup\s*=\s*["']([^"']+)["']/)?.[1];
+            
+            // Only merge if key attributes match (or both are undefined)
+            if (target1 === target2 && popup1 === popup2) {
+              modified = true;
+              // Remove the </a> and <a> tags, keep the content between
+              return betweenTags;
+            }
+          }
+          
+          return match;
+        } catch (innerError) {
+          // If anything goes wrong processing this match, return it unchanged
+          console.warn('Error processing link match:', innerError);
+          return match;
+        }
+      });
+      
+      result = tempResult;
+    } catch (error) {
+      // If the entire replacement fails, log and return what we have so far
+      console.error('Error in mergeAdjacentLinks:', error);
+      break;
+    }
+  }
+  
+  // Warn if we hit max iterations (might indicate a problem)
+  if (iterations >= MAX_ITERATIONS) {
+    console.warn('mergeAdjacentLinks hit maximum iterations, stopping to prevent infinite loop');
+  }
+  
+  return result;
+};
+
 const renderComponent = (component: any) => {
   switch(component.component) {
     case 'alert-box':
@@ -91,6 +169,9 @@ const renderNode = (node: any) => {
     
     // Replace markdown-formatted endnotes with decimal-formatted list
     content = content.replaceAll(/\[\^(\d+)\]:/gm, '<span id="fn:$1" data-endnote="$1" role="doc-endnote">$1.</span>');
+
+    // Merge adjacent links with the same href
+    content = mergeAdjacentLinks(content);
 
     return { type: 'html', content };
   } catch (error) {
