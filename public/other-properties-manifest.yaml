@@ -118,3 +118,6 @@
 - name: Women in Cartography
   url_path: /digital-exhibitions/women-in-cartography
   build_root: ../other-properties/legacy-digital-exhibitions/women-in-cartography
+- name: Insizeor
+  url_path: /projects/insizeor
+  build_root: ../other-properties/insizeor
