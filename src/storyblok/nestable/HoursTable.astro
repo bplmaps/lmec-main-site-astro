@@ -1,8 +1,8 @@
 ---
 import { getDatasource } from "../../lib/utils";
 
-const hours  = await getDatasource("14355", "open-hours");
-const exceptions  = await getDatasource("14397", "schedule-exceptions");
+const hours  = await getDatasource("open-hours");
+const exceptions  = await getDatasource("schedule-exceptions");
 
 const dataBack = {
   weeklyHours: hours,

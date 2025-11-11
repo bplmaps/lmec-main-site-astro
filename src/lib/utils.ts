@@ -1,4 +1,3 @@
-import { date } from "astro:schema";
 import { useStoryblokApi } from "@storyblok/astro";
 
 const storyblokApi = useStoryblokApi()
@@ -25,7 +24,7 @@ export function getPath (fullSlug: string) {
 }
 
 
-export async function getDatasource(sourceID: string, sourceName: string) {
+export async function getDatasource(sourceName: string) {
   const SB_DATA = String(import.meta.env.SB_DATA_TOKEN)
 
   const versionURL = `https://api-us.storyblok.com/v2/cdn/spaces/me?token=${SB_DATA}`
@@ -47,7 +46,6 @@ export async function getDatasource(sourceID: string, sourceName: string) {
       console.log(error)
     })
   return datasourceActuals.datasource_entries
-  console.log(datasourceActuals)
 }
 
 // Function to get the 4 most recent articles for article sidebar
