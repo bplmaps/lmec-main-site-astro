@@ -18,7 +18,7 @@
     "animate.css": "^4.1.1",
     "astro": "^5.15.4",
     "astro-seo": "^0.8.4",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.8",
     "countable": "^3.0.1",
     "sass": "^1.85.1",
     "sharp": "^0.33.5",
