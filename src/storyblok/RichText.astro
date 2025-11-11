@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import { richTextResolver } from '@storyblok/richtext';
+import { richTextResolver, BlockTypes } from '@storyblok/richtext';
 import AlertBox from './nestable/AlertBox.astro';
 import Button from './nestable/Button.astro';
 import CardHolder from './nestable/CardHolder.astro'
@@ -24,7 +24,11 @@ export interface Props {
 }
 
 const { blok } = Astro.props;
-const { render } = richTextResolver();
+const { render } = richTextResolver({
+  resolvers: {
+    [BlockTypes.COMPONENT]: () => '',
+  }
+});
 
 const renderComponent = (component: any) => {
   switch(component.component) {

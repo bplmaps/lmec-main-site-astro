@@ -1,8 +1,12 @@
 ---
 import { useStoryblokApi } from "@storyblok/astro";
-import { richTextResolver } from "@storyblok/richtext";
+import { richTextResolver, BlockTypes } from "@storyblok/richtext";
  
-const { render } = richTextResolver()
+const { render } = richTextResolver({
+  resolvers: {
+    [BlockTypes.COMPONENT]: () => '',
+  }
+});
 
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi()
