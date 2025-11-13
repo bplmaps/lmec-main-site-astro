@@ -1,6 +1,5 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import { richTextResolver } from '@storyblok/richtext'
 import RichText from '../RichText.astro';
 
 export interface Props {
@@ -8,8 +7,6 @@ export interface Props {
     images: [];
   };
 }
-
-const { render } = richTextResolver()
 
 const { blok } = Astro.props
 ---

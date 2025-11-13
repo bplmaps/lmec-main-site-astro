@@ -8,7 +8,7 @@ import type { ISbResult } from '@storyblok/astro';
 
 const storyblokApi = useStoryblokApi()
  
-const pageData: ISbResult = await await storyblokApi.get(
+const pageData: ISbResult = await storyblokApi.get(
   `cdn/stories/main-site/about/people`,
   {
     version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
