@@ -420,12 +420,22 @@ export async function fetchStoriesPaginated(params: {
 }): Promise<{ stories: any[]; total: number }> {
   const storyblokApi = useStoryblokApi();
 
+  const cacheParams = {
+    endpoint: 'cdn/stories',
+    version: getVersion(),
+    ...params,
+  };
+
+  const cached = storyblokCache.get<{ stories: any[]; total: number }>(cacheParams);
+  if (cached) {
+    return cached;
+  }
+
   const response = await storyblokApi.get('cdn/stories', {
     version: getVersion(),
     ...params,
   } as any);
 
-  // Try to get total from various possible locations in the response
   let total = 0;
   if (response.total !== undefined) {
     total = response.total;
@@ -436,13 +446,16 @@ export async function fetchStoriesPaginated(params: {
     total = response.data.total;
   }
 
-  // Ensure total is a valid number
   if (isNaN(total) || total < 0) {
     total = 0;
   }
 
-  return {
+  const result = {
     stories: Object.values((response.data as any).stories),
     total: total,
   };
+
+  storyblokCache.set(cacheParams, result);
+
+  return result;
 }
