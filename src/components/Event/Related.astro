@@ -1,6 +1,6 @@
 ---
-import { useStoryblokApi } from "@storyblok/astro";
 import Card from '../../components/Event/Card.astro';
+import { fetchEvents } from '../../lib/storyblok-fetch';
 
 interface Event {
   params: {
@@ -15,17 +15,9 @@ interface Event {
   };
 }
 
-const storyblokApi = useStoryblokApi()
- 
-const { data } = await storyblokApi.get('cdn/stories', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-  content_type: 'event-page',
-  per_page: 3,
-})
-let events = data.stories
-events = Object.values(events)
-events = events.map((event: any) => {
+const stories = await fetchEvents({ limit: 3 });
+
+const events = stories.map((event: any) => {
   return {
     params: {
       name: event.name,

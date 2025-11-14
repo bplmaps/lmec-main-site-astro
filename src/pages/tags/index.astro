@@ -1,16 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { createSlug } from '../../lib/utils';
-import { useStoryblokApi } from "@storyblok/astro";
+import { fetchTags } from '../../lib/storyblok-fetch';
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get('cdn/tags', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-})
-
-const tags = data.tags
+const tags = await fetchTags({ starts_with: 'main-site/' });
 
 const largestFontSize = 1.4;
 const smallestFontSize = 0.7;

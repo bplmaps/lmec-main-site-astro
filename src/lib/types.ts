@@ -1,3 +1,7 @@
+/**
+ * Shared Types
+ */
+
 export interface Tag {
   name: string;
   taggings_count: number;

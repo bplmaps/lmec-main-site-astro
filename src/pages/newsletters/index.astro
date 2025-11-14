@@ -1,19 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import Card from '../../components/Newsletter/Card.astro';
+import { fetchNewsletters } from '../../lib/storyblok-fetch';
 
-const storyblokApi = useStoryblokApi();
-
-const data = await storyblokApi.get('cdn/stories', {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-    starts_with: 'main-site/',
-    content_type: 'newsletter-page',
-    sort_by: 'content.newsletterPubDate:desc',
-});
-
-let newsletters = data.data.stories;
-newsletters = Object.values(newsletters);
+let newsletters = await fetchNewsletters({ sort_by: 'content.newsletterPubDate:desc' });
 newsletters = newsletters.map((newsletter: any) => {
   return {
     params: {

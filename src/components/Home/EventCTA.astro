@@ -1,23 +1,7 @@
 ---
-import { useStoryblokApi } from "@storyblok/astro";
+import { fetchUpcomingEvents } from "../../lib/storyblok-fetch";
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get('cdn/stories', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-  resolve_links: 'url',
-  content_type: 'event-page',
-  sort_by: 'content.eventDate:asc',
-  filter_query: {
-    eventDate: {
-      gt_date: new Date().toISOString().split('T')[0] + '00:00',
-    }
-  },
-  per_page: 1,
-})
-let events = data.stories
-events = Object.values(events)
+let events = await fetchUpcomingEvents(1);
 events = events.map((event: any) => {
   return {
     params: {
