@@ -1,8 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
-import { fetchStaffPages, getVersion } from "../../../lib/storyblok-fetch";
+import { fetchStaffPages, fetchStoryByPath } from "../../../lib/storyblok-fetch";
 
 export async function getStaticPaths() {
   const allPeople = await fetchStaffPages();
@@ -12,22 +11,13 @@ export async function getStaticPaths() {
       params: {
         slug: person.slug,
       },
-    }
-  })
+    };
+  });
 }
 
-const { slug } = Astro.params
+const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/about/people/${slug}`,
-  {
-    version: getVersion(),
-  }
-)
- 
-const person = (data as any).story
+const person = await fetchStoryByPath(`main-site/about/people/${slug}`);
 ---
 
 <Layout title={`${person.name}`} subheading={`${person.content.title ? person.content.title : ''}`}>

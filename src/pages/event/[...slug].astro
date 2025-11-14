@@ -1,8 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
-import { fetchEvents, getVersion } from "../../lib/storyblok-fetch";
+import { fetchEvents, fetchStoryByPath } from "../../lib/storyblok-fetch";
 
 export async function getStaticPaths() {
   const allEvents = await fetchEvents();
@@ -12,22 +11,13 @@ export async function getStaticPaths() {
       params: {
         slug: event.slug,
       },
-    }
-  })
+    };
+  });
 }
 
-const { slug } = Astro.params
+const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/event/${slug}`,
-  {
-    version: getVersion(),
-  }
-)
- 
-const event = (data as any).story
+const event = await fetchStoryByPath(`main-site/event/${slug}`);
 ---
 
 <Layout title={`${event.name}`} pill="Event" image={`${event.content.headerImage && event.content.headerImage.filename}`}>

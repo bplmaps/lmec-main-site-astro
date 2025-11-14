@@ -4,6 +4,7 @@
 
 import { useStoryblokApi } from "@storyblok/astro";
 import { storyblokCache } from "./storyblok-cache";
+import { createSlug } from './utils';
 
 const STORYBLOK_API_BASE = 'https://api-us.storyblok.com/v2/cdn';
 
@@ -118,6 +119,7 @@ export async function fetchStories(params: {
   filter_query?: any;
   resolve_links?: string;
   per_page?: number;
+  limit?: number;
 }): Promise<any[]> {
   const storyblokApi = useStoryblokApi();
 
@@ -132,6 +134,26 @@ export async function fetchStories(params: {
     return cached;
   }
 
+  // If limit is provided, fetch only a single page
+  if (params.limit) {
+    const { limit, ...apiParams } = params;
+
+    const { data } = await storyblokApi.get('cdn/stories', {
+      version: getVersion(),
+      ...apiParams,
+      per_page: limit,
+      page: 1,
+    } as any);
+
+    let stories = (data as any).stories;
+    stories = Object.values(stories);
+
+    storyblokCache.set(cacheParams, stories);
+
+    return stories;
+  }
+
+  // Otherwise, fetch all stories by paginating
   const allStories: any[] = [];
   let page = 1;
   const perPage = params.per_page || 100;
@@ -163,12 +185,14 @@ export async function fetchStories(params: {
 export async function fetchArticles(options?: {
   sort_by?: string;
   per_page?: number;
+  limit?: number;
 }): Promise<any[]> {
   return fetchStories({
     starts_with: 'main-site/articles',
     content_type: 'article-page',
     sort_by: options?.sort_by || 'sort_by_date:desc:nulls_last',
     per_page: options?.per_page,
+    limit: options?.limit,
   });
 }
 
@@ -176,6 +200,7 @@ export async function fetchEvents(options?: {
   sort_by?: string;
   filter_query?: any;
   per_page?: number;
+  limit?: number;
 }): Promise<any[]> {
   return fetchStories({
     starts_with: 'main-site/event',
@@ -183,6 +208,7 @@ export async function fetchEvents(options?: {
     sort_by: options?.sort_by,
     filter_query: options?.filter_query,
     per_page: options?.per_page,
+    limit: options?.limit,
   });
 }
 
@@ -343,4 +369,64 @@ export async function fetchPagesInFolder(folder: string): Promise<any[]> {
     starts_with: `main-site/${folder}/`,
     content_type: 'standard-lmec-main-page',
   });
+}
+
+export async function fetchStoryByPath(path: string): Promise<any> {
+  const storyblokApi = useStoryblokApi();
+
+  const cacheParams = {
+    endpoint: 'cdn/stories',
+    version: getVersion(),
+    path: path,
+  };
+
+  const cached = storyblokCache.get<any>(cacheParams);
+  if (cached) {
+    return cached;
+  }
+
+  const { data } = await storyblokApi.get(`cdn/stories/${path}`, {
+    version: getVersion(),
+  } as any);
+
+  const story = (data as any).story;
+
+  storyblokCache.set(cacheParams, story);
+
+  return story;
+}
+
+export async function fetchTagsWithSlugs(options?: {
+  starts_with?: string;
+  per_page?: number;
+}): Promise<any[]> {
+  const tags = await fetchTags(options);
+
+  return tags.map((tag: any) => ({
+    name: tag.name,
+    taggings_count: tag.taggings_count,
+    slug: createSlug(tag.name),
+  }));
+}
+
+export async function fetchStoriesPaginated(params: {
+  page: number;
+  per_page: number;
+  starts_with?: string;
+  content_type?: string;
+  with_tag?: string;
+  sort_by?: string;
+  resolve_links?: string;
+}): Promise<{ stories: any[]; total: number }> {
+  const storyblokApi = useStoryblokApi();
+
+  const response = await storyblokApi.get('cdn/stories', {
+    version: getVersion(),
+    ...params,
+  } as any);
+
+  return {
+    stories: Object.values((response.data as any).stories),
+    total: Number(response.total),
+  };
 }

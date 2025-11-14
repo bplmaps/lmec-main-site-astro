@@ -1,22 +1,11 @@
 ---
 import { getPath } from '../../../lib/utils';
 import Layout from '../../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import Sidebar from '../../../components/Layout/Sidebar.astro';
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
-import type { ISbResult } from '@storyblok/astro';
-import { fetchStaffPages } from '../../../lib/storyblok-fetch';
+import { fetchStaffPages, fetchStoryByPath } from '../../../lib/storyblok-fetch';
 
-const storyblokApi = useStoryblokApi()
-
-const pageData: ISbResult = await storyblokApi.get(
-  `cdn/stories/main-site/about/people`,
-  {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  }
-)
-
-const page = (pageData.data as any).story;
+const page = await fetchStoryByPath('main-site/about/people');
 const path = getPath(page.full_slug);
 
 let allPeople = await fetchStaffPages({ sort_by: 'name:asc' });
@@ -27,8 +16,8 @@ allPeople = allPeople.map((person: any) => {
     name: person.name,
     title: person.content.title,
     headshot: person.content.headshot,
-  }
-})
+  };
+});
 ---
 
 <Layout title={`${page.name}`} subheading={`${page.content.page_description ? page.content.page_description : ''}`} image={`${page.content.header_img && page.content.header_img.filename}`}>

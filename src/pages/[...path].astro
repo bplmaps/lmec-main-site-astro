@@ -1,10 +1,9 @@
 ---
 import { getPath } from '../lib/utils';
 import Layout from '../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import Sidebar from '../components/Layout/Sidebar.astro';
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
-import { fetchStandardPages, getVersion } from "../lib/storyblok-fetch";
+import { fetchStandardPages, fetchStoryByPath } from "../lib/storyblok-fetch";
 
 export async function getStaticPaths() {
   const allPages = await fetchStandardPages();
@@ -14,22 +13,13 @@ export async function getStaticPaths() {
       params: {
         path: getPath(page.full_slug),
       },
-    }
-  })
+    };
+  });
 }
 
-const { path } = Astro.params
+const { path } = Astro.params;
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/${path}`,
-  {
-    version: getVersion(),
-  }
-)
- 
-const page = (data as any).story
+const page = await fetchStoryByPath(`main-site/${path}`);
 ---
 
 <Layout title={`${page.name}`} subheading={`${page.content.page_description ? page.content.page_description : ''}`} image={`${page.content.header_img && page.content.header_img.filename}`}>

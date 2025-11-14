@@ -1,23 +1,15 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { createSlug } from '../../../lib/utils';
 import Card from "../../../components/Article/Card.astro";
 import Pagination from "../../../components/Pagination.astro";
-import { useStoryblokApi } from "@storyblok/astro";
-import { fetchTags, fetchStoriesByTag, getVersion } from "../../../lib/storyblok-fetch";
-import type { ISbResult } from '@storyblok/astro';
+import { fetchTagsWithSlugs, fetchStoriesByTag, fetchStoriesPaginated } from "../../../lib/storyblok-fetch";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const tags = await fetchTags();
-
-  const tagsWithSlugs = tags.map((tag: any) => ({
-    name: tag.name,
-    slug: createSlug(tag.name),
-  }));
+  const tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
 
   const paths = await Promise.all(
-    tagsWithSlugs.map(async (tag: any) => {
+    tags.map(async (tag: any) => {
       const allStories = await fetchStoriesByTag(tag.name);
 
       return paginate(allStories, {
@@ -33,25 +25,10 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 const { page } = Astro.props;
 const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi();
-
 const pageParam = Astro.params.page;
 const currentPage = pageParam ? parseInt(pageParam) : 1;
 
-const tagsResponse = await storyblokApi.get('cdn/tags', {
-  version: getVersion(),
-  starts_with: 'main-site/',
-})
-
-let tags = tagsResponse.data.tags;
-tags = Object.values(tags);
-tags = tags.map((tag: any) => {
-  return {
-    name: tag.name,
-    taggings_count: tag.taggings_count,
-    slug: createSlug(tag.name),
-  }
-})
+const tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
 const tag = tags.find((x: any) => x.slug === slug);
 
 let stories;
@@ -64,20 +41,17 @@ if (page) {
   totalPages = page.lastPage;
 } else {
   // SSR mode - fetch data dynamically
-  const storiesResponse: ISbResult = await storyblokApi.get('cdn/stories', {
-    version: getVersion(),
-    per_page: storiesPerPage,
+  const { stories: fetchedStories, total } = await fetchStoriesPaginated({
     page: currentPage,
+    per_page: storiesPerPage,
     with_tag: tag.name,
     starts_with: 'main-site/',
   });
 
-  stories = storiesResponse.data.stories;
-  const totalStories = Number(storiesResponse.total);
-  totalPages = Math.ceil(totalStories / storiesPerPage);
+  stories = fetchedStories;
+  totalPages = Math.ceil(total / storiesPerPage);
 }
 
-stories = Object.values(stories);
 stories = stories.map((story: any) => {
   return {
     params: {

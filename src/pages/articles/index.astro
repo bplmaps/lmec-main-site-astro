@@ -3,27 +3,21 @@ import Layout from '../../layouts/Layout.astro';
 import { createSlug } from '../../lib/utils';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
-import { useStoryblokApi } from "@storyblok/astro";
-import type { Tag } from '../../lib/types';
-
-const storyblokApi = useStoryblokApi()
+import { fetchTopTags, fetchStoriesPaginated } from '../../lib/storyblok-fetch';
 
 const currentPage = 1;
 const articlesPerPage = 10;
-const articlesResponse = await storyblokApi.get('cdn/stories', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  per_page: articlesPerPage,
+
+const { stories, total } = await fetchStoriesPaginated({
   page: currentPage,
+  per_page: articlesPerPage,
   starts_with: 'main-site/',
   content_type: 'article-page',
   sort_by: 'sort_by_date:desc:nulls_last',
-
 });
-const totalArticles = Number(articlesResponse.total);
-const totalPages = Math.ceil(totalArticles / articlesPerPage);
-let articles = articlesResponse.data.stories
-articles = Object.values(articles)
-articles = articles.map((article: any) => {
+
+const totalPages = Math.ceil(total / articlesPerPage);
+const articles = stories.map((article: any) => {
   return {
     params: {
       title: article.name,
@@ -34,18 +28,10 @@ articles = articles.map((article: any) => {
       author: article.content.author,
       contentType: article.content.component,
     },
-  }
-})
+  };
+});
 
-const tagsResponse = await storyblokApi.get('cdn/tags', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-})
-let tags = tagsResponse.data.tags
-tags = tags.sort(
-  ({taggings_count: a}: Tag, {taggings_count: b}: Tag) => b - a
-);
-tags = tags.slice(0, 20);
+const tags = await fetchTopTags(20);
 ---
 
 <Layout title="Articles" description="Articles and posts that explore and explain our collections and initiatives" subheading="Articles and posts that explore and explain our collections and initiatives" pill="Article">

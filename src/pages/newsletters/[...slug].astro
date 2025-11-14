@@ -1,7 +1,6 @@
 ---
-import { useStoryblokApi } from "@storyblok/astro";
 import { richTextResolver, BlockTypes } from "@storyblok/richtext";
-import { fetchNewsletters, getVersion } from "../../lib/storyblok-fetch";
+import { fetchNewsletters, fetchStoryByPath } from "../../lib/storyblok-fetch";
 
 const { render } = richTextResolver({
   resolvers: {
@@ -17,22 +16,13 @@ export async function getStaticPaths() {
       params: {
         slug: newsletter.slug,
       },
-    }
-  })
+    };
+  });
 }
 
-const { slug } = Astro.params
+const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi()
-
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/newsletters/${slug}`,
-  {
-    version: getVersion(),
-  }
-)
- 
-const newsletter = (data as any).story
+const newsletter = await fetchStoryByPath(`main-site/newsletters/${slug}`);
 let newsletterBlocks = newsletter.content.contentBlocks;
 
 ---
