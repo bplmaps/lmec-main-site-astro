@@ -425,8 +425,10 @@ export async function fetchStoriesPaginated(params: {
     ...params,
   } as any);
 
+  const total = response.headers?.get('total') || response.total || 0;
+
   return {
     stories: Object.values((response.data as any).stories),
-    total: Number(response.total),
+    total: Number(total),
   };
 }

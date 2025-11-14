@@ -33,6 +33,10 @@ const { page } = Astro.props;
 const pageParam = Astro.params.page;
 const currentPage = pageParam ? parseInt(pageParam) : 1;
 
+if (isNaN(currentPage) || currentPage < 1) {
+  return Astro.redirect('/articles');
+}
+
 const tags = await fetchTopTags(20);
 
 const articlesPerPage = 10;
@@ -67,7 +71,11 @@ if (page) {
   });
 
   articles = stories.map(mapArticle);
-  totalPages = Math.ceil(total / articlesPerPage);
+  totalPages = Math.ceil(total / articlesPerPage) || 0;
+}
+
+if (currentPage > totalPages && totalPages > 0) {
+  return Astro.redirect('/articles');
 }
 ---
 

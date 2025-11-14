@@ -16,7 +16,7 @@ const { stories, total } = await fetchStoriesPaginated({
   sort_by: 'sort_by_date:desc:nulls_last',
 });
 
-const totalPages = Math.ceil(total / articlesPerPage);
+const totalPages = Math.ceil(total / articlesPerPage) || 0;
 const articles = stories.map((article: any) => {
   return {
     params: {

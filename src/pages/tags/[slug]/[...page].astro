@@ -28,6 +28,10 @@ const { slug } = Astro.params;
 const pageParam = Astro.params.page;
 const currentPage = pageParam ? parseInt(pageParam) : 1;
 
+if (isNaN(currentPage) || currentPage < 1) {
+  return Astro.redirect('/tags/' + slug);
+}
+
 const tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
 const tag = tags.find((x: any) => x.slug === slug);
 
@@ -49,7 +53,11 @@ if (page) {
   });
 
   stories = fetchedStories;
-  totalPages = Math.ceil(total / storiesPerPage);
+  totalPages = Math.ceil(total / storiesPerPage) || 0;
+}
+
+if (currentPage > totalPages && totalPages > 0) {
+  return Astro.redirect('/tags/' + slug);
 }
 
 stories = stories.map((story: any) => {
