@@ -26,8 +26,14 @@ class StoryblokBuildCache {
 
   /**
    * Get cached data if it exists
+   * Note: Caching is disabled in SSR mode to prevent stale content
    */
   get<T>(params: Record<string, any>): T | null {
+    // Disable cache in SSR mode to avoid serving stale content
+    if (import.meta.env.SSR) {
+      return null;
+    }
+
     const key = this.getCacheKey(params);
     const entry = this.cache.get(key);
 
@@ -40,8 +46,14 @@ class StoryblokBuildCache {
 
   /**
    * Store data in cache
+   * Note: Caching is disabled in SSR mode to prevent stale content
    */
   set<T>(params: Record<string, any>, data: T): void {
+    // Skip caching in SSR mode
+    if (import.meta.env.SSR) {
+      return;
+    }
+
     const key = this.getCacheKey(params);
     this.cache.set(key, {
       data,
