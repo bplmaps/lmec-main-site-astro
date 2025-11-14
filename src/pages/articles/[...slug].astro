@@ -2,32 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
- 
+import { fetchArticles, getVersion } from "../../lib/storyblok-fetch";
+
 export async function getStaticPaths() {
-  const storyblokApi = useStoryblokApi()
-  const allArticles = [];
-
-  let page = 1;
-  const perPage = 100;
-
-  while (true) {
-    const { data } = await storyblokApi.get('cdn/stories', {
-      version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-      starts_with: 'main-site/articles',
-      content_type: 'article-page',
-      per_page: perPage,
-      page: page,
-    })
-    let articles = data.stories
-    articles = Object.values(articles)
-
-    if (articles.length === 0) {
-      break; // Exit the loop if no stories are returned (i.e., last page)
-    }
-
-    allArticles.push(...articles);
-    page++;
-  }
+  const allArticles = await fetchArticles();
 
   return allArticles.map((article: any) => {
     return {
@@ -41,11 +19,11 @@ export async function getStaticPaths() {
 const { slug } = Astro.params
 
 const storyblokApi = useStoryblokApi()
- 
+
 const { data } = await storyblokApi.get(
   `cdn/stories/main-site/articles/${slug}`,
   {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
+    version: getVersion(),
   }
 )
  

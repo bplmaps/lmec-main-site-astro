@@ -1,7 +1,6 @@
 ---
-import { useStoryblokApi } from "@storyblok/astro";
-import type { ISbResult } from "@storyblok/astro";
 import { getPath } from '../../lib/utils';
+import { fetchStory } from '../../lib/storyblok-fetch';
 
 export interface Props {
 	uuid: string;
@@ -9,14 +8,7 @@ export interface Props {
 
 const { uuid } = Astro.props;
 
-const storyblokApi = useStoryblokApi()
- 
-const { data }: ISbResult = await storyblokApi.get('cdn/stories/' + uuid, {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  find_by: 'uuid',
-} as any)
-
-let page = data.story
+let page = await fetchStory(uuid);
 ---
 
 
