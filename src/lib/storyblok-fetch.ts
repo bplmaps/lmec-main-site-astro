@@ -425,10 +425,24 @@ export async function fetchStoriesPaginated(params: {
     ...params,
   } as any);
 
-  const total = response.headers?.get('total') || response.total || 0;
+  // Try to get total from various possible locations in the response
+  let total = 0;
+  if (response.total !== undefined) {
+    total = response.total;
+  } else if (response.headers && typeof response.headers.get === 'function') {
+    const headerTotal = response.headers.get('Total') || response.headers.get('total');
+    total = headerTotal ? parseInt(headerTotal, 10) : 0;
+  } else if (response.data?.total !== undefined) {
+    total = response.data.total;
+  }
+
+  // Ensure total is a valid number
+  if (isNaN(total) || total < 0) {
+    total = 0;
+  }
 
   return {
     stories: Object.values((response.data as any).stories),
-    total: Number(total),
+    total: total,
   };
 }

@@ -37,7 +37,9 @@ if (isNaN(currentPage) || currentPage < 1) {
   return Astro.redirect('/articles');
 }
 
-const tags = await fetchTopTags(20);
+let tags = [];
+let articles = [];
+let totalPages = 0;
 
 const articlesPerPage = 10;
 
@@ -53,28 +55,32 @@ const mapArticle = (article: any) => ({
   },
 });
 
-let articles;
-let totalPages;
+try {
+  tags = await fetchTopTags(20);
 
-if (page) {
-  // Static generation mode - use pre-generated paginated data
-  articles = page.data;
-  totalPages = page.lastPage;
-} else {
-  // SSR mode - fetch data dynamically for the current page
-  const { stories, total } = await fetchStoriesPaginated({
-    page: currentPage,
-    per_page: articlesPerPage,
-    starts_with: 'main-site/',
-    content_type: 'article-page',
-    sort_by: 'sort_by_date:desc:nulls_last',
-  });
+  if (page) {
+    // Static generation mode - use pre-generated paginated data
+    articles = page.data;
+    totalPages = page.lastPage;
+  } else {
+    // SSR mode - fetch data dynamically for the current page
+    const { stories, total } = await fetchStoriesPaginated({
+      page: currentPage,
+      per_page: articlesPerPage,
+      starts_with: 'main-site/',
+      content_type: 'article-page',
+      sort_by: 'sort_by_date:desc:nulls_last',
+    });
 
-  articles = stories.map(mapArticle);
-  totalPages = Math.ceil(total / articlesPerPage) || 0;
-}
+    articles = stories.map(mapArticle);
+    totalPages = Math.ceil(total / articlesPerPage) || 0;
+  }
 
-if (currentPage > totalPages && totalPages > 0) {
+  if (currentPage > totalPages && totalPages > 0) {
+    return Astro.redirect('/articles');
+  }
+} catch (error) {
+  console.error('Error fetching articles:', error);
   return Astro.redirect('/articles');
 }
 ---
