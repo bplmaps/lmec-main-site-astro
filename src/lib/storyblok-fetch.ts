@@ -29,6 +29,30 @@ async function fetchStoryblokApi<T>(url: string): Promise<T> {
   }
 }
 
+export function getVersion(): 'draft' | 'published' {
+  return String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true' ? 'draft' : 'published';
+}
+
+/**
+ * Helper function to wrap Storyblok API calls with caching
+ * @param cacheParams Object used as cache key
+ * @param fetchFn Function that fetches the data from Storyblok
+ * @returns Cached data if available, otherwise fetches and caches the result
+ */
+async function cachedStoryblokFetch<T>(
+  cacheParams: any,
+  fetchFn: () => Promise<T>
+): Promise<T> {
+  const cached = storyblokCache.get<T>(cacheParams);
+  if (cached) {
+    return cached;
+  }
+
+  const result = await fetchFn();
+  storyblokCache.set(cacheParams, result);
+  return result;
+}
+
 async function getSpaceVersion(): Promise<number> {
   const SB_DATA = String(import.meta.env.SB_DATA_TOKEN);
 
@@ -37,22 +61,11 @@ async function getSpaceVersion(): Promise<number> {
     token: 'version',
   };
 
-  const cached = storyblokCache.get<number>(cacheParams);
-  if (cached) {
-    return cached;
-  }
-
-  const url = buildStoryblokUrl('spaces/me', { token: SB_DATA });
-  const data = await fetchStoryblokApi<{ space: { version: number } }>(url);
-  const version = data.space.version;
-
-  storyblokCache.set(cacheParams, version);
-
-  return version;
-}
-
-export function getVersion(): 'draft' | 'published' {
-  return String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true' ? 'draft' : 'published';
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const url = buildStoryblokUrl('spaces/me', { token: SB_DATA });
+    const data = await fetchStoryblokApi<{ space: { version: number } }>(url);
+    return data.space.version;
+  });
 }
 
 export async function getDatasource(sourceName: string): Promise<any[]> {
@@ -63,25 +76,18 @@ export async function getDatasource(sourceName: string): Promise<any[]> {
     sourceName: sourceName,
   };
 
-  const cached = storyblokCache.get<any[]>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const currentVersion = await getSpaceVersion();
 
-  const currentVersion = await getSpaceVersion();
+    const url = buildStoryblokUrl('datasource_entries', {
+      datasource: sourceName,
+      token: SB_DATA,
+      cv: String(currentVersion),
+    });
 
-  const url = buildStoryblokUrl('datasource_entries', {
-    datasource: sourceName,
-    token: SB_DATA,
-    cv: String(currentVersion),
+    const data = await fetchStoryblokApi<{ datasource_entries: any[] }>(url);
+    return data.datasource_entries;
   });
-
-  const data = await fetchStoryblokApi<{ datasource_entries: any[] }>(url);
-  const entries = data.datasource_entries;
-
-  storyblokCache.set(cacheParams, entries);
-
-  return entries;
 }
 
 export async function fetchStory(uuid: string): Promise<any> {
@@ -94,21 +100,14 @@ export async function fetchStory(uuid: string): Promise<any> {
     find_by: 'uuid',
   };
 
-  const cached = storyblokCache.get<any>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const { data } = await storyblokApi.get('cdn/stories/' + uuid, {
+      version: getVersion(),
+      find_by: 'uuid',
+    } as any);
 
-  const { data } = await storyblokApi.get('cdn/stories/' + uuid, {
-    version: getVersion(),
-    find_by: 'uuid',
-  } as any);
-
-  const story = (data as any).story;
-
-  storyblokCache.set(cacheParams, story);
-
-  return story;
+    return (data as any).story;
+  });
 }
 
 export async function fetchStories(params: {
@@ -129,57 +128,48 @@ export async function fetchStories(params: {
     endpoint: 'cdn/stories',
   };
 
-  const cached = storyblokCache.get<any[]>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    // If limit is provided, fetch only a single page
+    if (params.limit) {
+      const { limit, ...apiParams } = params;
 
-  // If limit is provided, fetch only a single page
-  if (params.limit) {
-    const { limit, ...apiParams } = params;
+      const { data } = await storyblokApi.get('cdn/stories', {
+        version: getVersion(),
+        ...apiParams,
+        per_page: limit,
+        page: 1,
+      } as any);
 
-    const { data } = await storyblokApi.get('cdn/stories', {
-      version: getVersion(),
-      ...apiParams,
-      per_page: limit,
-      page: 1,
-    } as any);
-
-    let stories = (data as any).stories;
-    stories = Object.values(stories);
-
-    storyblokCache.set(cacheParams, stories);
-
-    return stories;
-  }
-
-  // Otherwise, fetch all stories by paginating
-  const allStories: any[] = [];
-  let page = 1;
-  const perPage = params.per_page || 100;
-
-  while (true) {
-    const { data } = await storyblokApi.get('cdn/stories', {
-      version: getVersion(),
-      ...params,
-      per_page: perPage,
-      page: page,
-    } as any);
-
-    let stories = (data as any).stories;
-    stories = Object.values(stories);
-
-    if (stories.length === 0) {
-      break;
+      let stories = (data as any).stories;
+      return Object.values(stories);
     }
 
-    allStories.push(...stories);
-    page++;
-  }
+    // Otherwise, fetch all stories by paginating
+    const allStories: any[] = [];
+    let page = 1;
+    const perPage = params.per_page || 100;
 
-  storyblokCache.set(cacheParams, allStories);
+    while (true) {
+      const { data } = await storyblokApi.get('cdn/stories', {
+        version: getVersion(),
+        ...params,
+        per_page: perPage,
+        page: page,
+      } as any);
 
-  return allStories;
+      let stories = (data as any).stories;
+      stories = Object.values(stories);
+
+      if (stories.length === 0) {
+        break;
+      }
+
+      allStories.push(...stories);
+      page++;
+    }
+
+    return allStories;
+  });
 }
 
 export async function fetchArticles(options?: {
@@ -252,22 +242,15 @@ export async function fetchTags(options?: {
     per_page: options?.per_page,
   };
 
-  const cached = storyblokCache.get<any[]>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const { data } = await storyblokApi.get('cdn/tags', {
+      version: getVersion(),
+      starts_with: cacheParams.starts_with,
+      per_page: options?.per_page,
+    });
 
-  const { data } = await storyblokApi.get('cdn/tags', {
-    version: getVersion(),
-    starts_with: cacheParams.starts_with,
-    per_page: options?.per_page,
+    return data.tags || [];
   });
-
-  const tags = data.tags || [];
-
-  storyblokCache.set(cacheParams, tags);
-
-  return tags;
 }
 
 export async function fetchStoriesByTag(tagName: string): Promise<any[]> {
@@ -300,26 +283,19 @@ export async function fetchLatestArticles(limit: number = 3): Promise<any[]> {
     resolve_links: 'url',
   };
 
-  const cached = storyblokCache.get<any[]>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const { data } = await storyblokApi.get('cdn/stories', {
+      version: getVersion(),
+      starts_with: 'main-site/',
+      resolve_links: 'url',
+      content_type: 'article-page',
+      sort_by: 'content.publishDate:desc',
+      per_page: limit,
+    } as any);
 
-  const { data } = await storyblokApi.get('cdn/stories', {
-    version: getVersion(),
-    starts_with: 'main-site/',
-    resolve_links: 'url',
-    content_type: 'article-page',
-    sort_by: 'content.publishDate:desc',
-    per_page: limit,
-  } as any);
-
-  let articles = (data as any).stories;
-  articles = Object.values(articles);
-
-  storyblokCache.set(cacheParams, articles);
-
-  return articles;
+    let articles = (data as any).stories;
+    return Object.values(articles);
+  });
 }
 
 export async function fetchUpcomingEvents(limit?: number): Promise<any[]> {
@@ -337,31 +313,24 @@ export async function fetchUpcomingEvents(limit?: number): Promise<any[]> {
     resolve_links: 'url',
   };
 
-  const cached = storyblokCache.get<any[]>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const { data } = await storyblokApi.get('cdn/stories', {
+      version: getVersion(),
+      starts_with: 'main-site/',
+      resolve_links: 'url',
+      content_type: 'event-page',
+      sort_by: 'content.eventDate:asc',
+      filter_query: {
+        eventDate: {
+          gt_date: today,
+        }
+      },
+      per_page: limit,
+    } as any);
 
-  const { data } = await storyblokApi.get('cdn/stories', {
-    version: getVersion(),
-    starts_with: 'main-site/',
-    resolve_links: 'url',
-    content_type: 'event-page',
-    sort_by: 'content.eventDate:asc',
-    filter_query: {
-      eventDate: {
-        gt_date: today,
-      }
-    },
-    per_page: limit,
-  } as any);
-
-  let events = (data as any).stories;
-  events = Object.values(events);
-
-  storyblokCache.set(cacheParams, events);
-
-  return events;
+    let events = (data as any).stories;
+    return Object.values(events);
+  });
 }
 
 export async function fetchPagesInFolder(folder: string): Promise<any[]> {
@@ -380,20 +349,13 @@ export async function fetchStoryByPath(path: string): Promise<any> {
     path: path,
   };
 
-  const cached = storyblokCache.get<any>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const { data } = await storyblokApi.get(`cdn/stories/${path}`, {
+      version: getVersion(),
+    } as any);
 
-  const { data } = await storyblokApi.get(`cdn/stories/${path}`, {
-    version: getVersion(),
-  } as any);
-
-  const story = (data as any).story;
-
-  storyblokCache.set(cacheParams, story);
-
-  return story;
+    return (data as any).story;
+  });
 }
 
 export async function fetchTagsWithSlugs(options?: {
@@ -426,36 +388,29 @@ export async function fetchStoriesPaginated(params: {
     ...params,
   };
 
-  const cached = storyblokCache.get<{ stories: any[]; total: number }>(cacheParams);
-  if (cached) {
-    return cached;
-  }
+  return cachedStoryblokFetch(cacheParams, async () => {
+    const response = await storyblokApi.get('cdn/stories', {
+      version: getVersion(),
+      ...params,
+    } as any);
 
-  const response = await storyblokApi.get('cdn/stories', {
-    version: getVersion(),
-    ...params,
-  } as any);
+    let total = 0;
+    if (response.total !== undefined) {
+      total = response.total;
+    } else if (response.headers && typeof response.headers.get === 'function') {
+      const headerTotal = response.headers.get('Total') || response.headers.get('total');
+      total = headerTotal ? parseInt(headerTotal, 10) : 0;
+    } else if (response.data?.total !== undefined) {
+      total = response.data.total;
+    }
 
-  let total = 0;
-  if (response.total !== undefined) {
-    total = response.total;
-  } else if (response.headers && typeof response.headers.get === 'function') {
-    const headerTotal = response.headers.get('Total') || response.headers.get('total');
-    total = headerTotal ? parseInt(headerTotal, 10) : 0;
-  } else if (response.data?.total !== undefined) {
-    total = response.data.total;
-  }
+    if (isNaN(total) || total < 0) {
+      total = 0;
+    }
 
-  if (isNaN(total) || total < 0) {
-    total = 0;
-  }
-
-  const result = {
-    stories: Object.values((response.data as any).stories),
-    total: total,
-  };
-
-  storyblokCache.set(cacheParams, result);
-
-  return result;
+    return {
+      stories: Object.values((response.data as any).stories),
+      total: total,
+    };
+  });
 }
