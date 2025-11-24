@@ -1,50 +1,16 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { createSlug } from '../../../lib/utils';
 import Card from "../../../components/Article/Card.astro";
 import Pagination from "../../../components/Pagination.astro";
-import { useStoryblokApi } from "@storyblok/astro";
-import type { ISbResult } from '@storyblok/astro';
+import { fetchTagsWithSlugs, fetchStoriesByTag, fetchStoriesPaginated } from "../../../lib/storyblok-fetch";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const storyblokApi = useStoryblokApi();
-
-  const tagsResponse = await storyblokApi.get('cdn/tags', {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true' ? 'draft' : 'published',
-    starts_with: 'main-site/',
-  });
-
-  const tags = tagsResponse.data.tags.map((tag: any) => ({
-    name: tag.name,
-    slug: createSlug(tag.name),
-  }));
+  const tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
 
   const paths = await Promise.all(
     tags.map(async (tag: any) => {
-      let allStories = [];
-
-      let page = 1;
-      const perPage = 100;
-
-      while (true) {
-        const { data } = await storyblokApi.get('cdn/stories', {
-          version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-          with_tag: tag.name,
-          starts_with: 'main-site/',
-          per_page: perPage,
-          page: page,
-        })
-        let stories = data.stories
-        stories = Object.values(stories)
-
-        if (stories.length === 0) {
-          break; // Exit the loop if no stories are returned (i.e., last page)
-        }
-
-        allStories.push(...stories);
-        page++;
-      }
+      const allStories = await fetchStoriesByTag(tag.name);
 
       return paginate(allStories, {
         params: { slug: tag.slug },
@@ -59,65 +25,61 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 const { page } = Astro.props;
 const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi();
-
 const pageParam = Astro.params.page;
 const currentPage = pageParam ? parseInt(pageParam) : 1;
 
-const tagsResponse = await storyblokApi.get('cdn/tags', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-})
-
-let tags = tagsResponse.data.tags;
-tags = Object.values(tags);
-tags = tags.map((tag: any) => {
-  return {
-    name: tag.name,
-    taggings_count: tag.taggings_count,
-    slug: createSlug(tag.name),
-  }
-})
-const tag = tags.find((x: any) => x.slug === slug);
-
-let stories;
-let totalPages;
-const storiesPerPage = 10;
-
-if (page) {
-  // Static generation mode - use paginated data
-  stories = page.data;
-  totalPages = page.lastPage;
-} else {
-  // SSR mode - fetch data dynamically
-  const storiesResponse: ISbResult = await storyblokApi.get('cdn/stories', {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-    per_page: storiesPerPage,
-    page: currentPage,
-    with_tag: tag.name,
-    starts_with: 'main-site/',
-  });
-
-  stories = storiesResponse.data.stories;
-  const totalStories = Number(storiesResponse.total);
-  totalPages = Math.ceil(totalStories / storiesPerPage);
+if (isNaN(currentPage) || currentPage < 1) {
+  return Astro.redirect('/tags/' + slug);
 }
 
-stories = Object.values(stories);
-stories = stories.map((story: any) => {
-  return {
-    params: {
-      title: story.name,
-      description: story.content.description,
-      slug: story.slug,
-      headerImage: story.content.headerImage,
-      eventDate: story.content.eventDate,
-      publishedAt: story.content.publishDate,
-      author: story.content.author,
-      contentType: story.content.component,
-    },
-  };
+let tags = [];
+let tag: any = null;
+let stories = [];
+let totalPages = 0;
+
+const storiesPerPage = 10;
+
+const mapStory = (story: any) => ({
+  params: {
+    title: story.name,
+    description: story.content.description,
+    slug: story.slug,
+    headerImage: story.content.headerImage,
+    eventDate: story.content.eventDate,
+    publishedAt: story.content.publishDate,
+    author: story.content.author,
+    contentType: story.content.component,
+  },
 });
+
+try {
+  tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
+  tag = tags.find((x: any) => x.slug === slug);
+
+  if (page) {
+    // Static generation mode - use pre-generated paginated data
+    stories = page.data;
+    totalPages = page.lastPage;
+  } else {
+    // SSR mode - fetch data dynamically for the current page
+    const { stories: fetchedStories, total } = await fetchStoriesPaginated({
+      page: currentPage,
+      per_page: storiesPerPage,
+      with_tag: tag.name,
+      starts_with: 'main-site/',
+    });
+
+    stories = fetchedStories.map(mapStory);
+    totalPages = Math.ceil(total / storiesPerPage) || 0;
+  }
+
+  if (currentPage > totalPages && totalPages > 0) {
+    return Astro.redirect('/tags/' + slug);
+  }
+} catch (error) {
+  console.error('Error fetching stories:', error);
+  return Astro.redirect('/tags/' + slug);
+}
 ---
 
 <Layout title={tag.name} description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">

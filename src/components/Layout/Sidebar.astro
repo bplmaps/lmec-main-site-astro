@@ -1,6 +1,6 @@
 ---
 import { getPath } from '../../lib/utils';
-import { useStoryblokApi } from "@storyblok/astro";
+import { fetchPagesInFolder } from '../../lib/storyblok-fetch';
 
 export interface Props {
   path: string;
@@ -19,33 +19,9 @@ const { path } = Astro.props
 const currentPath = Astro.url.pathname.replace(/\/$/, '');
 
 const folders = path.split('/');
-
 let folder = folders[0];
 
-const storyblokApi = useStoryblokApi()
-let allPages = [];
-
-let page = 1;
-const perPage = 100;
-
-while (true) {
-  const { data } = await storyblokApi.get('cdn/stories', {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-    starts_with: `main-site/${folder}/`,
-    content_type: 'standard-lmec-main-page',
-    per_page: perPage,
-    page: page,
-  })
-  let pages = data.stories
-  pages = Object.values(pages)
-
-  if (pages.length === 0) {
-    break; // Exit the loop if no stories are returned (i.e., last page)
-  }
-
-  allPages.push(...pages);
-  page++;
-}
+let allPages = await fetchPagesInFolder(folder);
 
 allPages = allPages.map((page: any) => {
   return {
@@ -57,12 +33,12 @@ allPages = allPages.map((page: any) => {
     },
   }
 })
-let startpages = allPages.filter((page: Page) => {
+let startPages = allPages.filter((page: Page) => {
     return page.params.is_startpage;
   })
   .sort((a, b) => a.params.name > b.params.name ? 1 : -1);
 
-let menuTitle = startpages[0];
+let menuTitle = startPages[0];
 
 allPages = allPages.filter((page: Page) => {
   return !page.params.hide_from_menu && page.params.path!=menuTitle.params.path;
@@ -70,7 +46,7 @@ allPages = allPages.filter((page: Page) => {
 ---
 {allPages &&
   <div class="bg-white mb-5">
-    {startpages.length > 0 &&
+    {startPages.length > 0 &&
       <h5 class="mb-3 section-toplevel-link">
         <a href={menuTitle.params.path}>{menuTitle.params.name}</a>
       </h5>
