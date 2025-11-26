@@ -1,8 +1,8 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
-import Card from "../../../components/Article/Card.astro";
-import Pagination from "../../../components/Pagination.astro";
-import { fetchTagsWithSlugs, fetchStoriesByTag, fetchStoriesPaginated } from "../../../lib/storyblok-fetch";
+import Layout from '../../../../layouts/Layout.astro';
+import Card from "../../../../components/Article/Card.astro";
+import Pagination from "../../../../components/Pagination.astro";
+import { fetchTagsWithSlugs, fetchStoriesByTag, fetchStoriesPaginated } from "../../../../lib/storyblok-fetch";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
@@ -96,7 +96,7 @@ try {
         </article>
       ))}
       <div class="col-12 mt-4">
-        <Pagination urlBase={`/tags/${tag.slug}`} maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
+        <Pagination urlBase={`/tags/${tag.slug}/page`} maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
       </div>
     </div>
   </section>

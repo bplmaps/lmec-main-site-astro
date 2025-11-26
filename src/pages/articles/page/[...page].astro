@@ -1,9 +1,9 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { createSlug } from '../../lib/utils';
-import Card from "../../components/Article/Card.astro";
-import Pagination from "../../components/Pagination.astro";
-import { fetchArticles, fetchTopTags, fetchStoriesPaginated } from "../../lib/storyblok-fetch";
+import Layout from '../../../layouts/Layout.astro';
+import { createSlug } from '../../../lib/utils';
+import Card from "../../../components/Article/Card.astro";
+import Pagination from "../../../components/Pagination.astro";
+import { fetchArticles, fetchTopTags, fetchStoriesPaginated } from "../../../lib/storyblok-fetch";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
@@ -108,7 +108,7 @@ try {
             </article>
           ))}
           <div class="col-12 mt-4">
-            <Pagination urlBase="/articles" maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
+            <Pagination urlBase="/articles/page" maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
           </div>
         </div>
       </div>
