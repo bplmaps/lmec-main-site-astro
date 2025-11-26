@@ -3,41 +3,13 @@ import Layout from '../../layouts/Layout.astro';
 import { createSlug } from '../../lib/utils';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
-import { useStoryblokApi } from "@storyblok/astro";
-import type { Tag, PageData } from '../../lib/types';
-import type { ISbResult } from '@storyblok/astro';
+import { fetchArticles, fetchTopTags, fetchStoriesPaginated } from "../../lib/storyblok-fetch";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const storyblokApi = useStoryblokApi();
+  const allArticles = await fetchArticles();
 
-  let allArticles = [];
-
-  let page = 1;
-  const perPage = 100;
-
-  while (true) {
-    const { data } = await storyblokApi.get('cdn/stories', {
-      version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-      starts_with: 'main-site/',
-      content_type: 'article-page',
-      per_page: perPage,
-      page: page,
-      sort_by: 'sort_by_date:desc:nulls_last',
-    })
-    let events = data.stories
-    events = Object.values(events)
-
-    if (events.length === 0) {
-      break; // Exit the loop if no stories are returned (i.e., last page)
-    }
-
-    allArticles.push(...events);
-    page++;
-  }
-
-  allArticles = Object.values(allArticles)
-  allArticles = allArticles.map((article: any) => {
+  const mappedArticles = allArticles.map((article: any) => {
     return {
       params: {
         title: article.name,
@@ -48,42 +20,69 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
         author: article.content.author,
         contentType: article.content.component,
       },
-    }
-  })
+    };
+  });
 
-  return paginate(allArticles, {
+  return paginate(mappedArticles, {
     pageSize: 10
   });
 }
 
-const { page }: { page: PageData } = Astro.props;
+const { page } = Astro.props;
 
-const storyblokApi = useStoryblokApi();
+const pageParam = Astro.params.page;
+const currentPage = pageParam ? parseInt(pageParam) : 1;
+
+if (isNaN(currentPage) || currentPage < 1) {
+  return Astro.redirect('/articles');
+}
+
+let tags = [];
+let articles = [];
+let totalPages = 0;
 
 const articlesPerPage = 10;
-const articlesResponse: ISbResult = await storyblokApi.get('cdn/stories', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  per_page: articlesPerPage,
-  page: page.currentPage,
-  starts_with: 'main-site/',
-  content_type: 'article-page',
+
+const mapArticle = (article: any) => ({
+  params: {
+    title: article.name,
+    description: article.content.description,
+    slug: article.slug,
+    headerImage: article.content.headerImage,
+    publishedAt: article.content.publishDate,
+    author: article.content.author,
+    contentType: article.content.component,
+  },
 });
-const totalArticles = Number(articlesResponse.total);
-const totalPages = Math.ceil(totalArticles / articlesPerPage);
 
-const currentPage = page.currentPage ?? 1;
-const articles = page.data ?? [];
+try {
+  tags = await fetchTopTags(20);
 
-const tagsResponse = await storyblokApi.get('cdn/tags', {
-  version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  starts_with: 'main-site/',
-})
+  if (page) {
+    // Static generation mode - use pre-generated paginated data
+    articles = page.data;
+    totalPages = page.lastPage;
+  } else {
+    // SSR mode - fetch data dynamically for the current page
+    const { stories, total } = await fetchStoriesPaginated({
+      page: currentPage,
+      per_page: articlesPerPage,
+      starts_with: 'main-site/',
+      content_type: 'article-page',
+      sort_by: 'sort_by_date:desc:nulls_last',
+    });
 
-let tags = tagsResponse.data.tags
-tags = tags.sort(
-  ({taggings_count: a}: Tag, {taggings_count: b}: Tag) => b - a
-);
-tags = tags.slice(0, 20);
+    articles = stories.map(mapArticle);
+    totalPages = Math.ceil(total / articlesPerPage) || 0;
+  }
+
+  if (currentPage > totalPages && totalPages > 0) {
+    return Astro.redirect('/articles');
+  }
+} catch (error) {
+  console.error('Error fetching articles:', error);
+  return Astro.redirect('/articles');
+}
 ---
 
 <Layout title="Articles" description="Articles and posts that explore and explain our collections and initiatives" subheading="Articles and posts that explore and explain our collections and initiatives" pill="Article">

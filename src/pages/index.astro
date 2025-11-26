@@ -1,18 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+import { fetchStoryByPath } from '../lib/storyblok-fetch';
 
-const storyblokApi = useStoryblokApi()
- 
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/main-site`,
-  {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  }
-)
- 
-const page = (data as any).story
+const page = await fetchStoryByPath('main-site/main-site');
 ---
 
 <Layout title="Home" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">

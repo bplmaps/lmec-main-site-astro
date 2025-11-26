@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import { richTextResolver } from '@storyblok/richtext'
+import { richTextResolver, BlockTypes } from '@storyblok/richtext'
 import Donate from '../components/Article/Donate.astro';
 import Sidebar from '../components/Article/Sidebar.astro';
 import RichText from './RichText.astro';
@@ -8,7 +8,11 @@ import RichText from './RichText.astro';
 // @ts-ignore
 import Countable from 'countable';
 
-const { render } = richTextResolver()
+const { render } = richTextResolver({
+  resolvers: {
+    [BlockTypes.COMPONENT]: () => '',
+  }
+});
 
 const { blok, tags } = Astro.props;
 

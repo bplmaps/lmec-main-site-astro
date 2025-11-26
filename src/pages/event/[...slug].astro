@@ -1,55 +1,23 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { useStoryblokApi } from "@storyblok/astro";
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+import { fetchEvents, fetchStoryByPath } from "../../lib/storyblok-fetch";
 
 export async function getStaticPaths() {
-  const storyblokApi = useStoryblokApi()
-  const allEvents = [];
-
-  let page = 1;
-  const perPage = 100;
-
-  while (true) {
-    const { data } = await storyblokApi.get('cdn/stories', {
-      version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-      starts_with: 'main-site/event',
-      content_type: 'event-page',
-      per_page: perPage,
-      page: page,
-    })
-    let events = data.stories
-    events = Object.values(events)
-
-    if (events.length === 0) {
-      break; // Exit the loop if no stories are returned (i.e., last page)
-    }
-
-    allEvents.push(...events);
-    page++;
-  }
+  const allEvents = await fetchEvents();
 
   return allEvents.map((event: any) => {
     return {
       params: {
         slug: event.slug,
       },
-    }
-  })
+    };
+  });
 }
 
-const { slug } = Astro.params
+const { slug } = Astro.params;
 
-const storyblokApi = useStoryblokApi()
- 
-const { data } = await storyblokApi.get(
-  `cdn/stories/main-site/event/${slug}`,
-  {
-    version: String(import.meta.env.STORYBLOK_IS_PREVIEW) == 'true' ? 'draft' : 'published',
-  }
-)
- 
-const event = (data as any).story
+const event = await fetchStoryByPath(`main-site/event/${slug}`);
 ---
 
 <Layout title={`${event.name}`} pill="Event" image={`${event.content.headerImage && event.content.headerImage.filename}`}>

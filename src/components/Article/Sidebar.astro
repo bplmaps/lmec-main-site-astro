@@ -1,16 +1,12 @@
 ---
-import { useStoryblokApi } from "@storyblok/astro";
-import { fourRecentArticles } from "../../lib/utils";
-
-const storyblokApi = useStoryblokApi()
+import { fetchLatestArticles } from "../../lib/storyblok-fetch";
 
 export interface Props {
 	tags: string[];
 }
 
 const { tags } = Astro.props;
-const sidebar_articles = await fourRecentArticles();
-
+const sidebarArticles = await fetchLatestArticles(4);
 ---
 
 {tags &&
@@ -26,29 +22,29 @@ const sidebar_articles = await fourRecentArticles();
   </div>
 }
 
-{sidebar_articles &&
+{sidebarArticles &&
   <div class="bg-white">
     <h4 class="mb-4">Recent Articles</h4>
-    {sidebar_articles.map((article: any) => (
+    {sidebarArticles.map((article: any) => (
       <div class="d-flex mb-4">
-        {article.params.headerImage && article.params.headerImage.filename &&
+        {article.content.headerImage && article.content.headerImage.filename &&
           <div class="flex-shrink-0">
-            <a href={article.params.slug}>
-              <img src={article.params.headerImage.filename} alt={`Thumbnail image for article ${article.params.name}`} class="post-thumb-sm">
+            <a href={`/articles/${article.slug}`}>
+              <img src={article.content.headerImage.filename} alt={`Thumbnail image for article ${article.name}`} class="post-thumb-sm">
             </a>
           </div>
         }
         <div class="flex-grow-1 ms-3">
-          <a href=`/articles/${article.params.slug}`>
-            {article.params.name &&
+          <a href=`/articles/${article.slug}`>
+            {article.name &&
               <h5 class="mt-0">
-                {article.params.name}
+                {article.name}
               </h5>
             }
           </a>
 
-          {article.params.publishDate &&
-            new Date(article.params.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})
+          {article.content.publishDate &&
+            new Date(article.content.publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric'})
           }
         </div>
       </div>
