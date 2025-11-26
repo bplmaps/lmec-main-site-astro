@@ -62,7 +62,7 @@ const stories = fetchedStories.map((story: any) => {
         </article>
       ))}
       <div class="col-12 mt-4">
-        <Pagination urlBase={`/tags/${tag.slug}`} maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
+        <Pagination urlBase={`/tags/${tag.slug}/page`} maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
       </div>
     </div>
   </section>
