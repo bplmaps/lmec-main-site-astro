@@ -340,6 +340,105 @@ export async function fetchPagesInFolder(folder: string): Promise<any[]> {
   });
 }
 
+export async function fetchFolderStartpage(folder: string): Promise<any | null> {
+  const storyblokApi = useStoryblokApi();
+  const storyPath = `main-site/${folder}`;
+
+  const cacheParams = {
+    endpoint: 'cdn/stories',
+    version: getVersion(),
+    path: storyPath,
+    type: 'startpage',
+  };
+
+  return cachedStoryblokFetch(cacheParams, async () => {
+    try {
+      const { data } = await storyblokApi.get(`cdn/stories/${storyPath}`, {
+        version: getVersion(),
+      } as any);
+
+      const story = (data as any).story;
+      if (story && story.is_startpage) {
+        return story;
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
+  });
+}
+
+export interface HierarchicalPage {
+  name: string;
+  position: number;
+  full_slug: string;
+  is_startpage: boolean;
+  content: any;
+  children: HierarchicalPage[];
+}
+
+export async function fetchHierarchicalPagesInFolder(folder: string): Promise<HierarchicalPage[]> {
+  const allPages = await fetchStories({
+    starts_with: `main-site/${folder}/`,
+  });
+
+  const folderMap = new Map<string, any[]>();
+  const basePath = `main-site/${folder}`;
+
+  const rootStartpagePath = `main-site/${folder}/`;
+  const filteredPages = allPages.filter(page => page.full_slug !== rootStartpagePath);
+
+  for (const page of filteredPages) {
+    // Strip trailing slash first (startpages have trailing slashes like 'main-site/education/k12/')
+    const normalizedSlug = page.full_slug.replace(/\/$/, '');
+    const slugParts = normalizedSlug.split('/');
+    slugParts.pop(); // Remove the page slug itself
+    const parentPath = slugParts.join('/');
+
+    if (!folderMap.has(parentPath)) {
+      folderMap.set(parentPath, []);
+    }
+    folderMap.get(parentPath)!.push(page);
+  }
+
+  function buildTree(folderPath: string, visited: Set<string> = new Set()): HierarchicalPage[] {
+    // Prevent infinite recursion
+    if (visited.has(folderPath)) {
+      return [];
+    }
+    visited.add(folderPath);
+
+    const pagesInFolder = folderMap.get(folderPath) || [];
+
+    pagesInFolder.sort((a, b) => (a.position || 0) - (b.position || 0));
+
+    const result: HierarchicalPage[] = [];
+
+    for (const page of pagesInFolder) {
+      const childFolderPath = page.full_slug.replace(/\/$/, '');
+      const hasChildren = folderMap.has(childFolderPath);
+
+      let children: HierarchicalPage[] = [];
+      if (hasChildren) {
+        children = buildTree(childFolderPath, visited);
+      }
+
+      result.push({
+        name: page.name,
+        position: page.position || 0,
+        full_slug: page.full_slug,
+        is_startpage: page.is_startpage || false,
+        content: page.content,
+        children: children,
+      });
+    }
+
+    return result;
+  }
+
+  return buildTree(basePath);
+}
+
 export async function fetchStoryByPath(path: string): Promise<any> {
   const storyblokApi = useStoryblokApi();
 

@@ -58,7 +58,7 @@ try {
 
   if (page) {
     // Static generation mode - use pre-generated paginated data
-    stories = page.data;
+    stories = page.data.map(mapStory);
     totalPages = page.lastPage;
   } else {
     // SSR mode - fetch data dynamically for the current page
