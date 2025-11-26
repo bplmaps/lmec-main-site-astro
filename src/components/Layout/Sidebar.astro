@@ -1,18 +1,17 @@
 ---
 import { getPath } from '../../lib/utils';
-import { fetchPagesInFolder } from '../../lib/storyblok-fetch';
+import { fetchHierarchicalPagesInFolder, fetchFolderStartpage, type HierarchicalPage } from '../../lib/storyblok-fetch';
 
 export interface Props {
   path: string;
 }
 
-interface Page {
-  params: {
-    name: string;
-    path: string;
-    hide_from_menu: boolean;
-    is_startpage: boolean;
-  };
+interface MenuItem {
+  name: string;
+  path: string;
+  hide_from_menu: boolean;
+  is_startpage: boolean;
+  children: MenuItem[];
 }
 
 const { path } = Astro.props
@@ -21,43 +20,73 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '');
 const folders = path.split('/');
 let folder = folders[0];
 
-let allPages = await fetchPagesInFolder(folder);
+// Fetch the root folder's startpage separately (for the menu title)
+const rootStartpage = await fetchFolderStartpage(folder);
+const hierarchicalPages = await fetchHierarchicalPagesInFolder(folder);
 
-allPages = allPages.map((page: any) => {
+// Transform hierarchical pages to menu items
+function transformToMenuItem(page: HierarchicalPage): MenuItem {
   return {
-    params: {
-      name: page.name,
-      path: `/${getPath(page.full_slug)}`,
-      hide_from_menu: page.content.hide_from_menu,
-      is_startpage: page.is_startpage,
-    },
-  }
-})
-let startPages = allPages.filter((page: Page) => {
-    return page.params.is_startpage;
-  })
-  .sort((a, b) => a.params.name > b.params.name ? 1 : -1);
+    name: page.name,
+    path: `/${getPath(page.full_slug)}`,
+    hide_from_menu: page.content?.hide_from_menu || false,
+    is_startpage: page.is_startpage,
+    children: page.children
+      .filter(child => !child.content?.hide_from_menu)
+      .map(transformToMenuItem),
+  };
+}
 
-let menuTitle = startPages[0];
+// All items in the folder (including nested startpages which represent subfolders)
+const menuItems = hierarchicalPages
+  .filter(page => !page.content?.hide_from_menu)
+  .map(transformToMenuItem);
 
-allPages = allPages.filter((page: Page) => {
-  return !page.params.hide_from_menu && page.params.path!=menuTitle.params.path;
-})
+// Menu title comes from the root folder's startpage
+const menuTitle = rootStartpage ? {
+  name: rootStartpage.name,
+  path: `/${getPath(rootStartpage.full_slug)}`,
+} : null;
 ---
-{allPages &&
+
+{(menuItems.length > 0 || menuTitle) &&
   <div class="bg-white mb-5">
-    {startPages.length > 0 &&
+    {menuTitle &&
       <h5 class="mb-3 section-toplevel-link">
-        <a href={menuTitle.params.path}>{menuTitle.params.name}</a>
+        <a href={menuTitle.path}>{menuTitle.name}</a>
       </h5>
     }
-    <ul class="font-secondary text-secondary m-0 p-0">
-      {allPages.map((page: Page) => (
+    <ul class="font-secondary text-secondary m-0 p-0 sidebar-menu">
+      {menuItems.map((item: MenuItem) => (
         <li class="mb-2">
-          {currentPath == page.params.path &&
+          {currentPath === item.path &&
             <i class="fas fa-arrow-right me-1"></i>
           }
-          <a href={page.params.path}>{page.params.name}</a>
+          <a href={item.path}>{item.name}</a>
+          {item.children.length > 0 && (
+            <ul class="ps-3 mt-2">
+              {item.children.map((child: MenuItem) => (
+                <li class="mb-2">
+                  {currentPath === child.path &&
+                    <i class="fas fa-arrow-right me-1"></i>
+                  }
+                  <a href={child.path}>{child.name}</a>
+                  {child.children.length > 0 && (
+                    <ul class="ps-3 mt-2">
+                      {child.children.map((grandchild: MenuItem) => (
+                        <li class="mb-2">
+                          {currentPath === grandchild.path &&
+                            <i class="fas fa-arrow-right me-1"></i>
+                          }
+                          <a href={grandchild.path}>{grandchild.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))}
     </ul>
