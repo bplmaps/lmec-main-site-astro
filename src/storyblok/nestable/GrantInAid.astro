@@ -30,6 +30,7 @@ const { blok } = Astro.props
       <span>{ blok.awardee }, <i>{ blok.affiliation }</i></span><br><br>
       <span class="badge bg-success font-secondary text-white fw-normal mt-1">Project completed { new Date(blok.date).toLocaleDateString() }</span><br><br>
       <a href={ blok.projectURL.url } target="_blank" class="btn btn-primary btn-primary-outline btn-xs mb-2">
+        {console.log(blok.projectURL.url)}
         <i class="fas fa-external-link-square-alt me-2"></i> See the map
       </a>
     </div>

@@ -888,3 +888,12 @@ p { font-size: 14px; line-height: 14px; }
   }
 }
 
+@media print {
+  .row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+  }
+  .row > [class*="col-"] { // attribute selector for any column 
+    flex: 0 0 100% !important;
+  }
+}

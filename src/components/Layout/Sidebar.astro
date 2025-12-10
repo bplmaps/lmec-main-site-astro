@@ -69,7 +69,7 @@ allPages = allPages.filter((page: Page) => {
 })
 ---
 {allPages &&
-  <div class="bg-white mb-5">
+  <div class="bg-white mb-5 d-print-none">
     {startpages.length > 0 &&
       <h5 class="mb-3 section-toplevel-link">
         <a href={menuTitle.params.path}>{menuTitle.params.name}</a>

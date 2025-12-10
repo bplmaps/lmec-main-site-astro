@@ -14,7 +14,7 @@ const sidebar_articles = await fourRecentArticles();
 ---
 
 {tags &&
-  <div class="bg-white mb-5">
+  <div class="bg-white mb-5 d-print-none">
     <h4 class="mb-4">Tags</h4>
     <p>
       {tags.map((tag: string) => (
@@ -27,7 +27,7 @@ const sidebar_articles = await fourRecentArticles();
 }
 
 {sidebar_articles &&
-  <div class="bg-white">
+  <div class="bg-white d-print-none">
     <h4 class="mb-4">Recent Articles</h4>
     {sidebar_articles.map((article: any) => (
       <div class="d-flex mb-4">
