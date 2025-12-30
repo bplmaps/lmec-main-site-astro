@@ -2,7 +2,7 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
 RewriteRule ^author/?$ /articles [R=301,L]
-RewriteRule ^author/([^/]+)/?$ /articles [R=301,L]
+RewriteRule ^author/(.*)/?$ /articles [R=301,L]
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/digital-exhibitions/?$
 RewriteRule (.*) /exhibitions/digital-exhibitions/ [L]
