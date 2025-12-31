@@ -1,0 +1,67 @@
+---
+import { storyblokEditable } from '@storyblok/astro';
+import RichText from '../storyblok/RichText.astro';
+import Card from '../components/Store/Card.astro';
+
+export interface Props {
+	blok: {
+    body: any;
+    products: {
+        title: string;
+        productImage: {
+            filename: string;
+            alt: string;
+        };
+        description: string;
+        itemID: string;
+        itemPrice: number;
+        itemWeight: number;
+        itemBody: string;
+    }[];
+    reproductions: {
+      title: string;
+      digitalCollectionsLink: {
+        url: string;
+      };
+      printImage: string;
+      productImage: {
+          filename: string;
+          alt: string;
+      };
+      itemHeight: number;
+      itemWidth: number;
+      itemPrice: number;
+    }[];
+  };
+}
+
+const { blok } = Astro.props
+---
+<article {...storyblokEditable(blok)} class="section-sm">
+  {blok.body && (
+  <div {...storyblokEditable(blok)}>
+    <RichText blok={{ body: blok.body }} />
+
+    {blok.products &&
+        <h2 id="catalogs">Catalogs and Souvenirs</h2>
+        <div class="row">
+        {blok.products.map(product => (
+            <div class="col-lg-4 col-sm-6 mb-4">
+              <Card title={product.title} productImage={product.productImage} description={product.description} itemID={product.itemID} itemPrice={product.itemPrice} itemWeight={product.itemWeight} itemBody={product.itemBody}/>
+            </div>
+        ))}
+        </div>
+    }
+    {blok.reproductions &&
+         <h2 id="reproductions">Reproductions</h2>
+        <div class="row">
+        {blok.reproductions.map(repro => (
+            <div class="col-lg-4 col-sm-6 mb-4">
+              <Card title={repro.title} dcLink={repro.digitalCollectionsLink.url} productImage={repro.productImage} itemPrice={repro.itemPrice} itemHeight={repro.itemHeight} itemWidth={repro.itemWidth}/>
+            </div>
+        ))}
+        </div>
+    }
+  </div>
+)}
+</article>
