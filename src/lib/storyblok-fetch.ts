@@ -180,7 +180,7 @@ export async function fetchArticles(options?: {
   return fetchStories({
     starts_with: 'main-site/articles',
     content_type: 'article-page',
-    sort_by: options?.sort_by || 'sort_by_date:desc:nulls_last',
+    sort_by: options?.sort_by || 'content.publishDate:desc',
     per_page: options?.per_page,
     limit: options?.limit,
   });
