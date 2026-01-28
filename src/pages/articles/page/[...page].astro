@@ -69,7 +69,7 @@ try {
       per_page: articlesPerPage,
       starts_with: 'main-site/',
       content_type: 'article-page',
-      sort_by: 'sort_by_date:desc:nulls_last',
+      sort_by: 'content.publishDate:desc',
     });
 
     articles = stories.map(mapArticle);
