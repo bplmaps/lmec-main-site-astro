@@ -1,11 +1,11 @@
 import { defineConfig } from 'astro/config';
 import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
+import netlify from '@astrojs/netlify';
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
-// https://astro.build/config
-export default defineConfig({
+const config = {
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
@@ -36,4 +36,11 @@ export default defineConfig({
       },
     })
   ],
-});
+};
+
+if (process.env.STORYBLOK_IS_PREVIEW === 'true') {
+  config.output = 'server';
+  config.adapter = netlify();
+}
+
+export default defineConfig(config);

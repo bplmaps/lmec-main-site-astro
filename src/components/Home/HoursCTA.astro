@@ -1,16 +1,16 @@
 ---
-import { getDatasource } from "../../lib/utils";
+import { getDatasource } from "../../lib/storyblok-fetch";
 
-const hours  = await getDatasource("14355", "open-hours");
-const exceptions  = await getDatasource("14397", "schedule-exceptions");
+const hours  = await getDatasource("open-hours");
+const exceptions  = await getDatasource("schedule-exceptions");
 
 const dataBack = {
   weeklyHours: hours,
   scheduleExceptions: exceptions
 };
 
-const today = new Date().toLocaleDateString('en-US', {weekday: 'long'});
-const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'});
+const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+const todayDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
 let showException = false;
 
