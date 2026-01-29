@@ -96,7 +96,12 @@ let newsletterBlocks = newsletter.content.contentBlocks;
                                 <div class="doubleblock-inner">
                                     <div class="doubleblock-contents">
                                         <a href={content.contentBlockURL.url} rel="noopener noreferrer">
-                                            <img src={content.contentBlockImage.filename} style="width: 424px; height: auto;" alt={content.contentBlockImageAltText} width="424">
+                                            <img 
+                                                src={content.contentBlockImage.filename} 
+                                                style="width: 424px; height: auto;" 
+                                                alt={typeof content.contentBlockImageAltText === "string" ? content.contentBlockImageAltText.replace(/[\u0000-\u001F\u007F"'<>&]/g, "") : ""} 
+                                                width="424"
+                                            >
                                         </a> 
                                     </div>
                                 </div>
