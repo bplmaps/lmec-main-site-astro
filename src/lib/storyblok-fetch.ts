@@ -8,6 +8,49 @@ import { createSlug } from './utils';
 
 const STORYBLOK_API_BASE = 'https://api-us.storyblok.com/v2/cdn';
 
+/**
+ * Rate limiter for Storyblok API requests
+ * Limits requests to a maximum number per second using a sliding window
+ */
+class RateLimiter {
+  private timestamps: number[] = [];
+  private readonly maxRequests: number;
+  private readonly windowMs: number;
+
+  constructor(maxRequestsPerSecond: number = 6) {
+    this.maxRequests = maxRequestsPerSecond;
+    this.windowMs = 1000; // 1 second window
+  }
+
+  /**
+   * Wait until a request can be made within rate limits
+   */
+  async throttle(): Promise<void> {
+    const now = Date.now();
+    
+    // Remove timestamps outside the current window
+    this.timestamps = this.timestamps.filter(t => now - t < this.windowMs);
+    
+    if (this.timestamps.length >= this.maxRequests) {
+      // Calculate how long to wait until the oldest request falls out of the window
+      const oldestTimestamp = this.timestamps[0];
+      const waitTime = this.windowMs - (now - oldestTimestamp) + 10; // +10ms buffer
+      
+      if (waitTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        // Recursively check again after waiting
+        return this.throttle();
+      }
+    }
+    
+    // Record this request
+    this.timestamps.push(Date.now());
+  }
+}
+
+// Global rate limiter instance - 6 requests per second
+const rateLimiter = new RateLimiter(6);
+
 function buildStoryblokUrl(endpoint: string, params: Record<string, string>): string {
   const url = new URL(`${STORYBLOK_API_BASE}/${endpoint}`);
   Object.entries(params).forEach(([key, value]) => {
@@ -18,6 +61,9 @@ function buildStoryblokUrl(endpoint: string, params: Record<string, string>): st
 
 async function fetchStoryblokApi<T>(url: string): Promise<T> {
   try {
+    // Apply rate limiting before making the request
+    await rateLimiter.throttle();
+    
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -27,6 +73,18 @@ async function fetchStoryblokApi<T>(url: string): Promise<T> {
     console.error('[Storyblok Fetch] Error:', error);
     throw error;
   }
+}
+
+/**
+ * Rate-limited wrapper for storyblokApi.get()
+ */
+async function rateLimitedStoryblokGet(
+  storyblokApi: ReturnType<typeof useStoryblokApi>,
+  endpoint: string,
+  params: any
+): Promise<any> {
+  await rateLimiter.throttle();
+  return storyblokApi.get(endpoint, params);
 }
 
 export function getVersion(): 'draft' | 'published' {
@@ -101,7 +159,7 @@ export async function fetchStory(uuid: string): Promise<any> {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const { data } = await storyblokApi.get('cdn/stories/' + uuid, {
+    const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories/' + uuid, {
       version: getVersion(),
       find_by: 'uuid',
     } as any);
@@ -133,7 +191,7 @@ export async function fetchStories(params: {
     if (params.limit) {
       const { limit, ...apiParams } = params;
 
-      const { data } = await storyblokApi.get('cdn/stories', {
+      const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories', {
         version: getVersion(),
         ...apiParams,
         per_page: limit,
@@ -150,7 +208,7 @@ export async function fetchStories(params: {
     const perPage = params.per_page || 100;
 
     while (true) {
-      const { data } = await storyblokApi.get('cdn/stories', {
+      const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories', {
         version: getVersion(),
         ...params,
         per_page: perPage,
@@ -243,7 +301,7 @@ export async function fetchTags(options?: {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const { data } = await storyblokApi.get('cdn/tags', {
+    const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/tags', {
       version: getVersion(),
       starts_with: cacheParams.starts_with,
       per_page: options?.per_page,
@@ -284,7 +342,7 @@ export async function fetchLatestArticles(limit: number = 3): Promise<any[]> {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const { data } = await storyblokApi.get('cdn/stories', {
+    const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories', {
       version: getVersion(),
       starts_with: 'main-site/',
       resolve_links: 'url',
@@ -314,7 +372,7 @@ export async function fetchUpcomingEvents(limit?: number): Promise<any[]> {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const { data } = await storyblokApi.get('cdn/stories', {
+    const { data } = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories', {
       version: getVersion(),
       starts_with: 'main-site/',
       resolve_links: 'url',
@@ -353,7 +411,7 @@ export async function fetchFolderStartpage(folder: string): Promise<any | null> 
 
   return cachedStoryblokFetch(cacheParams, async () => {
     try {
-      const { data } = await storyblokApi.get(`cdn/stories/${storyPath}`, {
+      const { data } = await rateLimitedStoryblokGet(storyblokApi, `cdn/stories/${storyPath}`, {
         version: getVersion(),
       } as any);
 
@@ -449,7 +507,7 @@ export async function fetchStoryByPath(path: string): Promise<any> {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const { data } = await storyblokApi.get(`cdn/stories/${path}`, {
+    const { data } = await rateLimitedStoryblokGet(storyblokApi, `cdn/stories/${path}`, {
       version: getVersion(),
     } as any);
 
@@ -488,7 +546,7 @@ export async function fetchStoriesPaginated(params: {
   };
 
   return cachedStoryblokFetch(cacheParams, async () => {
-    const response = await storyblokApi.get('cdn/stories', {
+    const response = await rateLimitedStoryblokGet(storyblokApi, 'cdn/stories', {
       version: getVersion(),
       ...params,
     } as any);
