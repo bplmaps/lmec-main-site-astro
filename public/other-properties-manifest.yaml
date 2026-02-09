@@ -121,3 +121,6 @@
 - name: Insizeor
   url_path: /projects/insizeor
   build_root: ../other-properties/insizeor
+- name: Calcutta Map Chat
+  url_path: /projects/calcutta-map-chat/
+  build_root: ../other-properties/map-chats/calcutta-map-chat
