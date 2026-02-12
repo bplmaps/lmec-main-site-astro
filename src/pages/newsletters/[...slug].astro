@@ -115,6 +115,13 @@ let newsletterBlocks = newsletter.content.contentBlocks;
                                 </div>
                             </div>
                         )}
+                        { newsletter.content.just_off_the_map?.content?.length && (
+                            <div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px; padding-right: 20px; border-top: 1px dashed #999; margin-top: 20px;">
+                                <p><strong style="font-family: hero-new, sans-serif; color: #1a1a37; font-size: 1.3em;">Just off the map</strong></p>
+                                <p><span style="font-family: hero-new, sans-serif; color: #1a1a37; font-size: 0.9em;">Updates from our partners, colleagues, and friends</span></p>
+                                <div style="font-family: freight-micro-pro, georgia, serif; font-size: 1em;" set:html={render(newsletter.content.just_off_the_map)}></div>
+                            </div>
+                        )}
                     </div>
                 </td>
             </tr>
