@@ -124,3 +124,6 @@
 - name: Calcutta Map Chat
   url_path: /projects/calcutta-map-chat/
   build_root: ../other-properties/map-chats/calcutta-map-chat
+- name: Declarations
+  url_path: /digital-exhibitions/declarations/
+  build_root: ../other-properties/digital-exhibitions/declarations
