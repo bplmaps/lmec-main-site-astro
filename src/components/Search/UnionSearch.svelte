@@ -1,4 +1,6 @@
 <script lang="ts">
+  import RepositoryResults from "./RepositoryResults.svelte";
+
   type SearchStatus = "initial" | "searching" | "returned" | "failed";
 
   type SearchResult = {
@@ -137,116 +139,36 @@
   <div id="results" class={`bg-light px-4 py-4 ${resultsHidden ? "d-none" : ""}`}>
     {#if searchType === "both" || searchType === "dc"}
       <section class="mb-5">
-        <div class={`mb-4 ${digitalCollections.searchStatus !== "searching" ? "d-none" : ""}`}>
-          Loading Digital Collections repository results
-          <div class="progress mt-2" role="progressbar" aria-label="Loading Digital Collections results" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
-          </div>
-        </div>
-
-        <div id="dc-search-results" class={digitalCollections.searchStatus !== "returned" ? "d-none" : ""}>
-          <h4 class="h4 mb-4">Results from Digital Collections repository</h4>
-          <div class="row g-4">
-            {#each digitalCollections.results as result (result.id)}
-              <div class="col-12 col-md-6 col-xl-3">
-                <button class="card result-card h-100 w-100 border-0 p-0 text-start" type="button" on:click={() => goToResult(result.url)}>
-                  <div class="result-inner">
-                    <div class="result-media">
-                      <div class="ratio ratio-4x3">
-                        <img class="w-100 h-100 result-image-cover" src={result.image} alt={`Thumbnail for ${result.title}`} />
-                      </div>
-                    </div>
-                    <div class="card-body result-content">
-                      <h5 class="card-title mb-1">{result.title}</h5>
-                      <h6 class={`small text-muted mb-0 ${result.date === "" ? "d-none" : ""}`}>{result.date}</h6>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            {/each}
-
-            <div class="col-12 col-md-6 col-xl-3">
-              <div class="card h-100">
-                <div class="card-body">
-                  <p class="mb-2">
-                    <span class="badge bg-secondary fs-6 align-middle me-2">
-                      {digitalCollections.totalResults === 0
-                        ? "No results"
-                        : `${digitalCollections.totalResults.toLocaleString()} result${digitalCollections.totalResults === 1 ? "" : "s"}`}
-                    </span>
-                    from Digital Collections repository
-                  </p>
-                  <a
-                    class={`btn btn-primary ${digitalCollections.totalResults === 0 ? "d-none" : ""}`}
-                    href={`https://collections.leventhalmap.org/search?utf8=✓&q=${encodeURIComponent(enteredSearchInput)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    See all
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <RepositoryResults
+          id="dc-search-results"
+          heading="Results from Digital Collections repository"
+          loadingLabel="Loading Digital Collections repository results"
+          loadingAriaLabel="Loading Digital Collections results"
+          searchStatus={digitalCollections.searchStatus}
+          results={digitalCollections.results}
+          totalResults={digitalCollections.totalResults}
+          badgeSuffix=" from Digital Collections repository"
+          seeAllHref={`https://collections.leventhalmap.org/search?utf8=✓&q=${encodeURIComponent(enteredSearchInput)}`}
+          {goToResult}
+        />
       </section>
     {/if}
 
     {#if searchType === "both" || searchType === "ia"}
       <section>
-        <div class={`mb-4 ${internetArchive.searchStatus !== "searching" ? "d-none" : ""}`}>
-          Loading Internet Archive results
-          <div class="progress mt-2" role="progressbar" aria-label="Loading Internet Archive results" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
-          </div>
-        </div>
-
-        <div id="ia-search-results" class={internetArchive.searchStatus !== "returned" ? "d-none" : ""}>
-          <h4 class="h4 mb-4">Results from Internet Archive</h4>
-          <div class="row g-4">
-            {#each internetArchive.results as result (result.id)}
-              <div class="col-12 col-md-6 col-xl-3">
-                <button class="card result-card h-100 w-100 border-0 p-0 text-start" type="button" on:click={() => goToResult(result.url)}>
-                  <div class="result-inner">
-                    <div class="result-media">
-                      <div class="ratio ratio-4x3">
-                        <img class="w-100 h-100 result-image-contain" src={result.image} alt={`Thumbnail for ${result.title}`} />
-                      </div>
-                    </div>
-                    <div class="card-body result-content">
-                      <h5 class="card-title mb-1">{trimmer(result.title)}</h5>
-                      <h6 class={`small text-muted mb-0 ${!result.date ? "d-none" : ""}`}>{result.date}</h6>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            {/each}
-
-            <div class="col-12 col-md-6 col-xl-3">
-              <div class="card h-100">
-                <div class="card-body">
-                  <p class="mb-2">
-
-                    <span class="badge bg-secondary fs-6 align-middle me-2">
-                      {internetArchive.totalResults === 0
-                        ? "No results"
-                        : `${internetArchive.totalResults.toLocaleString()} result${internetArchive.totalResults === 1 ? "" : "s"}`}
-                    </span>
-                    results from Internet Archive
-                  </p>
-                  <a
-                    class={`btn btn-primary ${internetArchive.totalResults === 0 ? "d-none" : ""}`}
-                    href={`https://archive.org/search.php?query=%28${encodeURIComponent(enteredSearchInput)}%29%20AND%20collection%3A%28normanbleventhalmapcenter%29`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    See all
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <RepositoryResults
+          id="ia-search-results"
+          heading="Results from Internet Archive"
+          loadingLabel="Loading Internet Archive results"
+          loadingAriaLabel="Loading Internet Archive results"
+          searchStatus={internetArchive.searchStatus}
+          results={internetArchive.results}
+          totalResults={internetArchive.totalResults}
+          badgeSuffix=" results from Internet Archive"
+          seeAllHref={`https://archive.org/search.php?query=%28${encodeURIComponent(enteredSearchInput)}%29%20AND%20collection%3A%28normanbleventhalmapcenter%29`}
+          trimTitle={true}
+          {goToResult}
+        />
       </section>
     {/if}
   </div>
@@ -264,14 +186,6 @@
 
   .result-card:hover {
     background-color: rgba(204, 198, 226, 0.2);
-  }
-
-  .result-image-cover {
-    object-fit: cover;
-  }
-
-  .result-image-contain {
-    object-fit: contain;
   }
 
   .card-title {
