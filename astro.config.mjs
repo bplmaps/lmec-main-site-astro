@@ -1,12 +1,14 @@
 import { defineConfig } from 'astro/config';
 import { storyblok } from '@storyblok/astro';
 import { loadEnv } from 'vite';
+import svelte from '@astrojs/svelte'; 
 import netlify from '@astrojs/netlify';
 
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
 const config = {
   integrations: [
+    svelte(), 
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       components: {
