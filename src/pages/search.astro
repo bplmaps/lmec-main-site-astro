@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import UnionSearch from "../components/Search/UnionSearch.svelte";
+import SvelteUnionSearch from "../components/Search/SvelteUnionSearch.svelte";
 ---
 
 <Layout title="Search">
@@ -69,7 +69,7 @@ import UnionSearch from "../components/Search/UnionSearch.svelte";
             <div class="mb-4">
                 <p>Search the Digital Collections portal and Internet Archive for digitized material. See <a href="/collections/digital-collections">Digital Collections</a> for more information and advanced search options.</p>
             </div>
-            <UnionSearch client:load />
+            <SvelteUnionSearch client:load />
         </div>
 
         <div class="col-12 mb-5 content">   
