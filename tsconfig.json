@@ -4,5 +4,9 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "exclude": ["src/layouts/Layout.astro"]
+  "exclude": [
+    "src/layouts/Layout.astro",
+    "dist",
+    ".astro"
+  ]
 }
