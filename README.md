@@ -26,3 +26,26 @@ The production build chain is a multistep process, but runs roughly as follows:
 ## Special Notes
 * Any time a new digital exhibition, Map Chat, or other digital project that will require a `leventhalmap.org/...` domain is ready to be deployed, an additional entry will be required in the `public/other-properties-manifest.yaml` file and the proper files will need to placed in the relevant locations within `var/www/other-properties`
 
+## Analytics Configuration
+Google Analytics/Tag Manager settings are centralized in committed config files:
+
+- `src/config/analytics.data.ts`: primary data source you edit and commit
+- `src/config/analytics.ts`: typed runtime config used by layout/scripts
+
+`src/config/analytics.data.ts` supports:
+- `enabled`: `true` or `false`
+- `provider`: `gtm`, `gtag`, or `mp`
+- `gtmContainerId`: required when provider is `gtm`
+- `measurementId`: required when provider is `gtag`
+- `loadStrategy`: `immediate`, `idle`, or `interaction`
+- `requireConsent`: gate loading on `localStorage.analytics-consent === "granted"`
+- `debug`: enables debug behavior outside production
+- `siteName`: site metadata label
+
+### Recommended production defaults
+- Use `loadStrategy: "idle"` for best Core Web Vitals tradeoff.
+- Prefer `provider: "gtag"` when only GA4 is needed (lighter than GTM).
+- Keep `requireConsent: true` when policy requires opt-in.
+
+
+
