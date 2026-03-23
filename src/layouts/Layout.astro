@@ -3,6 +3,7 @@ import { SEO } from "astro-seo";
 import Header from "../components/Layout/Header.astro";
 import PageHeader from "../components/Layout/PageHeader.astro";
 import Footer from "../components/Layout/Footer.astro";
+import { analyticsConfig, analyticsIsConfigured } from "../config/analytics";
 import "../styles/styles.scss";
 
 interface Props {
@@ -22,6 +23,17 @@ const siteImage = "https://ark.digitalcommonwealth.org/ark:/50959/3f463529r/thum
 const metaTitle = title ? `${title} - ${siteTitle}` : `${siteTitle}`;
 const metaDescription = description ? description : "";
 const metaImage = image ? image : siteImage;
+const analyticsClientConfig = {
+	enabled: analyticsIsConfigured,
+	provider: analyticsConfig.provider,
+	measurementId: analyticsConfig.measurementId,
+	gtmContainerId: analyticsConfig.gtmContainerId,
+	loadStrategy: analyticsConfig.loadStrategy,
+	requireConsent: analyticsConfig.requireConsent,
+	debug: analyticsConfig.debug,
+	environment: analyticsConfig.environment,
+	siteName: analyticsConfig.siteName,
+};
 
 const socialLinks = [
 	{
@@ -129,20 +141,82 @@ const secondaryMenuLinks = [
 		<meta name="generator" content={Astro.generator} />
 		<meta name="facebook-domain-verification" content="6q0qb8ylcx1vtfy18bpgaplv3mcwlp" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-		<!-- Google Tag Manager -->
-		<script is:inline>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() {
-			dataLayer.push(arguments);
-		}
+		<script is:inline define:vars={{ analyticsClientConfig }}>
+			window.dataLayer = window.dataLayer || [];
+			window.gtag =
+				window.gtag ||
+				function () {
+					window.dataLayer.push(arguments);
+				};
+
+			const hasConsent = () => {
+				if (!analyticsClientConfig.requireConsent) return true;
+				return localStorage.getItem("analytics-consent") === "granted";
+			};
+
+			const loadScript = (src) =>
+				new Promise((resolve, reject) => {
+					const script = document.createElement("script");
+					script.async = true;
+					script.src = src;
+					script.onload = resolve;
+					script.onerror = reject;
+					document.head.appendChild(script);
+				});
+
+			const initGtag = async () => {
+				if (!analyticsClientConfig.measurementId) return;
+				await loadScript(
+					`https://www.googletagmanager.com/gtag/js?id=${analyticsClientConfig.measurementId}`,
+				);
+				window.gtag("js", new Date());
+				window.gtag("config", analyticsClientConfig.measurementId, {
+					send_page_view: true,
+					debug_mode:
+						analyticsClientConfig.debug &&
+						analyticsClientConfig.environment !== "production",
+				});
+			};
+
+			const initGtm = async () => {
+				if (!analyticsClientConfig.gtmContainerId) return;
+				window.dataLayer.push({
+					"gtm.start": new Date().getTime(),
+					event: "gtm.js",
+				});
+				await loadScript(
+					`https://www.googletagmanager.com/gtm.js?id=${analyticsClientConfig.gtmContainerId}`,
+				);
+			};
+
+			const bootAnalytics = () => {
+				if (!analyticsClientConfig.enabled || !hasConsent()) return;
+				if (analyticsClientConfig.provider === "gtag") {
+					void initGtag();
+				}
+				if (analyticsClientConfig.provider === "gtm") {
+					void initGtm();
+				}
+			};
+
+			if (analyticsClientConfig.loadStrategy === "immediate") {
+				bootAnalytics();
+			} else if (analyticsClientConfig.loadStrategy === "interaction") {
+				const onInteraction = () => {
+					bootAnalytics();
+					window.removeEventListener("pointerdown", onInteraction);
+					window.removeEventListener("keydown", onInteraction);
+					window.removeEventListener("scroll", onInteraction);
+				};
+				window.addEventListener("pointerdown", onInteraction, { once: true });
+				window.addEventListener("keydown", onInteraction, { once: true });
+				window.addEventListener("scroll", onInteraction, { once: true });
+			} else if ("requestIdleCallback" in window) {
+				window.requestIdleCallback(() => bootAnalytics());
+			} else {
+				window.setTimeout(() => bootAnalytics(), 1500);
+			}
 		</script>
-		<!-- Google Tag Manager -->
-		<script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-		})(window,document,'script','dataLayer','GTM-PH5B9T8');</script>
-		<!-- End Google Tag Manager -->
 		<!-- Fundraise Up: world-class checkout experience for serious online fundraising -->
 		<script is:inline>(function (w, d, s, n, a) {
 		if (!w[n]) {
@@ -182,10 +256,20 @@ const secondaryMenuLinks = [
 		/>
 	</head>
 	<body>
-		<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PH5B9T8"
-		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-		<!-- End Google Tag Manager (noscript) -->
+		{analyticsIsConfigured && analyticsConfig.provider === "gtm" && analyticsConfig.gtmContainerId && (
+			<>
+				<!-- Google Tag Manager (noscript) -->
+				<noscript>
+					<iframe
+						src={`https://www.googletagmanager.com/ns.html?id=${analyticsConfig.gtmContainerId}`}
+						height="0"
+						width="0"
+						style="display:none;visibility:hidden"
+					></iframe>
+				</noscript>
+				<!-- End Google Tag Manager (noscript) -->
+			</>
+		)}
 		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
 		<slot name="root">
 			<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
