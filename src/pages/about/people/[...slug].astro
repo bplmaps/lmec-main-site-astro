@@ -11,13 +11,20 @@ export async function getStaticPaths() {
       params: {
         slug: person.slug,
       },
+      props: { person },
     };
   });
 }
 
-const { slug } = Astro.params;
+interface Props {
+  person?: any;
+}
 
-const person = await fetchStoryByPath(`main-site/about/people/${slug}`);
+const { slug } = Astro.params;
+let { person } = Astro.props as Props;
+if (!person) {
+  person = await fetchStoryByPath(`main-site/about/people/${slug}`);
+}
 ---
 
 <Layout title={`${person.name}`} subheading={`${person.content.title ? person.content.title : ''}`}>

@@ -16,13 +16,20 @@ export async function getStaticPaths() {
       params: {
         slug: newsletter.slug,
       },
+      props: { newsletter },
     };
   });
 }
 
-const { slug } = Astro.params;
+interface Props {
+  newsletter?: any;
+}
 
-const newsletter = await fetchStoryByPath(`main-site/newsletters/${slug}`);
+const { slug } = Astro.params;
+let { newsletter } = Astro.props as Props;
+if (!newsletter) {
+  newsletter = await fetchStoryByPath(`main-site/newsletters/${slug}`);
+}
 let newsletterBlocks = newsletter.content.contentBlocks;
 
 ---

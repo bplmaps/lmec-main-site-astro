@@ -4,6 +4,7 @@
 
 import { useStoryblokApi } from "@storyblok/astro";
 import { storyblokCache } from "./storyblok-cache";
+import { storyblokDiskCache } from "./storyblok-disk-cache";
 import { createSlug } from './utils';
 
 const STORYBLOK_API_BASE = 'https://api-us.storyblok.com/v2/cdn';
@@ -48,8 +49,10 @@ class RateLimiter {
   }
 }
 
-// Global rate limiter instance - 6 requests per second
-const rateLimiter = new RateLimiter(6);
+// Published CDN can sustain higher throughput; keep draft/preview conservative
+const RATE_LIMIT_PER_SECOND =
+  String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true' ? 6 : 25;
+const rateLimiter = new RateLimiter(RATE_LIMIT_PER_SECOND);
 
 function buildStoryblokUrl(endpoint: string, params: Record<string, string>): string {
   const url = new URL(`${STORYBLOK_API_BASE}/${endpoint}`);
@@ -106,8 +109,15 @@ async function cachedStoryblokFetch<T>(
     return cached;
   }
 
+  const diskCached = await storyblokDiskCache.get<T>(cacheParams);
+  if (diskCached !== null) {
+    storyblokCache.set(cacheParams, diskCached);
+    return diskCached;
+  }
+
   const result = await fetchFn();
   storyblokCache.set(cacheParams, result);
+  await storyblokDiskCache.set(cacheParams, result);
   return result;
 }
 
