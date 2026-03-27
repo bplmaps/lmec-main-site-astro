@@ -2,24 +2,23 @@
 import Layout from '../../../../layouts/Layout.astro';
 import Card from "../../../../components/Article/Card.astro";
 import Pagination from "../../../../components/Pagination.astro";
-import { fetchTagsWithSlugs, fetchStoriesByTag, fetchStoriesPaginated } from "../../../../lib/storyblok-fetch";
+import { fetchTagsWithSlugs, fetchStories, fetchStoriesPaginated } from "../../../../lib/storyblok-fetch";
+import { storiesForTag, sortStoriesByPublishedAtDesc } from "../../../../lib/tag-pages";
 import type { GetStaticPathsOptions } from 'astro';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const tags = await fetchTagsWithSlugs({ starts_with: 'main-site/' });
+  const allStories = await fetchStories({
+    starts_with: 'main-site/',
+  });
 
-  const paths = await Promise.all(
-    tags.map(async (tag: any) => {
-      const allStories = await fetchStoriesByTag(tag.name);
-
-      return paginate(allStories, {
-        params: { slug: tag.slug },
-        pageSize: 10,
-      });
-    })
-  );
-
-  return paths.flat();
+  return tags.flatMap((tag: any) => {
+    const tagStories = sortStoriesByPublishedAtDesc(storiesForTag(tag.name, allStories));
+    return paginate(tagStories, {
+      params: { slug: tag.slug },
+      pageSize: 10,
+    });
+  });
 }
 
 const { page } = Astro.props;

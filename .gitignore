@@ -17,5 +17,8 @@ pnpm-debug.log*
 .env
 .env.production
 
+# Storyblok cross-build API cache (see src/lib/storyblok-disk-cache.ts)
+.storyblok-build-cache.json
+
 # macOS-specific files
 .DS_Store

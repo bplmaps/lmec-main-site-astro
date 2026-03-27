@@ -26,11 +26,10 @@ class StoryblokBuildCache {
 
   /**
    * Get cached data if it exists
-   * Note: Caching is disabled in SSR mode to prevent stale content
+   * Note: Caching is disabled in Storyblok preview (SSR) mode to prevent stale draft content
    */
   get<T>(params: Record<string, any>): T | null {
-    // Disable cache in SSR mode to avoid serving stale content
-    if (import.meta.env.SSR) {
+    if (String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true') {
       return null;
     }
 
@@ -46,11 +45,10 @@ class StoryblokBuildCache {
 
   /**
    * Store data in cache
-   * Note: Caching is disabled in SSR mode to prevent stale content
+   * Note: Caching is disabled in Storyblok preview (SSR) mode to prevent stale draft content
    */
   set<T>(params: Record<string, any>, data: T): void {
-    // Skip caching in SSR mode
-    if (import.meta.env.SSR) {
+    if (String(import.meta.env.STORYBLOK_IS_PREVIEW) === 'true') {
       return;
     }
 

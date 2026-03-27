@@ -11,13 +11,20 @@ export async function getStaticPaths() {
       params: {
         slug: event.slug,
       },
+      props: { event },
     };
   });
 }
 
-const { slug } = Astro.params;
+interface Props {
+  event?: any;
+}
 
-const event = await fetchStoryByPath(`main-site/event/${slug}`);
+const { slug } = Astro.params;
+let { event } = Astro.props as Props;
+if (!event) {
+  event = await fetchStoryByPath(`main-site/event/${slug}`);
+}
 ---
 
 <Layout title={`${event.name}`} pill="Event" image={`${event.content.headerImage && event.content.headerImage.filename}`}>

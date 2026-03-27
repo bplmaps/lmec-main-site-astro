@@ -11,13 +11,20 @@ export async function getStaticPaths() {
       params: {
         slug: article.slug,
       },
+      props: { article },
     };
   });
 }
 
-const { slug } = Astro.params;
+interface Props {
+  article?: any;
+}
 
-const article = await fetchStoryByPath(`main-site/articles/${slug}`);
+const { slug } = Astro.params;
+let { article } = Astro.props as Props;
+if (!article) {
+  article = await fetchStoryByPath(`main-site/articles/${slug}`);
+}
 ---
 
 <Layout title={`${article.name}`} description={`${article.content.description}`} pill="Article" subheading={`${article.content.description}`} image={`${article.content.headerImage && article.content.headerImage.filename}`}>
