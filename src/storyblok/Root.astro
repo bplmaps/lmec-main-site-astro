@@ -43,7 +43,8 @@ export interface Props {
       audienceName: string;
       description: string;
       links: [],
-    }[],
+    }[];
+    enableTodaysHours?: boolean;
   };
 }
 
@@ -151,7 +152,7 @@ blok.upcomingLivestream.forEach((livestream: any) => {
               ))
             }
 
-            <HoursCTA />
+            {blok.enableTodaysHours && <HoursCTA />}
           </ul>
         </div>
       </div>
