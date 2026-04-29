@@ -39,7 +39,7 @@
   build_root: ../other-properties/map-chats/manchu-map-chat/
 - name: Opium War Map Chat
   url_path: /projects/opium-war-map-chat/
-  build_root: ../other-properties/map-chats/manchu-map-chat/
+  build_root: ../other-properties/map-chats/opium-war-map-chat/
 - name: Remapping the World in Japan
   url_path: /projects/remapping-the-world-in-japan/
   build_root: ../other-properties/map-chats/remapping-the-world-in-japan/
