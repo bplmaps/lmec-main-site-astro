@@ -51,7 +51,8 @@ export interface Props {
 const { blok } = Astro.props
 
 let showFeature = false
-let showLivestream = false
+const enabledLivestreams = (blok.upcomingLivestream || []).filter((livestream: any) => livestream.enabled);
+const showLivestream = enabledLivestreams.length > 0;
 
 blok.frontpageFeature.forEach((feature: any) => {
   if (feature.enabled) {
@@ -59,11 +60,6 @@ blok.frontpageFeature.forEach((feature: any) => {
   }
 });
 
-blok.upcomingLivestream.forEach((livestream: any) => {
-  if (livestream.enabled) {
-    showLivestream = true;
-  }
-});
 ---
 
 <div {...storyblokEditable(blok)}>
@@ -109,7 +105,6 @@ blok.upcomingLivestream.forEach((livestream: any) => {
   }
 
   {showLivestream &&
-    blok.upcomingLivestream.map((livestream: any) => (
     <section class="section bg-dark d-none p-4" id="livestream-section">
       <div class="container">
         <div class="row" id="streaming-now-badge"><h2 class="mx-auto"><span class="badge badge-info"><i class="fas fa-video me-2"></i>Streaming live now</span></h2></div>
@@ -118,17 +113,33 @@ blok.upcomingLivestream.forEach((livestream: any) => {
             </div>
         </div>
       </div>
-      <script is:inline define:vars={{ livestream }}>
-      let startTime = new Date(`${livestream.start_time}`);
-      let endTime = new Date(`${livestream.end_time}`);
-      let n = new Date();
-      if(n >= startTime && n <= endTime) {
+      <script is:inline define:vars={{ livestreams: enabledLivestreams }}>
+      const parseStoryblokUtcDate = (sourceDateTime) => {
+        if (!sourceDateTime) return null;
+        const normalized = sourceDateTime.includes("T")
+          ? sourceDateTime
+          : sourceDateTime.trim().replace(" ", "T");
+        const utcSource = /[zZ]|[+-]\d{2}:\d{2}$/.test(normalized)
+          ? normalized
+          : `${normalized}Z`;
+        const parsed = new Date(utcSource);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      };
+
+      const now = new Date();
+      const liveStream = livestreams.find((livestream) => {
+        const startTime = parseStoryblokUtcDate(livestream.start_time);
+        const endTime = parseStoryblokUtcDate(livestream.end_time);
+        return startTime && endTime && now >= startTime && now <= endTime;
+      });
+
+      if (liveStream) {
         document.getElementById("livestream-section").classList.remove("d-none");
-        document.getElementById("livestream-container").innerHTML = `${livestream.embed_link}`
+        document.getElementById("livestream-container").innerHTML = `${liveStream.embed_link}`;
       }
     </script>
     </section>
-  ))}
+  }
 
   <section class="section py-3 cta frontpage-content">
     <div class="container">
