@@ -155,7 +155,10 @@ blok.frontpageFeature.forEach((feature: any) => {
             <ArticleCTA />
 
             {blok.CTA &&
-              blok.CTA.map((cta: any) => (
+              blok.CTA.filter((cta: any) => {
+                if (!cta.delete_after) return true;
+                return new Date(cta.delete_after + 'Z') > new Date();
+              }).map((cta: any) => (
                 <li class="mb-3">
                   <span class="badge badge-secondary bg-light font-secondary whats-new-badge">{cta.badge}</span>
                   <a href={cta.link.url}>{cta.text}</a>
@@ -163,6 +166,7 @@ blok.frontpageFeature.forEach((feature: any) => {
               ))
             }
 
+            
             {blok.enableTodaysHours && <HoursCTA />}
           </ul>
         </div>
