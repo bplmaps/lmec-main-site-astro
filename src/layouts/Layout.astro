@@ -23,6 +23,7 @@ const siteImage = "https://ark.digitalcommonwealth.org/ark:/50959/3f463529r/thum
 const metaTitle = title ? `${title} - ${siteTitle}` : `${siteTitle}`;
 const metaDescription = description ? description : "";
 const metaImage = image ? image : siteImage;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://www.leventhalmap.org").href;
 const analyticsClientConfig = {
 	enabled: analyticsIsConfigured,
 	provider: analyticsConfig.provider,
@@ -38,31 +39,38 @@ const analyticsClientConfig = {
 const socialLinks = [
 	{
 		href: 'https://facebook.com/bplmaps',
-		icon: 'fab fa-facebook',
+		icon: 'facebook',
+		label: 'Facebook',
 	},
 	{
 		href: 'https://bsky.app/profile/bplmaps.bsky.social',
-		icon: 'fab fa-bluesky',
+		icon: 'bluesky',
+		label: 'Bluesky',
 	},
 	{
 		href: 'https://instagram.com/bplmaps',
-		icon: 'fab fa-instagram',
+		icon: 'instagram',
+		label: 'Instagram',
 	},
 	{
 		href: 'https://www.youtube.com/c/LeventhalMapEducationCenter',
-		icon: 'fab fa-youtube',
+		icon: 'youtube',
+		label: 'YouTube',
 	},
 	{
 		href: 'https://www.flickr.com/photos/normanbleventhalmapcenter',
-		icon: 'fab fa-flickr',
+		icon: 'flickr',
+		label: 'Flickr',
 	},
 	{
 		href: 'https://github.com/bplmaps',
-		icon: 'fab fa-github',
+		icon: 'github',
+		label: 'GitHub',
 	},
 	{
 		href: 'https://mapstodon.space/@bplmaps',
-		icon: 'fab fa-mastodon',
+		icon: 'mastodon',
+		label: 'Mastodon',
 	},
 ];
 
@@ -140,7 +148,10 @@ const secondaryMenuLinks = [
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="generator" content={Astro.generator} />
 		<meta name="facebook-domain-verification" content="6q0qb8ylcx1vtfy18bpgaplv3mcwlp" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="preconnect" href="https://use.typekit.net" crossorigin />
+		<link rel="preconnect" href="https://p.typekit.net" crossorigin />
+		<link rel="preconnect" href="https://iiif.digitalcommonwealth.org" />
+		<link rel="stylesheet" href="https://use.typekit.net/hnl4gif.css" />
 		<script is:inline define:vars={{ analyticsClientConfig }}>
 			window.dataLayer = window.dataLayer || [];
 			window.gtag =
@@ -240,14 +251,15 @@ const secondaryMenuLinks = [
 				title: `${metaTitle}`,
 				type: "website",
 				image: `${metaImage}`,
-				url: "https://leventhalmap.org/"
+				url: canonicalURL
 				},
 			}}
-			canonical="https://leventhalmap.org/"
+			canonical={canonicalURL}
 			extend={{
 				link: [
 					{ rel: "shortcut icon", href: "/favicon.png", type: "image/x-icon" },
 					{ rel: "icon", href: "/favicon.png", type: "image/x-icon" },
+					{ rel: "alternate", type: "application/rss+xml", title: "LMEC Articles", href: "/articles/rss.xml" },
 				],
 				meta: [
 					{ name: "facebook-domain-verification", content: "6q0qb8ylcx1vtfy18bpgaplv3mcwlp" },
@@ -270,13 +282,23 @@ const secondaryMenuLinks = [
 				<!-- End Google Tag Manager (noscript) -->
 			</>
 		)}
+		<a href="#main-content" class="visually-hidden-focusable skip-link">Skip to main content</a>
 		<Header socialLinks={socialLinks} menuLinks={menuLinks} />
-		<slot name="root">
-			<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
-		</slot>
-		<div class="container">
-			<slot />
-		</div>
+		{Astro.slots.has('root') ? (
+			<Fragment>
+				<slot name="root" />
+				<div class="container">
+					<slot />
+				</div>
+			</Fragment>
+		) : (
+			<Fragment>
+				<PageHeader heading={title} paneltruckLayout={true} image={image} subheading={subheading} pill={pill} />
+				<main id="main-content" class="container">
+					<slot />
+				</main>
+			</Fragment>
+		)}
 		<Footer socialLinks={socialLinks} leftMenuLinks={menuLinks} rightMenuLinks={secondaryMenuLinks} />
 
 		<script src="../scripts/app.js"></script>

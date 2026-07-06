@@ -13,11 +13,10 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/netlify": "^6.6.0",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/svelte": "^7.2.5",
-    "@popperjs/core": "^2.11.8",
     "@storyblok/astro": "^7.3.5",
     "@storyblok/richtext": "^3.3.0",
-    "animate.css": "^4.1.1",
     "astro": "^5.15.4",
     "astro-seo": "^0.8.4",
     "bootstrap": "^5.3.8",
@@ -27,5 +26,10 @@
     "swiper": "^11.2.5",
     "typescript": "^5.8.2",
     "vite": "^7.2.2"
+  },
+  "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^7.3.0",
+    "@fortawesome/free-regular-svg-icons": "^7.3.0",
+    "@fortawesome/free-solid-svg-icons": "^7.3.0"
   }
 }

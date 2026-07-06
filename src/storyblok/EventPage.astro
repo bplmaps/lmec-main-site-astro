@@ -2,6 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro';
 import RelatedEvents from '../components/Event/Related.astro';
 import RichText from './RichText.astro';
+import Icon from '../components/Icon.astro';
 const { blok } = Astro.props;
 ---
 
@@ -11,7 +12,7 @@ const { blok } = Astro.props;
       <div class="row">
         <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
           <div class="d-flex align-items-center">
-            <i class="fas fa-map-pin text-muted icon-md me-3"></i>
+            <Icon name="map-pin" class="text-muted icon-md me-3" />
             <div class="text-left">
               <h3 class="h6 mb-0">
                 Location
@@ -24,7 +25,7 @@ const { blok } = Astro.props;
         </div>
         <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
           <div class="d-flex align-items-center">
-            <i class="fa fa-calendar-alt text-muted icon-md me-3"></i>
+            <Icon name="calendar-alt" class="text-muted icon-md me-3" />
             <div class="text-left">
               <h3 class="h6 mb-0">
                 Date
@@ -37,7 +38,7 @@ const { blok } = Astro.props;
         </div>
         <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
           <div class="d-flex align-items-center">
-            <i class="fas fa-clock text-muted icon-md me-3"></i>
+            <Icon name="clock" class="text-muted icon-md me-3" />
             <div class="text-left">
               <h3 class="h6 mb-0">
                 Time
@@ -50,7 +51,7 @@ const { blok } = Astro.props;
         </div>
         <div class="col-lg-3 col-md-6 mb-2 mb-lg-0">
           <div class="d-flex align-items-center">
-            <i class="fas fa-wallet text-muted icon-md me-3"></i>
+            <Icon name="wallet" class="text-muted icon-md me-3" />
             <div class="text-left">
               <h3 class="h6 mb-0">
                 Cost
@@ -80,7 +81,7 @@ const { blok } = Astro.props;
       {new Date(blok.eventDate) < new Date() &&
         <div class="alert alert-warning">
           <div class="h4 font-secondary">
-            <i class="fas fa-history me-2"></i>Past event
+            <Icon name="history" class="me-2" />Past event
           </div>
           This event has already taken place.
         </div>

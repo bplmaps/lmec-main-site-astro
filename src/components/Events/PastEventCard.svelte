@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { lazyImage } from "./lazyImage";
+  import { lazyImage } from "../../lib/lazyImage";
 
   export type PastEvent = {
     name: string;

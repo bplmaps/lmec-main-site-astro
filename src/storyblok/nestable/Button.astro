@@ -1,5 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import Icon from '../../components/Icon.astro';
 
 export interface Props {
   blok: {
@@ -18,7 +19,7 @@ const { blok } = Astro.props
 <div {...storyblokEditable(blok)}>
   {blok.buttonLink &&
     <p class="text-center">
-      <a href={blok.buttonLink.cached_url} target="_blank" class={`${blok.buttonType} mb-2`}><i class={blok.buttonIcon}></i>{blok.buttonText}</a>
+      <a href={blok.buttonLink.cached_url} target="_blank" class={`${blok.buttonType} mb-2`}><Icon faClass={blok.buttonIcon} />{blok.buttonText}</a>
     </p>
   }
 </div>

@@ -1,6 +1,7 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
 import RichText from '../../storyblok/RichText.astro';
+import Icon from '../../components/Icon.astro';
 
 export interface Props {
   blok: {
@@ -18,7 +19,7 @@ const { blok } = Astro.props
   {blok.title && (
     <div class="not-content h4 font-secondary">
       {blok.icon && (
-        <i class={`${blok.icon} me-1`}></i>
+        <Icon faClass={blok.icon} class="me-1" />
       )}
       {blok.title}
     </div>

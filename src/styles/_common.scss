@@ -49,9 +49,72 @@ button,
 select {
   cursor: pointer;
   transition: .2s ease;
+}
 
-  &:focus {
-    outline: 0;
+/* Inline SVG icons (src/components/Icon.astro) — sized and aligned like
+   Font Awesome's font glyphs so they drop into existing text/buttons */
+.svg-icon {
+  display: inline-block;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon-spin {
+    animation: icon-spin 2s linear infinite;
+  }
+}
+
+@keyframes icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 12px 20px;
+  background: $primary-color;
+  color: $white;
+}
+
+/* Keyboard focus visibility (WCAG 2.4.7) — :focus-visible keeps outlines
+   off mouse clicks while restoring them for keyboard navigation */
+:focus-visible {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
+
+.bg-primary, .bg-secondary, .bg-footer, .navbar-dark, .overlay, .page-title-section {
+  :focus-visible {
+    outline-color: $white;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Cross-document view transitions: a soft fade between page loads in
+   supporting browsers (Chrome/Edge, Safari 18+), plain navigation elsewhere.
+   Pure CSS — no client router, so no script re-initialization concerns. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* Keep the fixed header stable while page content cross-fades */
+  .header {
+    view-transition-name: site-header;
   }
 }
 
@@ -73,16 +136,6 @@ h4{
 a h4{
   &:hover{
     color: $primary-color;
-  }
-}
-
-.slick-slide {
-  outline: 0;
-
-  .slider-caption {
-    color: white;
-    font-weight: 700;
-    background: linear-gradient(0deg,$primary-color 50%,transparent 0);
   }
 }
 
@@ -856,7 +909,7 @@ p { font-size: 14px; line-height: 14px; }
   
 }
 
-.popup-tooltip > i.fas {
+.popup-tooltip .svg-icon {
   color: maroon !important;
 }
 

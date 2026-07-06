@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import Card from "../Article/Card.astro";
 import { fetchLatestArticles } from "../../lib/storyblok-fetch";
 
@@ -27,7 +28,7 @@ articles = articles.map((article: any) => {
             <h2 class="mb-0 text-nowrap me-3">Articles</h2>
             <div class="border-top w-100 border-primary d-none d-sm-block"></div>
             <div>
-              <a href="/articles/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><i class="far fa-newspaper me-2"></i> All articles</a>
+              <a href="/articles/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><Icon name="newspaper" class="me-2" /> All articles</a>
             </div>
           </div>
         </div>
@@ -42,7 +43,7 @@ articles = articles.map((article: any) => {
 
       <div class="row">
         <div class="col-12 text-center">
-          <a href="/articles/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><i class="far fa-newspaper me-2"></i> All articles</a>
+          <a href="/articles/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><Icon name="newspaper" class="me-2" /> All articles</a>
         </div>
       </div>
     </div>

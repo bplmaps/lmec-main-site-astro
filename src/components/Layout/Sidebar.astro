@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import { getPath } from '../../lib/utils';
 import { fetchHierarchicalPagesInFolder, fetchFolderStartpage, type HierarchicalPage } from '../../lib/storyblok-fetch';
 
@@ -60,7 +61,7 @@ const menuTitle = rootStartpage ? {
       {menuItems.map((item: MenuItem) => (
         <li class="mb-2">
           {currentPath === item.path &&
-            <i class="fas fa-arrow-right me-1"></i>
+            <Icon name="arrow-right" class="me-1" />
           }
           <a href={item.path}>{item.name}</a>
           {item.children.length > 0 && (
@@ -68,7 +69,7 @@ const menuTitle = rootStartpage ? {
               {item.children.map((child: MenuItem) => (
                 <li class="mb-2">
                   {currentPath === child.path &&
-                    <i class="fas fa-arrow-right me-1"></i>
+                    <Icon name="arrow-right" class="me-1" />
                   }
                   <a href={child.path}>{child.name}</a>
                   {child.children.length > 0 && (
@@ -76,7 +77,7 @@ const menuTitle = rootStartpage ? {
                       {child.children.map((grandchild: MenuItem) => (
                         <li class="mb-2">
                           {currentPath === grandchild.path &&
-                            <i class="fas fa-arrow-right me-1"></i>
+                            <Icon name="arrow-right" class="me-1" />
                           }
                           <a href={grandchild.path}>{grandchild.name}</a>
                         </li>

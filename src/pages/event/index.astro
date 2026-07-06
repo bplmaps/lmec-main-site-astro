@@ -50,7 +50,7 @@ const upcomingEvents = allEvents.reverse().filter((event: any)=> {
         </div>
       </div>
       <PastEventsBrowser
-        client:load
+        client:visible
         events={pastEvents.map((e: any) => ({
           name: e.params.name,
           slug: e.params.slug,

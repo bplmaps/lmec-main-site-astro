@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { createSlug } from '../../lib/utils';
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
+import ArticlesBrowser from "../../components/Articles/ArticlesBrowser.svelte";
 import { fetchTopTags, fetchStoriesPaginated } from '../../lib/storyblok-fetch';
 
 const currentPage = 1;
@@ -59,16 +60,21 @@ try {
           </div>
         </div>
         <hr>
-        <div class="row">
-          {articles.map((article: any) => (
-            <article class="col-sm-6 mb-5">
-              <Card href={`/articles/${article.params.slug}`} thumbnail={article.params.headerImage} title={article.params.title} description={article.params.description} date={article.params.publishedAt} author={article.params.author} />
-            </article>
-          ))}
-          <div class="col-12 mt-4">
-            <Pagination urlBase="/articles/page" maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
+        <!-- Static server-rendered listing: the crawlable/no-JS fallback.
+             ArticlesBrowser hides it once the article index has loaded. -->
+        <div id="articles-static-listing">
+          <div class="row">
+            {articles.map((article: any) => (
+              <article class="col-sm-6 mb-5">
+                <Card href={`/articles/${article.params.slug}`} thumbnail={article.params.headerImage} title={article.params.title} description={article.params.description} date={article.params.publishedAt} author={article.params.author} />
+              </article>
+            ))}
+            <div class="col-12 mt-4">
+              <Pagination urlBase="/articles/page" maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
+            </div>
           </div>
         </div>
+        <ArticlesBrowser client:load />
       </div>
     </div>
   </section>

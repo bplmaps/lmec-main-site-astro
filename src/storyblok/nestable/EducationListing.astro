@@ -1,5 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import Icon from '../../components/Icon.astro';
 import RichText from '../../storyblok/RichText.astro';
 
 export interface Props {
@@ -29,7 +30,7 @@ const { blok } = Astro.props
     <div class="pd-text">
       <RichText blok={{ body: blok.description }} />
     { blok.signup_link.url && (
-      <a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><i class="fas fa-user-plus"></i> Sign up here</a>
+      <a class="btn btn-xs btn-outline-primary mt-2" href={blok.signup_link.url} target="_blank"><Icon name="user-plus" /> Sign up here</a>
     )}
     </div>
   </div>
