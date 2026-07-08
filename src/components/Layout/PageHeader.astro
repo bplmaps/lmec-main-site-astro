@@ -1,4 +1,6 @@
 ---
+import { sizedImageUrl } from '../../lib/imageUrl';
+
 const { paneltruckLayout, heading, subheading, pill, image } = Astro.props;
 
 interface Props {
@@ -8,9 +10,13 @@ interface Props {
   pill?: string;
   image?: string;
 }
+
+const backgroundImage = image
+  ? sizedImageUrl(image, 1600)
+  : 'https://iiif.digitalcommonwealth.org/iiif/2/commonwealth:x633fc377/678,2866,8033,2018/1200,/0/default.jpg';
 ---
 
-<section class={`page-title-section overlay ${!paneltruckLayout && 'page-title-section-tight'}`} style={paneltruckLayout ? `background-image: url(${image ? image : 'https://iiif.digitalcommonwealth.org/iiif/2/commonwealth:x633fc377/678,2866,8033,2018/1200,/0/default.jpg'});` : ''}>
+<section class={`page-title-section overlay ${!paneltruckLayout && 'page-title-section-tight'}`} style={paneltruckLayout ? `background-image: url(${backgroundImage});` : ''}>
   <div class="container">
     <div class="row">
       <div class="col-md-8">
