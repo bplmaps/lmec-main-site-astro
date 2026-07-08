@@ -15,12 +15,12 @@ interface Props {
     <div class="row">
       <div class="col-md-8">
         {heading &&
-          <h1 class="h2 text-white animate__animated animate__fadeInDown">
+          <h1 class="h2 text-white page-header-fade-down">
             {heading}
           </h1>
         }
         {(subheading || pill) &&
-          <p class="text-lighten animate__animated animate__fadeIn page-subheader">
+          <p class="text-lighten page-header-fade-in page-subheader">
             {pill &&
               <span class="badge badge-light font-secondary me-3">
                 {pill}
@@ -33,3 +33,35 @@ interface Props {
     </div>
   </div>
 </section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .page-header-fade-down {
+      animation: page-header-fade-down 1s both;
+    }
+
+    .page-header-fade-in {
+      animation: page-header-fade-in 1s both;
+    }
+  }
+
+  @keyframes page-header-fade-down {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes page-header-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>

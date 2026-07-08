@@ -1,4 +1,6 @@
 ---
+import Icon from "../Icon.astro";
+
 export interface Props {
 	thumbnail?: {
     filename: string;
@@ -20,19 +22,21 @@ const { thumbnail, title, description, author, date, href } = Astro.props;
     class="card-img-top rounded-0"
       src={thumbnail.filename}
       alt={thumbnail.alt}
+      loading="lazy"
+      decoding="async"
     />
   }
   <div class="card-body">
     <ul class="list-inline mb-3">
       {date &&
         <li class="list-inline-item me-3 ms-0">
-          <i class="ti-calendar"></i>
+          <Icon name="calendar" class="me-1" />
           {new Date(date).toLocaleString('en-US', { dateStyle: 'long' })}
         </li>
       }
       {author &&
         <li class="list-inline-item me-3 ms-0">
-          <i class="ti-user"></i>
+          <Icon name="user" class="me-1" />
           {author}
         </li>
       }

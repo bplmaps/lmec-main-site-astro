@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Card from '../../components/Event/Card.astro';
+import PastEventsBrowser from '../../components/Events/PastEventsBrowser.svelte';
 import { fetchEvents } from '../../lib/storyblok-fetch';
 
 let allEvents = await fetchEvents({ sort_by: 'content.eventDate:desc' });
@@ -41,20 +42,23 @@ const upcomingEvents = allEvents.reverse().filter((event: any)=> {
     </section>
   }
   
-  {pastEvents &&
+  {pastEvents.length > 0 &&
     <section class="section pt-0">
       <div class="row mb-3">
         <div class="col-12">
           <h2>Past Events</h2>
         </div>
       </div>
-      <div class="row">
-        {pastEvents.map((event: any) => (
-          <div class="col-lg-3 col-sm-4 mb-2">
-            <Card href={`/event/${event.params.slug}`} thumbnail={event.params.headerImage} name={event.params.name} date={event.params.eventDate} tags={event.params.tags} />
-          </div>
-        ))}
-      </div>
+      <PastEventsBrowser
+        client:visible
+        events={pastEvents.map((e: any) => ({
+          name: e.params.name,
+          slug: e.params.slug,
+          headerImage: e.params.headerImage ?? null,
+          eventDate: e.params.eventDate,
+          tags: e.params.tags ?? [],
+        }))}
+      />
     </section>
   }
 </Layout>

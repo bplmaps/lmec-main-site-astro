@@ -1,4 +1,5 @@
 ---
+import Icon from '../Icon.astro';
 import Card from "../Event/Card.astro";
 import { fetchUpcomingEvents } from "../../lib/storyblok-fetch";
 
@@ -29,7 +30,7 @@ const upcomingEvents = events.filter((event: any) => {
             <h2 class="mb-0 text-nowrap me-3">Upcoming Events</h2>
             <div class="border-top w-100 border-primary d-none d-sm-block"></div>
             <div>
-              <a href="/event/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><i class="fas fa-calendar-alt me-2"></i> All events</a>
+              <a href="/event/" class="btn btn-sm btn-primary-outline ms-sm-3 d-none d-sm-block text-nowrap"><Icon name="calendar-alt" class="me-2" /> All events</a>
             </div>
           </div>
         </div>
@@ -43,7 +44,7 @@ const upcomingEvents = events.filter((event: any) => {
       </div>
       <div class="row">
         <div class="col-12 text-center">
-          <a href="/event/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><i class="fas fa-calendar-alt me-2"></i> All events</a>
+          <a href="/event/" class="btn btn-md btn-primary-outline d-sm-none d-inline-block"><Icon name="calendar-alt" class="me-2" /> All events</a>
         </div>
       </div>
     </div>

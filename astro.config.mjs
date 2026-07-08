@@ -7,6 +7,7 @@ import netlify from '@astrojs/netlify';
 const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
 const config = {
+  site: 'https://www.leventhalmap.org',
   integrations: [
     svelte(), 
     storyblok({

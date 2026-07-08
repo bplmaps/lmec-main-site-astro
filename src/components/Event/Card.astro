@@ -20,6 +20,8 @@ const { thumbnail, name, date, tags, href } = Astro.props;
       class="card-img-top rounded-0"
         src={thumbnail.filename}
         alt={thumbnail.alt}
+        loading="lazy"
+        decoding="async"
       />
     }
     {date &&

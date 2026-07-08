@@ -7,7 +7,7 @@ const page = await fetchStoryByPath('main-site/main-site');
 ---
 
 <Layout title="Home" description="We use maps, geography, and history to explore the connections between places and people in Boston, New England, and beyond. Our collection of a quarter million goegraphic objects, our educational programs, and free exhibitions bring the power of historical geography to everyone.">
-	<main slot="root">
+	<main slot="root" id="main-content">
     <StoryblokComponent name={page.name} blok={page.content} />
 	</main>
 </Layout>

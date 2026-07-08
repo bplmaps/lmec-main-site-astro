@@ -1,6 +1,7 @@
 /*  typography */
-@import url("https://use.typekit.net/hnl4gif.css");
-
+// Typekit fonts are loaded via <link> in Layout.astro <head> (with preconnect)
+// rather than a CSS @import, which would chain the font CSS request behind
+// the compiled stylesheet.
 
 body {
   line-height: 1.2;

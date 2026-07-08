@@ -17,7 +17,7 @@ const { blok } = Astro.props
 ---
 
 <figure {...storyblokEditable(blok)} class={blok.class}>
-  <img src={blok.imageSrc.url ? blok.imageSrc.url : ''} alt={blok.imageAlt ? blok.imageAlt : ''} />
+  <img src={blok.imageSrc.url ? blok.imageSrc.url : ''} alt={blok.imageAlt ? blok.imageAlt : ''} loading="lazy" decoding="async" />
   
   {blok.caption &&
     <figcaption>

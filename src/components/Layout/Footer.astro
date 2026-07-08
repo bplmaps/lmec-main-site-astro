@@ -1,4 +1,6 @@
 ---
+import Icon from "../Icon.astro";
+
 const { hoursNote, socialLinks, leftMenuLinks, rightMenuLinks } = Astro.props;
 
 interface WeekDayHours {
@@ -11,6 +13,7 @@ interface WeekDayHours {
 interface SocialLink {
   href: string;
   icon: string;
+  label?: string;
 }
 
 interface MenuLink {
@@ -97,30 +100,23 @@ const copyright = "All material on this website is licensed under a <a href=\"ht
         </div>
 
         <div class="col-lg-3 col-sm-6 mb-5">
-          <div class="mb-3">
+          <h2 class="mb-3 footer-hours-heading">
             Gallery Hours
             {hoursNote &&
-              <i>{hoursNote}</i>
+              <em>{hoursNote}</em>
             }
-          </div>
-          <ul class="list-unstyled">
+          </h2>
+          <dl class="footer-hours mb-0">
             {hours && hours.map((day) => (
-              <li class="mb-1">
-                {day.name}
-                {day.special}
-                {!day.special &&
-                  <span>
-                    {day.open} – {day.close}
-                  </span>
-                }
-              </li>
+              <div class="mb-1">
+                <dt>{day.name}</dt>
+                <dd>{day.special ? day.special : `${day.open} – ${day.close}`}</dd>
+              </div>
             ))}
-            <li class="my-2">
-              <a href="/about/hours-directions">
-                All hours
-              </a>
-            </li>
-          </ul>
+          </dl>
+          <a class="d-inline-block my-2" href="/about/hours-directions">
+            All hours
+          </a>
         </div>
         <div class="col-lg-3 col-sm-6 mb-5 mb-md-0">
           <ul class="list-unstyled">
@@ -158,8 +154,8 @@ const copyright = "All material on this website is licensed under a <a href=\"ht
           <ul class="list-inline">
             {socialLinks && socialLinks.map((link) => (
               <li class="list-inline-item">
-                <a class="d-inline-block p-2" href={link.href} target="_blank">
-                  <i class={link.icon}></i>
+                <a class="d-inline-block p-2" href={link.href} target="_blank" rel="noopener" aria-label={link.label}>
+                  <Icon name={link.icon} />
                 </a>
               </li>
             ))}

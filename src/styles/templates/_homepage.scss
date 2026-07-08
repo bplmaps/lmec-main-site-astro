@@ -50,10 +50,18 @@
 }
 
 .hover-shadow {
-  transition: .3s ease;
+  transition: box-shadow .3s ease, transform .3s ease;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     box-shadow: 0px 4px 25px 0px rgba(27, 39, 71, 0.15);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover,
+    &:focus-within {
+      transform: translateY(-3px);
+    }
   }
 }
 
@@ -206,9 +214,28 @@
 .footer {
   border-color: #494a43 !important;
   padding-top: 50px;
+
+  .footer-hours-heading {
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .footer-hours {
+    dt, dd {
+      display: inline;
+      margin: 0;
+      font-weight: inherit;
+    }
+
+    dt::after {
+      content: " ";
+    }
+  }
   
   a:hover {
-    color: lighten($link-color,15);
+    color: lighten($link-color,35);
   }
 }
 

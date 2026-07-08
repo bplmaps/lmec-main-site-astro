@@ -1,4 +1,5 @@
 ---
+import Icon from '../components/Icon.astro';
 import { getPath } from '../lib/utils';
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
@@ -94,10 +95,10 @@ blok.frontpageFeature.forEach((feature: any) => {
           <div class="swiper-pagination"></div>
 
           <div class="prevArrow" aria-label="Previous Slide">
-            <i class="fas fa-arrow-left"></i>
+            <Icon name="arrow-left" />
           </div>
           <div class="nextArrow" aria-label="Next Slide">
-            <i class="fas fa-arrow-right"></i>
+            <Icon name="arrow-right" />
           </div>
         </div>
       </div>
@@ -107,7 +108,7 @@ blok.frontpageFeature.forEach((feature: any) => {
   {showLivestream &&
     <section class="section bg-dark d-none p-4" id="livestream-section">
       <div class="container">
-        <div class="row" id="streaming-now-badge"><h2 class="mx-auto"><span class="badge badge-info"><i class="fas fa-video me-2"></i>Streaming live now</span></h2></div>
+        <div class="row" id="streaming-now-badge"><h2 class="mx-auto"><span class="badge badge-info"><Icon name="video" class="me-2" />Streaming live now</span></h2></div>
             <div class="row">
               <div class="mx-auto" id="livestream-container">
             </div>
@@ -187,7 +188,7 @@ blok.frontpageFeature.forEach((feature: any) => {
                 <ul class="p-0">
                   {audience.links.map((link: any) => (
                     <li class="mx-0 my-2">
-                      <i class="fas fa-angle-right me-1"></i>
+                      <Icon name="angle-right" class="me-1" />
                       <a href={link.link.url} class="card-link font-secondary me-4">
                         {link.title}
                       </a>
@@ -218,7 +219,7 @@ blok.frontpageFeature.forEach((feature: any) => {
                   </div>
                 )}
                 <a class="btn btn-primary btn-lg" href={feature.button_link.url}>
-                  <i class="ti-control-play"></i> {feature.button_text}
+                  <Icon name="play" /> {feature.button_text}
                 </a>
               </div>
             </div>

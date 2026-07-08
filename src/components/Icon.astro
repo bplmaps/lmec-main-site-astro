@@ -1,0 +1,142 @@
+---
+// Build-time SVG icon component replacing the render-blocking Font Awesome
+// CDN stylesheet. Icon path data comes from the @fortawesome devDependencies
+// and is inlined into the static HTML — nothing ships to the client except
+// the <svg> markup itself. Add new icons to the map below as needed.
+import {
+  faAngleRight,
+  faArrowLeft,
+  faArrowRight,
+  faArrowUpRightFromSquare,
+  faCalendar,
+  faCalendarDay,
+  faCalendarDays,
+  faCalendarWeek,
+  faCircleInfo,
+  faClock,
+  faClockRotateLeft,
+  faEarthAmericas,
+  faEye,
+  faFeather,
+  faGift,
+  faHandHoldingHeart,
+  faImages,
+  faMagnifyingGlass,
+  faMapPin,
+  faPassport,
+  faPlay,
+  faRightLeft,
+  faScroll,
+  faSquareArrowUpRight,
+  faSquareEnvelope,
+  faSquareUpRight,
+  faToolbox,
+  faUser,
+  faUserPlus,
+  faVideo,
+  faWallet,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons';
+import { faNewspaper } from '@fortawesome/free-regular-svg-icons';
+import {
+  faBluesky,
+  faFacebook,
+  faFlickr,
+  faGithub,
+  faInstagram,
+  faMastodon,
+  faYoutube,
+} from '@fortawesome/free-brands-svg-icons';
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
+const icons: Record<string, IconDefinition> = {
+  'angle-right': faAngleRight,
+  'arrow-left': faArrowLeft,
+  'arrow-right': faArrowRight,
+  'calendar': faCalendar,
+  'calendar-alt': faCalendarDays,
+  'calendar-day': faCalendarDay,
+  'calendar-week': faCalendarWeek,
+  'clock': faClock,
+  'envelope-square': faSquareEnvelope,
+  'exchange-alt': faRightLeft,
+  'external-link-alt': faArrowUpRightFromSquare,
+  'external-link-square-alt': faSquareArrowUpRight,
+  'eye': faEye,
+  'feather': faFeather,
+  'gift': faGift,
+  'globe-americas': faEarthAmericas,
+  'hand-holding-heart': faHandHoldingHeart,
+  'history': faClockRotateLeft,
+  'images': faImages,
+  'info-circle': faCircleInfo,
+  'map-pin': faMapPin,
+  'newspaper': faNewspaper,
+  'passport': faPassport,
+  'play': faPlay,
+  'scroll': faScroll,
+  'search': faMagnifyingGlass,
+  'square-up-right': faSquareUpRight,
+  'toolbox': faToolbox,
+  'user': faUser,
+  'user-plus': faUserPlus,
+  'video': faVideo,
+  'wallet': faWallet,
+  'wrench': faWrench,
+  'bluesky': faBluesky,
+  'facebook': faFacebook,
+  'flickr': faFlickr,
+  'github': faGithub,
+  'instagram': faInstagram,
+  'mastodon': faMastodon,
+  'youtube': faYoutube,
+};
+
+export interface Props {
+  /** Icon name from the registry above */
+  name?: string;
+  /** A Font Awesome class string as authored in the CMS, e.g. "fas fa-eye me-2".
+      Unknown icons render nothing rather than throwing, since editors control
+      these values. Utility classes (me-2 etc.) are passed through; fa-spin maps
+      to the local .icon-spin animation. */
+  faClass?: string;
+  class?: string;
+}
+
+const { name, faClass, class: className } = Astro.props;
+
+const STYLE_TOKENS = new Set(['fa', 'fas', 'fab', 'far', 'fal', 'fa-solid', 'fa-regular', 'fa-brands', 'fa-light', 'fa-fw']);
+
+let resolvedName = name;
+let extraClasses: string[] = [];
+let spin = false;
+
+if (!resolvedName && faClass) {
+  for (const token of faClass.trim().split(/\s+/)) {
+    if (STYLE_TOKENS.has(token)) continue;
+    if (token === 'fa-spin') { spin = true; continue; }
+    if (token.startsWith('fa-')) { resolvedName = token.slice(3); continue; }
+    extraClasses.push(token);
+  }
+}
+
+const icon = resolvedName ? icons[resolvedName] : undefined;
+if (!icon && name) {
+  throw new Error(`Icon "${name}" is not registered in src/components/Icon.astro`);
+}
+const [width, height, , , pathData] = icon ? icon.icon : [0, 0, [], '', ''];
+const paths = Array.isArray(pathData) ? pathData : [pathData];
+---
+
+{icon && (
+  <svg
+    class:list={['svg-icon', spin && 'icon-spin', className, ...extraClasses]}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox={`0 0 ${width} ${height}`}
+    fill="currentColor"
+    aria-hidden="true"
+    style={`width: ${(width / height).toFixed(3)}em;`}
+  >
+    {paths.map((d) => <path d={d} />)}
+  </svg>
+)}

@@ -1,9 +1,10 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { createSlug } from '../../lib/utils';
+import Layout from "../../layouts/Layout.astro";
+import { createSlug } from "../../lib/utils";
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
-import { fetchTopTags, fetchStoriesPaginated } from '../../lib/storyblok-fetch';
+import ArticlesBrowser from "../../components/Articles/ArticlesBrowser.svelte";
+import { fetchTopTags, fetchStoriesPaginated } from "../../lib/storyblok-fetch";
 
 const currentPage = 1;
 const articlesPerPage = 10;
@@ -18,9 +19,9 @@ try {
   const { stories, total } = await fetchStoriesPaginated({
     page: currentPage,
     per_page: articlesPerPage,
-    starts_with: 'main-site/',
-    content_type: 'article-page',
-    sort_by: 'content.publishDate:desc',
+    starts_with: "main-site/",
+    content_type: "article-page",
+    sort_by: "content.publishDate:desc",
   });
 
   totalPages = Math.ceil(total / articlesPerPage) || 0;
@@ -38,37 +39,49 @@ try {
     };
   });
 } catch (error) {
-  console.error('Error fetching articles:', error);
+  console.error("Error fetching articles:", error);
   // Let the page render with empty data rather than crashing
 }
 ---
 
-<Layout title="Articles" description="Articles and posts that explore and explain our collections and initiatives" subheading="Articles and posts that explore and explain our collections and initiatives" pill="Article">
+<Layout
+  title="Articles"
+  description="Articles and posts that explore and explain our collections and initiatives"
+  subheading="Articles and posts that explore and explain our collections and initiatives"
+  pill="Article"
+>
   <section class="section">
     <div class="row">
       <div class="col-12 order-2 order-lg-1">
-        <div class="row">
-          <h3>Filter articles by tag</h3>
-          <div class="tagcloud">
-            {tags.map((tag: any) => (
-              <span class="badge rounded-pill bg-light text-secondary mb-1 tagcloud-item">
-                <a href={`/tags/${createSlug(tag.name)}`}>{tag.name}</a>
-                <span class="badge bg-info" >{tag.taggings_count}</span>
-              </span>
-            ))}
+        <!-- Static server-rendered listing: the crawlable/no-JS fallback.
+             ArticlesBrowser hides it once the article index has loaded. -->
+        <div id="articles-static-listing">
+          <div class="row">
+            {
+              articles.map((article: any) => (
+                <article class="col-sm-6 mb-5">
+                  <Card
+                    href={`/articles/${article.params.slug}`}
+                    thumbnail={article.params.headerImage}
+                    title={article.params.title}
+                    description={article.params.description}
+                    date={article.params.publishedAt}
+                    author={article.params.author}
+                  />
+                </article>
+              ))
+            }
+            <div class="col-12 mt-4">
+              <Pagination
+                urlBase="/articles/page"
+                maxPagesToShow={5}
+                currentPage={currentPage}
+                totalPages={totalPages}
+              />
+            </div>
           </div>
         </div>
-        <hr>
-        <div class="row">
-          {articles.map((article: any) => (
-            <article class="col-sm-6 mb-5">
-              <Card href={`/articles/${article.params.slug}`} thumbnail={article.params.headerImage} title={article.params.title} description={article.params.description} date={article.params.publishedAt} author={article.params.author} />
-            </article>
-          ))}
-          <div class="col-12 mt-4">
-            <Pagination urlBase="/articles/page" maxPagesToShow={5} currentPage={currentPage} totalPages={totalPages} />
-          </div>
-        </div>
+        <ArticlesBrowser client:load />
       </div>
     </div>
   </section>

@@ -13,9 +13,9 @@ const { blok } = Astro.props
 
 <div {...storyblokEditable(blok)} class="swiper carousel-slider">
   <div class="swiper-wrapper">
-    {blok.images.map((image: any) => (
+    {blok.images.map((image: any, index: number) => (
       <div class="swiper-slide">
-        <img src={image.imageURL.filename} />
+        <img src={image.imageURL.filename} alt={image.imageURL.alt ?? ''} loading={index === 0 ? undefined : 'lazy'} decoding="async" />
         {image.caption.content[0].content && (
            <figcaption class="carousel-caption d-none d-md-block">
             <RichText blok={{ body: image.caption }} />
