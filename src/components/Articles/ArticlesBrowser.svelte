@@ -69,7 +69,6 @@
   });
 
   $: sorted = [...filtered].sort((a, b) => {
-    if (sort === "title") return a.title.localeCompare(b.title);
     const cmp = new Date(a.publishDate).getTime() - new Date(b.publishDate).getTime();
     return sort === "oldest" ? cmp : -cmp;
   });
@@ -140,7 +139,6 @@
       >
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
-        <option value="title">By title</option>
       </select>
     </div>
   </div>
