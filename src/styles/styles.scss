@@ -4,11 +4,9 @@
 // Import Bootstrap
 @import "bootstrap/scss/bootstrap";
 
-// Import Swiper and modules styles
-@import 'swiper/css';
-@import 'swiper/css/navigation';
-@import 'swiper/css/pagination';
-@import 'swiper/css/effect-fade';
+// Swiper styles are imported by the components that use them
+// (storyblok/Root.astro and storyblok/nestable/Carousel.astro) so they only
+// ship on pages that render a slider.
 
 @import "typography";
 @import "buttons";

@@ -458,6 +458,19 @@ textarea.form-control{
   }
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    &:not(.card-title):not(.section-title):not(.not-content) {
+      a:not(.btn) {
+        color: $link-color;
+        background-image: linear-gradient(0deg, adjust-color($button-primary-color, $alpha: -0.8) 10%, transparent 0);
+
+        &:hover {
+          background-image: linear-gradient(0deg, adjust-color($button-primary-color, $alpha: -0.8) 35%, transparent 0);
+        }
+      }
+    }
+  }
+
   p > img {
     margin: 20px 0;
   }
@@ -729,8 +742,14 @@ textarea.form-control{
     
   }
   .alert {
-    a {
-      text-decoration: underline;
+    a:not(.btn) {
+      text-decoration: none;
+      color: $link-color;
+      background-image: linear-gradient(0deg, adjust-color($button-primary-color, $alpha: -0.8) 10%, transparent 0);
+
+      &:hover {
+        background-image: linear-gradient(0deg, adjust-color($button-primary-color, $alpha: -0.8) 35%, transparent 0);
+      }
     }
   }
 

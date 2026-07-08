@@ -1,21 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { createSlug } from "../../lib/utils";
 import Card from "../../components/Article/Card.astro";
 import Pagination from "../../components/Pagination.astro";
 import ArticlesBrowser from "../../components/Articles/ArticlesBrowser.svelte";
-import { fetchTopTags, fetchStoriesPaginated } from "../../lib/storyblok-fetch";
+import { fetchStoriesPaginated } from "../../lib/storyblok-fetch";
 
 const currentPage = 1;
 const articlesPerPage = 10;
 
 let articles: any[] = [];
 let totalPages = 0;
-let tags: any[] = [];
+let totalArticles = 0;
 
 try {
-  tags = await fetchTopTags(20);
-
   const { stories, total } = await fetchStoriesPaginated({
     page: currentPage,
     per_page: articlesPerPage,
@@ -24,6 +21,7 @@ try {
     sort_by: "content.publishDate:desc",
   });
 
+  totalArticles = total;
   totalPages = Math.ceil(total / articlesPerPage) || 0;
   articles = stories.map((article: any) => {
     return {
@@ -53,6 +51,19 @@ try {
   <section class="section">
     <div class="row">
       <div class="col-12 order-2 order-lg-1">
+        <!-- The browser's filter controls are server-rendered (disabled until
+             hydration) so they sit in their final position from first paint;
+             without JS they never become usable, so hide them entirely. -->
+        <noscript>
+          <style>
+            #articles-browser-island {
+              display: none;
+            }
+          </style>
+        </noscript>
+        <div id="articles-browser-island">
+          <ArticlesBrowser client:idle totalCount={totalArticles} />
+        </div>
         <!-- Static server-rendered listing: the crawlable/no-JS fallback.
              ArticlesBrowser hides it once the article index has loaded. -->
         <div id="articles-static-listing">
@@ -81,7 +92,6 @@ try {
             </div>
           </div>
         </div>
-        <ArticlesBrowser client:load />
       </div>
     </div>
   </section>

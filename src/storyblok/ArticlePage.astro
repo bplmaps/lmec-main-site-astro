@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
-import { richTextResolver, BlockTypes } from '@storyblok/richtext'
+import { renderStoryblokRichText } from '../lib/storyblok-richtext';
 import Donate from '../components/Article/Donate.astro';
 import Sidebar from '../components/Article/Sidebar.astro';
 import RichText from './RichText.astro';
@@ -9,18 +9,12 @@ import Icon from '../components/Icon.astro';
 // @ts-ignore
 import Countable from 'countable';
 
-const { render } = richTextResolver({
-  resolvers: {
-    [BlockTypes.COMPONENT]: () => '',
-  }
-});
-
 const { blok, tags } = Astro.props;
 
 let countWords = 0;
 let readingTime = 0;
 
-Countable.count(render(blok.body), (counter : any) => {
+Countable.count(renderStoryblokRichText(blok.body), (counter : any) => {
   countWords = counter.words
   readingTime = Math.round(countWords / 238);
 })

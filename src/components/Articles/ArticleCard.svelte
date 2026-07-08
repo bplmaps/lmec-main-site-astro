@@ -22,6 +22,8 @@
       class="card-img-top rounded-0"
       data-src={article.thumb.src}
       alt={article.thumb.alt}
+      width="600"
+      height="175"
       use:lazyImage
     />
   {/if}
@@ -57,7 +59,11 @@
 </article>
 
 <style>
+  /* Fixed box so the card doesn't grow when the lazy image arrives */
   .card-img-top {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
     background: #eee;
   }
 </style>
