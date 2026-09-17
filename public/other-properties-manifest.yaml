@@ -127,3 +127,6 @@
 - name: Declarations
   url_path: /digital-exhibitions/declarations/
   build_root: ../other-properties/digital-exhibitions/declarations
+- name: Edison Map Chat
+  url_path: /projects/ellis-edison-system
+  build_root: ../other-properties/map-chats/ellis-edison-system
