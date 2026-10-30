@@ -1,5 +1,6 @@
 ---
 import Icon from "../Icon.astro";
+import { sizedImageUrl } from "../../lib/imageUrl";
 
 export interface Props {
 	thumbnail?: {
@@ -20,8 +21,10 @@ const { thumbnail, title, description, author, date, href } = Astro.props;
   {thumbnail && thumbnail.filename &&
     <img
     class="card-img-top rounded-0"
-      src={thumbnail.filename}
+      src={sizedImageUrl(thumbnail.filename, 600)}
       alt={thumbnail.alt}
+      width="600"
+      height="175"
       loading="lazy"
       decoding="async"
     />
@@ -58,3 +61,13 @@ const { thumbnail, title, description, author, date, href } = Astro.props;
     </a>
   </div>
 </article>
+
+<style>
+  /* Fixed box so the card doesn't grow when the lazy image arrives */
+  .card-img-top {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    background: #eee;
+  }
+</style>

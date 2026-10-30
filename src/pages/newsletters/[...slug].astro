@@ -1,12 +1,6 @@
 ---
-import { richTextResolver, BlockTypes } from "@storyblok/richtext";
+import { renderStoryblokRichText as render } from "../../lib/storyblok-richtext";
 import { fetchNewsletters, fetchStoryByPath } from "../../lib/storyblok-fetch";
-
-const { render } = richTextResolver({
-  resolvers: {
-    [BlockTypes.COMPONENT]: () => '',
-  }
-});
 
 export async function getStaticPaths() {
   const allNewsletters = await fetchNewsletters();

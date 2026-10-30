@@ -1,4 +1,6 @@
 ---
+import { sizedImageUrl } from "../../lib/imageUrl";
+
 export interface Props {
 	thumbnail: {
     filename: string;
@@ -18,8 +20,10 @@ const { thumbnail, name, date, tags, href } = Astro.props;
     {thumbnail && thumbnail.filename &&
       <img
       class="card-img-top rounded-0"
-        src={thumbnail.filename}
+        src={sizedImageUrl(thumbnail.filename, 600)}
         alt={thumbnail.alt}
+        width="600"
+        height="175"
         loading="lazy"
         decoding="async"
       />

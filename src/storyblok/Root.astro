@@ -1,6 +1,7 @@
 ---
 import Icon from '../components/Icon.astro';
-import { getPath } from '../lib/utils';
+import { resolveMultilink } from '../lib/storyblok-richtext';
+import { sizedImageUrl } from '../lib/imageUrl';
 import { storyblokEditable } from '@storyblok/astro';
 import EventCTA from "../components/Home/EventCTA.astro";
 import ArticleCTA from "../components/Home/ArticleCTA.astro";
@@ -69,7 +70,7 @@ blok.frontpageFeature.forEach((feature: any) => {
       <div class="swiper hero-slider">
         <div class="swiper-wrapper">
           {blok.Slider.map((slide: any) => (
-            <div class="swiper-slide hero-slider-item overlay bg-cover" style={`background-image:url(${slide.bg_image.filename});`}>
+            <div class="swiper-slide hero-slider-item overlay bg-cover" style={`background-image:url(${sizedImageUrl(slide.bg_image.filename, 1600)});`}>
               <div class="container">
                 <div class="row">
                   <div class="col-md-8">
@@ -80,7 +81,7 @@ blok.frontpageFeature.forEach((feature: any) => {
                       <p class="text-white" data-swiper-parallax-x="100" data-swiper-parallax-duration="300">{slide.content}</p>
                     }
                     {(slide.button_link && slide.button_text) &&
-                      <a href={getPath(slide.button_link.cached_url)} class="btn btn-sm btn-secondary hero-button">
+                      <a href={resolveMultilink(slide.button_link)} class="btn btn-sm btn-secondary hero-button">
                         {slide.button_text}
                       </a>
                     }
@@ -207,7 +208,7 @@ blok.frontpageFeature.forEach((feature: any) => {
   
   {showFeature &&
     blok.frontpageFeature.map((feature: any) => (
-      <section class="section bg-cover frontpage-feature" style=`background-image: url(${feature.bg_image.filename})`>
+      <section class="section bg-cover frontpage-feature" style=`background-image: url(${sizedImageUrl(feature.bg_image.filename, 1600)})`>
         <div class="container">
           <div class="row">
             <div class="col-lg-8 col-sm-8">
@@ -235,6 +236,10 @@ blok.frontpageFeature.forEach((feature: any) => {
 <script>
   import Swiper from 'swiper';
   import { Navigation, Pagination, EffectFade, Parallax } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+  import 'swiper/css/effect-fade';
 
   new Swiper('.hero-slider', {
     modules: [Navigation, Pagination, EffectFade, Parallax],

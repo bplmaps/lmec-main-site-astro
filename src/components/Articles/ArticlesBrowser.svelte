@@ -8,12 +8,21 @@
   // Progressive enhancement: the static server-rendered page-1 grid (wrapped
   // in #articles-static-listing) stays in the DOM and is hidden only after the
   // article index loads successfully. No JS, or a failed fetch, leaves the
-  // static listing and its /articles/page/N pagination fully usable.
+  // static listing and its /articles/page/N pagination fully usable. The
+  // filter controls are server-rendered (disabled) so hydration doesn't
+  // shift the layout; a <noscript> rule on the page hides them without JS.
   export let pageSize = 10;
   export let indexUrl = "/articles/index.json";
   export let staticListingId = "articles-static-listing";
+  export let totalCount = 0;
 
-  const SLIDE = 400;
+  // Svelte fly transitions run in JS, so the global prefers-reduced-motion
+  // CSS kill-switch doesn't reach them — gate them here.
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const SLIDE = prefersReducedMotion ? 0 : 80;
+  const DURATION = prefersReducedMotion ? 0 : 200;
 
   let articles: ArticleIndexEntry[] = [];
   let loaded = false;
@@ -23,6 +32,11 @@
   let page = 0; // 0-based internally; 1-based in the UI/URL
   // 1 = advancing (slide left), -1 = going back (slide right).
   let direction = 1;
+
+  // Lock the viewport to the tallest page seen while paginating so a short
+  // last page doesn't collapse the container and yank the controls upward.
+  let viewportEl: HTMLElement | undefined;
+  let lockedMinHeight = 0;
 
   onMount(async () => {
     try {
@@ -90,74 +104,103 @@
   }
 
   const handleFilterChange = (): void => {
+    // Filters legitimately shrink the list, so release the height lock —
+    // and don't scroll: the user is typing, not navigating.
+    lockedMinHeight = 0;
     direction = 1;
     page = 0;
+  };
+
+  const scrollToListTop = (): void => {
+    // Only pull the viewport back when its top has scrolled out of view;
+    // the global scroll-margin-top keeps the fixed header clear.
+    if (viewportEl && viewportEl.getBoundingClientRect().top < 0) {
+      viewportEl.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    }
   };
 
   const goToPage = (target: number): void => {
     const next = target - 1;
     if (next === page || next < 0 || next > totalPages - 1) return;
     direction = next > page ? 1 : -1;
+    if (viewportEl) {
+      lockedMinHeight = Math.max(lockedMinHeight, viewportEl.offsetHeight);
+    }
     page = next;
+    scrollToListTop();
   };
 </script>
 
-{#if loaded}
-  <div class="row mb-4 gy-2">
-    <div class="col-lg-6">
-      <label class="visually-hidden" for="articles-browser-query">Search articles</label>
-      <input
-        id="articles-browser-query"
-        bind:value={query}
-        on:input={handleFilterChange}
-        class="form-control form-control-lg"
-        type="text"
-        placeholder="Search articles by title, description, or author"
-      />
-    </div>
-    <div class="col-lg-3 col-sm-6">
-      <label class="visually-hidden" for="articles-browser-tag">Filter by tag</label>
-      <select
-        id="articles-browser-tag"
-        bind:value={selectedTag}
-        on:change={handleFilterChange}
-        class="form-select form-select-lg"
-      >
-        <option value="">All tags</option>
-        {#each tagOptions as [tag, count]}
-          <option value={tag}>{tag} ({count})</option>
-        {/each}
-      </select>
-    </div>
-    <div class="col-lg-3 col-sm-6">
-      <label class="visually-hidden" for="articles-browser-sort">Sort articles</label>
-      <select
-        id="articles-browser-sort"
-        bind:value={sort}
-        on:change={handleFilterChange}
-        class="form-select form-select-lg"
-      >
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-      </select>
-    </div>
+<div class="row mb-4 gy-2">
+  <div class="col-lg-6">
+    <label class="visually-hidden" for="articles-browser-query">Search articles</label>
+    <input
+      id="articles-browser-query"
+      bind:value={query}
+      on:input={handleFilterChange}
+      class="form-control form-control-lg"
+      type="text"
+      placeholder="Search articles by title, description, or author"
+      disabled={!loaded}
+    />
   </div>
+  <div class="col-lg-3 col-sm-6">
+    <label class="visually-hidden" for="articles-browser-tag">Filter by tag</label>
+    <select
+      id="articles-browser-tag"
+      bind:value={selectedTag}
+      on:change={handleFilterChange}
+      class="form-select form-select-lg"
+      disabled={!loaded}
+    >
+      <option value="">All tags</option>
+      {#each tagOptions as [tag, count]}
+        <option value={tag}>{tag} ({count})</option>
+      {/each}
+    </select>
+  </div>
+  <div class="col-lg-3 col-sm-6">
+    <label class="visually-hidden" for="articles-browser-sort">Sort articles</label>
+    <select
+      id="articles-browser-sort"
+      bind:value={sort}
+      on:change={handleFilterChange}
+      class="form-select form-select-lg"
+      disabled={!loaded}
+    >
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+    </select>
+  </div>
+</div>
 
-  <p class="text-muted" aria-live="polite">
+<p class="text-muted" aria-live="polite">
+  {#if !loaded}
+    {totalCount ? `${totalCount} articles` : ""}
+  {:else}
     {sorted.length === articles.length
       ? `${articles.length} articles`
       : `${sorted.length} of ${articles.length} articles match`}
-  </p>
+  {/if}
+</p>
 
+{#if loaded}
   {#if sorted.length === 0}
     <p class="text-muted">No articles match your search.</p>
   {:else}
-    <div class="articles-viewport">
+    <div
+      class="articles-viewport"
+      bind:this={viewportEl}
+      style:min-height={lockedMinHeight ? `${lockedMinHeight}px` : null}
+    >
       {#key page}
         <div
           class="row"
-          in:fly={{ x: direction * SLIDE, duration: 300 }}
-          out:fly={{ x: direction * -SLIDE, duration: 300 }}
+          in:fly={{ x: direction * SLIDE, duration: DURATION }}
+          out:fly={{ x: direction * -SLIDE, duration: DURATION }}
         >
           {#each pageArticles as article (article.slug)}
             <div class="col-sm-6 mb-5">
