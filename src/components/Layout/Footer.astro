@@ -1,14 +1,8 @@
 ---
 import Icon from "../Icon.astro";
+import { getDatasource } from "../../lib/storyblok-fetch";
 
 const { hoursNote, socialLinks, leftMenuLinks, rightMenuLinks } = Astro.props;
-
-interface WeekDayHours {
-  name: string;
-  special: string;
-  open: string;
-  close: string;
-}
 
 interface SocialLink {
   href: string;
@@ -24,48 +18,12 @@ interface MenuLink {
 
 interface Props {
   hoursNote?: string,
-  hours?: WeekDayHours[];
   socialLinks?: SocialLink[];
   leftMenuLinks?: MenuLink[];
   rightMenuLinks?: MenuLink[];
 }
 
-const hours = [
-  {
-    name: 'Monday',
-    special: 'Closed',
-  },
-  {
-    name: 'Tuesday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    name: 'Wednesday',
-    open: '1 pm',
-    close: '7 pm',
-  },
-  {
-    name: 'Thursday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    name: 'Friday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    name: 'Saturday',
-    open: '11 am',
-    close: '5 pm',
-  },
-  {
-    name: 'Sunday',
-    open: '1 pm',
-    close: '5 pm',
-  },
-];
+const hours = await getDatasource("open-hours");
 
 const address = "Central Library in Copley Square<br>700 Boylston Street<br>Boston, MA 02116 USA";
 const email = "<a href=\"mailto:info@leventhalmap.org\">info@leventhalmap.org</a>";
@@ -107,10 +65,10 @@ const copyright = "All material on this website is licensed under a <a href=\"ht
             }
           </h2>
           <dl class="footer-hours mb-0">
-            {hours && hours.map((day) => (
+            {hours.map((day: any) => (
               <div class="mb-1">
                 <dt>{day.name}</dt>
-                <dd>{day.special ? day.special : `${day.open} – ${day.close}`}</dd>
+                <dd>{day.value}</dd>
               </div>
             ))}
           </dl>
