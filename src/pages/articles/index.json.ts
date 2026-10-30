@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { fetchArticles } from '../../lib/storyblok-fetch';
+import { sizedImageUrl } from '../../lib/imageUrl';
 
 export type ArticleIndexEntry = {
   title: string;
@@ -26,7 +27,7 @@ export const GET: APIRoute = async () => {
     tags: story.tag_list ?? [],
     thumb: story.content?.headerImage?.filename
       ? {
-          src: story.content.headerImage.filename,
+          src: sizedImageUrl(story.content.headerImage.filename, 600),
           alt: story.content.headerImage.alt ?? '',
         }
       : null,

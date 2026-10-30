@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Card from '../../components/Event/Card.astro';
 import PastEventsBrowser from '../../components/Events/PastEventsBrowser.svelte';
 import { fetchEvents } from '../../lib/storyblok-fetch';
+import { sizedImageUrl } from '../../lib/imageUrl';
 
 let allEvents = await fetchEvents({ sort_by: 'content.eventDate:desc' });
 
@@ -54,7 +55,9 @@ const upcomingEvents = allEvents.reverse().filter((event: any)=> {
         events={pastEvents.map((e: any) => ({
           name: e.params.name,
           slug: e.params.slug,
-          headerImage: e.params.headerImage ?? null,
+          headerImage: e.params.headerImage?.filename
+            ? { ...e.params.headerImage, filename: sizedImageUrl(e.params.headerImage.filename, 600) }
+            : null,
           eventDate: e.params.eventDate,
           tags: e.params.tags ?? [],
         }))}

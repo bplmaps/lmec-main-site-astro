@@ -1,10 +1,12 @@
 ---
 import { storyblokEditable } from '@storyblok/astro';
+import { resolveMultilink } from '../../lib/storyblok-richtext';
 import Icon from '../../components/Icon.astro';
 
 export interface Props {
   blok: {
     buttonLink: {
+      linktype?: string;
       cached_url: string;
     }
     buttonIcon: string;
@@ -19,7 +21,7 @@ const { blok } = Astro.props
 <div {...storyblokEditable(blok)}>
   {blok.buttonLink &&
     <p class="text-center">
-      <a href={blok.buttonLink.cached_url} target="_blank" class={`${blok.buttonType} mb-2`}><Icon faClass={blok.buttonIcon} />{blok.buttonText}</a>
+      <a href={resolveMultilink(blok.buttonLink)} target={blok.buttonLink.linktype === 'url' ? '_blank' : undefined} class={`${blok.buttonType} mb-2`}><Icon faClass={blok.buttonIcon} />{blok.buttonText}</a>
     </p>
   }
 </div>

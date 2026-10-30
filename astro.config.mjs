@@ -8,6 +8,13 @@ const env = loadEnv("", process.cwd(), 'STORYBLOK');
 
 const config = {
   site: 'https://www.leventhalmap.org',
+  // Astro 7 changed the default to 'jsx', which strips whitespace between
+  // inline elements by JSX rules; keep the HTML-aware behavior
+  compressHTML: true,
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   integrations: [
     svelte(), 
     storyblok({

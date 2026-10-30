@@ -151,6 +151,8 @@ const secondaryMenuLinks = [
 		<link rel="preconnect" href="https://use.typekit.net" crossorigin />
 		<link rel="preconnect" href="https://p.typekit.net" crossorigin />
 		<link rel="preconnect" href="https://iiif.digitalcommonwealth.org" />
+		<link rel="preconnect" href="https://a-us.storyblok.com" />
+		<link rel="preconnect" href="https://cdn.fundraiseup.com" />
 		<link rel="stylesheet" href="https://use.typekit.net/hnl4gif.css" />
 		<script is:inline define:vars={{ analyticsClientConfig }}>
 			window.dataLayer = window.dataLayer || [];
@@ -228,19 +230,37 @@ const secondaryMenuLinks = [
 				window.setTimeout(() => bootAnalytics(), 1500);
 			}
 		</script>
-		<!-- Fundraise Up: world-class checkout experience for serious online fundraising -->
-		<script is:inline>(function (w, d, s, n, a) {
-		if (!w[n]) {
-			var l = 'call,catch,on,once,set,then,track'
-			.split(','), i, o = function (n) {
-				return 'function' == typeof n ? o.l.push([arguments]) && o
-				: function () { return o.l.push([n, arguments]) && o }
-			}, t = d.getElementsByTagName(s)[0],
-			j = d.createElement(s); j.async = !0; j.src = 'https://cdn.fundraiseup.com/widget/' + a;
-			t.parentNode.insertBefore(j, t); o.s = Date.now(); o.v = 4; o.h = w.location.href; o.l = [];
-			for (i = 0; i < 7; i++)o[l[i]] = o(l[i]); w[n] = o
-		}
-		})(window, document, 'script', 'FundraiseUp', 'AGBYXHFF');</script>
+		<!-- Fundraise Up: world-class checkout experience for serious online fundraising.
+		     Loading is deferred to idle / first interaction (same strategy as the
+		     analytics loader above) to keep it off the critical rendering path. -->
+		<script is:inline>(function () {
+			var booted = false;
+			var bootFundraiseUp = function () {
+				if (booted) return;
+				booted = true;
+				(function (w, d, s, n, a) {
+				if (!w[n]) {
+					var l = 'call,catch,on,once,set,then,track'
+					.split(','), i, o = function (n) {
+						return 'function' == typeof n ? o.l.push([arguments]) && o
+						: function () { return o.l.push([n, arguments]) && o }
+					}, t = d.getElementsByTagName(s)[0],
+					j = d.createElement(s); j.async = !0; j.src = 'https://cdn.fundraiseup.com/widget/' + a;
+					t.parentNode.insertBefore(j, t); o.s = Date.now(); o.v = 4; o.h = w.location.href; o.l = [];
+					for (i = 0; i < 7; i++)o[l[i]] = o(l[i]); w[n] = o
+				}
+				})(window, document, 'script', 'FundraiseUp', 'AGBYXHFF');
+			};
+
+			['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
+				window.addEventListener(evt, bootFundraiseUp, { once: true, passive: true });
+			});
+			if ('requestIdleCallback' in window) {
+				window.requestIdleCallback(bootFundraiseUp);
+			} else {
+				window.setTimeout(bootFundraiseUp, 1500);
+			}
+		})();</script>
 		<!-- End Fundraise Up -->
 		<SEO
 			title={metaTitle}
